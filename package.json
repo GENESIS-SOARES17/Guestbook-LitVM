@@ -1,0 +1,27 @@
+{
+  "name": "guestbook-litvm",
+  "version": "1.0.0",
+  "description": "Decentralized Guestbook on LitVM Caldera Testnet",
+  "main": "index.js",
+  "scripts": {
+    "compile": "hardhat compile",
+    "deploy": "hardhat run scripts/deploy.cjs --network liteforge",
+    "test": "hardhat test"
+  },
+  "keywords": [
+    "hardhat",
+    "solidity",
+    "web3",
+    "litvm",
+    "guestbook"
+  ],
+  "author": "EDSOSI",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^7.0.0",
+    "hardhat": "^3.4.3"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1"
+  }
+}
