@@ -5,18 +5,82 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Guestbook LitVM - Decentralized Guestbook</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-            color: #333;
-            position: relative;
-            z-index: 1;
+        /* ============================================
+           🎨 VARIÁVEIS DE TEMA (LIGHT/DARK)
+           ============================================ */
+        :root {
+            /* Tema Light (padrão) */
+            --bg-gradient-start: #667eea;
+            --bg-gradient-end: #764ba2;
+            --text-primary: #333;
+            --text-secondary: #6b7280;
+            --card-bg: #ffffff;
+            --card-border: #e5e7eb;
+            --card-hover-border: #667eea;
+            --input-bg: #ffffff;
+            --input-border: #e0e0e0;
+            --input-focus-border: #667eea;
+            --status-bg: #fee;
+            --status-color: #991b1b;
+            --status-success-bg: #dcfce7;
+            --status-success-color: #166534;
+            --ticker-bg: rgba(15, 23, 42, 0.85);
+            --ticker-text: #ffffff;
+            --footer-bg: #ffffff;
+            --reaction-bg: #f3f4f6;
+            --reaction-border: #d1d5db;
+            --reaction-text: #374151;
+            --message-bg: #f9fafb;
+            --message-text: #374151;
+            --watermark-opacity: 0.3;
+            --watermark-filter: brightness(0.4);
         }
 
-        /* 🔥 MARCA D'ÁGUA LITVM.PNG ESCURECIDA NO FUNDO */
+        /* Tema Dark */
+        [data-theme="dark"] {
+            --bg-gradient-start: #1a1a2e;
+            --bg-gradient-end: #16213e;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --card-bg: #1e293b;
+            --card-border: #334155;
+            --card-hover-border: #667eea;
+            --input-bg: #0f172a;
+            --input-border: #334155;
+            --input-focus-border: #667eea;
+            --status-bg: #451a1a;
+            --status-color: #fca5a5;
+            --status-success-bg: #14532d;
+            --status-success-color: #86efac;
+            --ticker-bg: rgba(2, 6, 23, 0.95);
+            --ticker-text: #f1f5f9;
+            --footer-bg: #1e293b;
+            --reaction-bg: #334155;
+            --reaction-border: #475569;
+            --reaction-text: #f1f5f9;
+            --message-bg: #0f172a;
+            --message-text: #e2e8f0;
+            --watermark-opacity: 0.15;
+            --watermark-filter: brightness(0.6);
+        }
+
+        /* ============================================
+           ESTILOS GERAIS
+           ============================================ */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text-primary);
+            position: relative;
+            z-index: 1;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* 🔥 MARCA D'ÁGUA LITVM.PNG */
         body::before {
             content: "";
             position: fixed;
@@ -25,14 +89,63 @@
             background-repeat: repeat;
             background-size: 200px;
             background-position: center;
-            opacity: 0.3;
+            opacity: var(--watermark-opacity);
             transform: rotate(-15deg);
             pointer-events: none;
             z-index: -1;
-            filter: brightness(0.4);
+            filter: var(--watermark-filter);
+            transition: opacity 0.3s ease, filter 0.3s ease;
         }
 
-        .container { max-width: 1200px; margin: 0 auto; position: relative; z-index: 2; }
+        /* 🎆 CANVAS PARA PARTÍCULAS (FUNDO) */
+        #particles-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.6;
+        }
+
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            position: relative; 
+            z-index: 2; 
+        }
+
+        /* 🔥 BOTÃO DE TEMA (DARK/LIGHT) */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: 2px solid var(--card-border);
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+        }
+        .theme-toggle svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--text-primary);
+            transition: fill 0.3s ease;
+        }
+        /* Ícone do sol (aparece no dark) */
+        .theme-toggle .sun-icon { display: none; }
+        [data-theme="dark"] .theme-toggle .sun-icon { display: block; }
+        [data-theme="dark"] .theme-toggle .moon-icon { display: none; }
 
         /* 🔥 HEADER PROFISSIONAL */
         .main-banner {
@@ -78,8 +191,8 @@
         /* 🔥 NEWS TICKER */
         .news-ticker-wrapper {
             width: 100%;
-            background: rgba(15, 23, 42, 0.85);
-            color: white;
+            background: var(--ticker-bg);
+            color: var(--ticker-text);
             padding: 12px 0;
             overflow: hidden;
             white-space: nowrap;
@@ -128,8 +241,8 @@
 
         /* ✅ BOTÕES DE COMPARTILHAR */
         .btn-share-x {
-            background: #000;
-            color: white;
+            background: var(--reaction-bg);
+            color: var(--reaction-text);
             font-size: 12px;
             padding: 8px 16px;
             margin-top: 12px;
@@ -140,10 +253,10 @@
             text-decoration: none;
             font-weight: bold;
             transition: all 0.2s ease;
-            border: 1px solid #333;
+            border: 1px solid var(--reaction-border);
         }
         .btn-share-x:hover {
-            background: #111;
+            background: var(--card-border);
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
@@ -177,10 +290,63 @@
             fill: currentColor;
         }
 
+        /* ✅ BOTÕES DE REAÇÃO */
+        .reactions-bar {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            padding-top: 12px;
+            border-top: 1px dashed var(--card-border);
+        }
+        .reaction-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--reaction-bg);
+            border: 1px solid var(--reaction-border);
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--reaction-text);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .reaction-btn:hover {
+            background: var(--card-border);
+            transform: translateY(-1px);
+        }
+        .reaction-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+        }
+        .reaction-btn.heart:hover, .reaction-btn.heart.active { background: #fee2e2; color: #dc2626; border-color: #fca5a5; }
+        .reaction-btn.love:hover, .reaction-btn.love.active { background: #fef3c7; color: #f59e0b; border-color: #fbbf24; }
+        .reaction-btn.power:hover, .reaction-btn.power.active { background: #dbeafe; color: #2563eb; border-color: #93c5fd; }
+        .reaction-btn.like:hover, .reaction-btn.like.active { background: #d1fae5; color: #059669; border-color: #6ee7b7; }
+        .reaction-count {
+            font-variant-numeric: tabular-nums;
+            min-width: 20px;
+            text-align: center;
+        }
+
         /* RESTANTE DOS ESTILOS ORIGINAIS */
-        .card { background: white; border-radius: 16px; padding: 30px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .card { 
+            background: var(--card-bg); 
+            border-radius: 16px; 
+            padding: 30px; 
+            margin-bottom: 30px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 1px solid var(--card-border);
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
         .wallet-section { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
         .wallet-info { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+        
         button {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white; border: none; padding: 12px 24px; border-radius: 8px;
@@ -191,54 +357,111 @@
         button:disabled { background: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }
         .btn-secondary { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
         .btn-success { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
-        .status { padding: 10px; border-radius: 8px; font-weight: 600; }
+        
+        .status { padding: 10px; border-radius: 8px; font-weight: 600; background: var(--status-bg); color: var(--status-color); }
         .network-badge { background: #10b981; color: white; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; }
         .network-badge.wrong { background: #ef4444; }
+        
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .stat-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 12px; text-align: center; }
+        .stat-card { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: white; 
+            padding: 20px; 
+            border-radius: 12px; 
+            text-align: center; 
+        }
         .stat-label { font-size: 14px; opacity: 0.9; margin-bottom: 8px; }
         .stat-value { font-size: 28px; font-weight: 700; }
+        
         .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; }
-        input, textarea { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px; font-family: inherit; transition: border-color 0.3s ease; }
-        input:focus, textarea:focus { outline: none; border-color: #667eea; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary); }
+        input, textarea { 
+            width: 100%; 
+            padding: 12px; 
+            border: 2px solid var(--input-border); 
+            border-radius: 8px; 
+            font-size: 16px; 
+            font-family: inherit; 
+            transition: border-color 0.3s ease;
+            background: var(--input-bg);
+            color: var(--text-primary);
+        }
+        input:focus, textarea:focus { outline: none; border-color: var(--input-focus-border); }
         textarea { resize: vertical; min-height: 100px; }
-        .char-counter { text-align: right; font-size: 14px; color: #888; margin-top: 5px; }
+        .char-counter { text-align: right; font-size: 14px; color: var(--text-secondary); margin-top: 5px; }
+        
         .search-section { display: flex; gap: 10px; margin-bottom: 20px; }
         .search-section input { flex: 1; }
+        
         .messages-list { display: grid; gap: 20px; }
-        .message-card { background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 12px; padding: 20px; transition: all 0.3s ease; }
-        .message-card:hover { border-color: #667eea; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2); }
+        .message-card { 
+            background: var(--message-bg); 
+            border: 2px solid var(--card-border); 
+            border-radius: 12px; 
+            padding: 20px; 
+            transition: all 0.3s ease;
+        }
+        .message-card:hover { border-color: var(--card-hover-border); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2); }
         .message-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
         .message-sender { font-family: 'Courier New', monospace; font-size: 14px; color: #667eea; font-weight: 600; }
-        .message-time { font-size: 14px; color: #888; }
-        .message-text { font-size: 16px; line-height: 1.6; margin-bottom: 12px; word-wrap: break-word; }
+        .message-time { font-size: 14px; color: var(--text-secondary); }
+        .message-text { font-size: 16px; line-height: 1.6; margin-bottom: 12px; word-wrap: break-word; color: var(--message-text); }
         .message-amount { display: inline-block; background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%); color: white; padding: 6px 12px; border-radius: 20px; font-size: 14px; font-weight: 600; }
+        
         .pagination { display: flex; justify-content: center; align-items: center; gap: 20px; margin-top: 30px; }
-        .page-info { font-size: 16px; color: #555; }
-        .loading { text-align: center; padding: 40px; color: #888; font-size: 18px; }
+        .page-info { font-size: 16px; color: var(--text-primary); }
+        .loading { text-align: center; padding: 40px; color: var(--text-secondary); font-size: 18px; }
         .error { background: #fee; border: 2px solid #fcc; color: #c33; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
         .success { background: #efe; border: 2px solid #cfc; color: #3c3; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
-        .empty-state { text-align: center; padding: 60px 20px; color: #888; }
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--text-secondary); }
         .empty-state h3 { font-size: 24px; margin-bottom: 10px; }
-        footer { background: white; border-radius: 16px; padding: 30px; margin-top: 40px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        
+        footer { 
+            background: var(--footer-bg); 
+            border-radius: 16px; 
+            padding: 30px; 
+            margin-top: 40px; 
+            text-align: center; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 1px solid var(--card-border);
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
         .footer-content { max-width: 600px; margin: 0 auto; }
-        .footer-title { font-size: 18px; margin-bottom: 20px; color: #333; }
+        .footer-title { font-size: 18px; margin-bottom: 20px; color: var(--text-primary); }
         .footer-links { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
         .footer-link { display: flex; align-items: center; gap: 8px; color: #667eea; text-decoration: none; font-weight: 600; transition: all 0.3s ease; }
         .footer-link:hover { color: #764ba2; transform: translateY(-2px); }
+        
         .hidden { display: none; }
+        
         @media (max-width: 768px) {
             .banner-text h1 { font-size: 2.5em; }
             .banner-content { flex-direction: column; gap: 15px; }
             .wallet-section { flex-direction: column; align-items: stretch; }
             .stats-grid { grid-template-columns: 1fr; }
             .search-section { flex-direction: column; }
+            .reactions-bar { justify-content: center; }
+            .theme-toggle { top: 15px; right: 15px; }
         }
     </style>
 </head>
 <body>
+    <!-- 🎆 CANVAS PARA PARTÍCULAS -->
+    <canvas id="particles-canvas"></canvas>
+    
+    <!-- 🔊 ÁUDIO DE SUCESSO (base64 curto) -->
+    <audio id="success-sound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=" type="audio/wav">
+    </audio>
+
     <div class="container">
+        <!-- 🌓 BOTÃO DE TEMA DARK/LIGHT -->
+        <button class="theme-toggle" id="themeToggle" title="Toggle Dark/Light Mode">
+            <!-- Ícone Lua (aparece no light) -->
+            <svg class="moon-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            <!-- Ícone Sol (aparece no dark) -->
+            <svg class="sun-icon" viewBox="0 0 24  24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
         
         <!-- 🔥 HEADER -->
         <header class="main-banner">
@@ -253,7 +476,7 @@
             <!-- ✅ BOTÃO DE COMPARTILHAR A DAPP -->
             <button class="btn-share-app" onclick="shareDApp()">
                 <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
-                Compartilhar Guestbook
+                Share Guestbook
             </button>
             
             <div class="news-ticker-wrapper">
@@ -269,7 +492,7 @@
 
         <div class="card wallet-section">
             <div class="wallet-info">
-                <div id="walletStatus" class="status" style="background: #fee; color: #991b1b;">🔌 Not Connected</div>
+                <div id="walletStatus" class="status">🔌 Not Connected</div>
                 <button id="connectBtn">🔗 Connect Wallet</button>
                 <button id="switchNetworkBtn" class="hidden btn-secondary">🔄 Switch to LitVM</button>
             </div>
@@ -284,8 +507,7 @@
 
         <div class="card">
             <h2 style="margin-bottom: 20px;">✨ Post a Message</h2>
-            <!-- ✅ NOVA MENSAGEM EM INGLÊS -->
-            <p style="color: #6b7280; margin-bottom: 20px; font-size: 14px; font-style: italic;">
+            <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 14px; font-style: italic;">
                 💬 Share your ideas, thoughts, and memories on-chain — forever.
             </p>
             <div id="msgStatus"></div>
@@ -324,7 +546,7 @@
         <footer>
             <div class="footer-content">
                 <div class="footer-title">🛡️ Developed exclusively for the LitVM network</div>
-                <p style="color: #6b7280; margin-bottom: 15px; font-size: 14px;">Messages immortalized on-chain • Powered by zk-Rollup</p>
+                <p style="color: var(--text-secondary); margin-bottom: 15px; font-size: 14px;">Messages immortalized on-chain • Powered by zk-Rollup</p>
                 <div class="footer-links">
                     <a href="https://x.com/EDSOSI" target="_blank" class="footer-link">
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
@@ -338,6 +560,7 @@
     <script type="module">
         import { ethers } from "https://esm.run/ethers@6.13.0";
         
+        // ✅ CONFIGURAÇÃO DO CONTRATO - NÃO ALTERAR
         const CONFIG = { contractAddress: "0x472e230DfFA8c896b05A9a46c84BFb391756918e", chainId: 4441 };
         const ABI = [
             "function postMessage(string) external payable",
@@ -348,8 +571,9 @@
             "function totalMessages() view returns (uint256)"
         ];
         
-        let provider, signer, contract, currentOffset = 0, LIMIT = 10, isSearching = false, searchAddr = null;
+        let provider, signer, contract, currentOffset = 0, LIMIT = 10, isSearching = false, searchAddr = null, currentUser = null;
         
+        // ✅ REFERÊNCIAS DOS ELEMENTOS DO DOM
         const els = {
             walletStatus: document.getElementById('walletStatus'), 
             connectBtn: document.getElementById('connectBtn'),
@@ -370,9 +594,31 @@
             nextBtn: document.getElementById('nextBtn'), 
             pageInfo: document.getElementById('pageInfo'),
             charCount: document.getElementById('charCount'), 
-            msgStatus: document.getElementById('msgStatus')
+            msgStatus: document.getElementById('msgStatus'),
+            themeToggle: document.getElementById('themeToggle'),
+            successSound: document.getElementById('success-sound')
         };
 
+        // ============================================
+        // 🌓 FUNÇÕES DE TEMA DARK/LIGHT
+        // ============================================
+        
+        // Carregar tema salvo no localStorage
+        function loadTheme() {
+            const saved = localStorage.getItem('guestbook_theme');
+            if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        }
+        
+        // Alternar tema e salvar preferência
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('guestbook_theme', next);
+        }
+        
         // ✅ FUNÇÃO DE SHARE DA DAPP - COM @LitecoinVM
         window.shareDApp = function() {
             const text = encodeURIComponent("@LitecoinVM Check out Guestbook LitVM - Leave your permanent message on the LitVM blockchain! 🚀");
@@ -382,22 +628,193 @@
             window.open(shareUrl, '_blank', 'width=550,height=420');
         };
 
+        // ✅ FORMATAR NÚMERO (ex: 1200 → 1.2k)
+        function formatCount(n) {
+            if (n >= 1000000) return (n/1000000).toFixed(1).replace(/\.0$/,'') + 'M';
+            if (n >= 1000) return (n/1000).toFixed(1).replace(/\.0$/,'') + 'k';
+            return n.toString();
+        }
+
+        // ✅ CARREGAR REAÇÕES DO LOCALSTORAGE
+        function loadReactions(msgIndex) {
+            const key = `guestbook_reactions_${msgIndex}`;
+            const stored = localStorage.getItem(key);
+            return stored ? JSON.parse(stored) : { heart: 0, love: 0, power: 0, like: 0 };
+        }
+
+        // ✅ SALVAR REAÇÃO
+        function saveReaction(msgIndex, type, userAddr) {
+            const key = `guestbook_reactions_${msgIndex}`;
+            const reactedKey = `guestbook_reacted_${msgIndex}_${type}`;
+            
+            if (localStorage.getItem(reactedKey) === userAddr) return false;
+            
+            const reactions = loadReactions(msgIndex);
+            reactions[type] = (reactions[type] || 0) + 1;
+            localStorage.setItem(key, JSON.stringify(reactions));
+            localStorage.setItem(reactedKey, userAddr);
+            return true;
+        }
+
+        // ✅ RENDERIZAR BOTÕES DE REAÇÃO
+        function renderReactions(msgIndex, msgAddr, userAddr) {
+            const reactions = loadReactions(msgIndex);
+            const types = [
+                { id: 'heart', emoji: '❤️', label: 'Like', count: reactions.heart || 0 },
+                { id: 'love', emoji: '😍', label: 'Love', count: reactions.love || 0 },
+                { id: 'power', emoji: '💪', label: 'Power', count: reactions.power || 0 },
+                { id: 'like', emoji: '👍', label: 'Got it', count: reactions.like || 0 }
+            ];
+            
+            return types.map(t => {
+                const reacted = localStorage.getItem(`guestbook_reacted_${msgIndex}_${t.id}`) === userAddr;
+                return `
+                    <button class="reaction-btn ${t.id} ${reacted ? 'active' : ''}" 
+                            onclick="handleReaction(${msgIndex}, '${t.id}', '${msgAddr}', '${userAddr || ''}')"
+                            title="${t.label}">
+                        <span>${t.emoji}</span>
+                        <span class="reaction-count" id="count-${msgIndex}-${t.id}">${formatCount(t.count)}</span>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        // ✅ HANDLER DE REAÇÃO (GLOBAL)
+        window.handleReaction = function(msgIndex, type, msgAddr, userAddr) {
+            if (!userAddr) {
+                alert("🔗 Connect your wallet to react!");
+                return;
+            }
+            
+            const reactedKey = `guestbook_reacted_${msgIndex}_${type}`;
+            if (localStorage.getItem(reactedKey) === userAddr) {
+                const key = `guestbook_reactions_${msgIndex}`;
+                const reactions = loadReactions(msgIndex);
+                reactions[type] = Math.max(0, (reactions[type] || 0) - 1);
+                localStorage.setItem(key, JSON.stringify(reactions));
+                localStorage.removeItem(reactedKey);
+                
+                const countEl = document.getElementById(`count-${msgIndex}-${type}`);
+                if (countEl) countEl.textContent = formatCount(reactions[type]);
+                event.currentTarget.classList.remove('active');
+                return;
+            }
+            
+            if (saveReaction(msgIndex, type, userAddr)) {
+                const countEl = document.getElementById(`count-${msgIndex}-${type}`);
+                if (countEl) countEl.textContent = formatCount((loadReactions(msgIndex)[type]));
+                event.currentTarget.classList.add('active');
+            }
+        };
+
+        // ============================================
+        // 🎆 SISTEMA DE PARTÍCULAS (CANVAS)
+        // ============================================
+        function initParticles() {
+            const canvas = document.getElementById('particles-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+            
+            const particles = [];
+            const particleCount = 50;
+            
+            class Particle {
+                constructor() {
+                    this.reset();
+                }
+                
+                reset() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.vx = (Math.random() - 0.5) * 0.5;
+                    this.vy = (Math.random() - 0.5) * 0.5;
+                    this.size = Math.random() * 2 + 1;
+                    this.alpha = Math.random() * 0.5 + 0.3;
+                }
+                
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    
+                    if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                    if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+                    
+                    this.alpha += (Math.random() - 0.5) * 0.02;
+                    this.alpha = Math.max(0.2, Math.min(0.8, this.alpha));
+                }
+                
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
+                    ctx.fill();
+                }
+            }
+            
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+            
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        // ============================================
+        // 🔊 FUNÇÕES DE ÁUDIO
+        // ============================================
+        function playSuccessSound() {
+            try {
+                // Som curto de sucesso (pode substituir por URL externa se preferir)
+                const audio = els.successSound;
+                audio.currentTime = 0;
+                audio.volume = 0.3;
+                audio.play().catch(e => console.log("Audio play blocked:", e));
+            } catch(e) {
+                console.log("Sound error:", e);
+            }
+        }
+
+        // ============================================
+        // INICIALIZAÇÃO
+        // ============================================
+        
+        // Carregar tema ao iniciar
+        loadTheme();
+        els.themeToggle.addEventListener('click', toggleTheme);
+        
+        // Inicializar partículas
+        initParticles();
+        
         els.messageInput.addEventListener('input', () => els.charCount.textContent = els.messageInput.value.length);
         
         // ✅ CARREGAR MENSAGENS AO INICIAR (MODO LEITURA + AUTO-CONNECT)
         window.addEventListener('DOMContentLoaded', async () => {
-            els.messagesList.innerHTML = '<div class="loading">⏳ Carregando histórico...</div>';
+            els.messagesList.innerHTML = '<div class="loading">⏳ Loading history...</div>';
             
             if (window.ethereum) {
                 try {
                     const accounts = await window.ethereum.request({ method: "eth_accounts" });
                     if (accounts.length > 0) {
+                        currentUser = accounts[0].toLowerCase();
                         provider = new ethers.BrowserProvider(window.ethereum);
                         signer = await provider.getSigner();
                         contract = new ethers.Contract(CONFIG.contractAddress, ABI, signer);
                         els.walletStatus.textContent = `✅ ${accounts[0].slice(0,6)}...${accounts[0].slice(-4)}`;
-                        els.walletStatus.style.background = "#dcfce7"; 
-                        els.walletStatus.style.color = "#166534";
+                        els.walletStatus.style.background = "var(--status-success-bg)"; 
+                        els.walletStatus.style.color = "var(--status-success-color)";
                         els.messageInput.disabled = false; 
                         els.tokenAmount.disabled = false; 
                         els.postBtn.disabled = false;
@@ -409,7 +826,7 @@
                         await loadMessagesReadOnly();
                     }
                 } catch(e) {
-                    console.log("Auto-connect falhou, carregando modo leitura:", e);
+                    console.log("Auto-connect failed, loading read-only:", e);
                     await loadMessagesReadOnly();
                 }
             } else {
@@ -421,16 +838,16 @@
         async function loadMessagesReadOnly() {
             try {
                 if (!window.ethereum) {
-                    els.messagesList.innerHTML = '<div class="error">️ Instale MetaMask para interagir</div>';
+                    els.messagesList.innerHTML = '<div class="error">⚠️ Install MetaMask to interact</div>';
                     return;
                 }
                 provider = new ethers.BrowserProvider(window.ethereum);
                 contract = new ethers.Contract(CONFIG.contractAddress, ABI, provider);
-                els.messagesList.innerHTML = '<div class="loading">📜 Carregando mensagens públicas...</div>';
+                els.messagesList.innerHTML = '<div class="loading">📜 Loading public messages...</div>';
                 await loadMessages();
             } catch(err) {
-                console.error("Erro modo leitura:", err);
-                els.messagesList.innerHTML = '<div class="error">⚠️ Conecte a wallet para ver as mensagens</div>';
+                console.error("Read-only mode error:", err);
+                els.messagesList.innerHTML = '<div class="error">⚠️ Connect wallet to view messages</div>';
             }
         }
         
@@ -438,12 +855,13 @@
             if (!window.ethereum) return alert("MetaMask not found!");
             try {
                 const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+                currentUser = accounts[0].toLowerCase();
                 provider = new ethers.BrowserProvider(window.ethereum);
                 signer = await provider.getSigner();
                 contract = new ethers.Contract(CONFIG.contractAddress, ABI, signer);
                 els.walletStatus.textContent = `✅ ${accounts[0].slice(0,6)}...${accounts[0].slice(-4)}`;
-                els.walletStatus.style.background = "#dcfce7"; 
-                els.walletStatus.style.color = "#166534";
+                els.walletStatus.style.background = "var(--status-success-bg)"; 
+                els.walletStatus.style.color = "var(--status-success-color)";
                 els.messageInput.disabled = false; 
                 els.tokenAmount.disabled = false; 
                 els.postBtn.disabled = false;
@@ -471,7 +889,7 @@
                     await loadMessages();
                 }
             } catch(e) {
-                console.error("Erro checkNetwork:", e);
+                console.error("Network check error:", e);
             }
         }
 
@@ -505,9 +923,9 @@
         els.postBtn.addEventListener('click', async () => {
             const txt = els.messageInput.value.trim(), 
                   val = els.tokenAmount.value.trim();
-            if (!txt) return showMsg("️ Write something!", "error");
+            if (!txt) return showMsg("⚠️ Write something!", "error");
             els.postBtn.disabled = true; 
-            showMsg(" Sending...", "");
+            showMsg("⏳ Sending...", "");
             try {
                 const value = val ? ethers.parseEther(val) : 0n;
                 const tx = value > 0n ? 
@@ -516,6 +934,10 @@
                 showMsg("⏳ Confirming...", ""); 
                 await tx.wait();
                 showMsg("✅ Posted successfully!", "success");
+                
+                // 🔊 TOCAR SOM DE SUCESSO
+                playSuccessSound();
+                
                 els.messageInput.value = ""; 
                 els.tokenAmount.value = ""; 
                 els.charCount.textContent = "0";
@@ -538,7 +960,7 @@
                     return; 
                 }
             } catch(e) {
-                console.error("Erro loadStats:", e);
+                console.error("Stats load error:", e);
             }
         }
 
@@ -570,12 +992,14 @@
                 }
                 
                 let html = "", totalVal = 0n;
-                for (const m of msgs) {
+                for (let idx = 0; idx < msgs.length; idx++) {
+                    const m = msgs[idx];
+                    const msgIndex = Number(await contract.getMessageCount()) - currentOffset - LIMIT + idx;
                     const d = new Date(Number(m.timestamp) * 1000).toLocaleString();
                     const v = ethers.formatEther(m.amount || 0n); 
                     totalVal += BigInt(m.amount || 0n);
                     
-                    // ✅ @LitecoinVM no início do share de cada mensagem
+                    // ✅ @LitecoinVM no início do share
                     const shareText = encodeURIComponent(`@LitecoinVM I just posted on LitVM Guestbook: "${m.text.substring(0, 100)}"`);
                     const shareUrl = encodeURIComponent(window.location.href);
                     const hashtags = encodeURIComponent("LITVM,Guestbook");
@@ -583,16 +1007,21 @@
                     
                     const xIcon = `<svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`;
                     
-                    html += `<div class="message-card">
+                    const reactionsBar = renderReactions(msgIndex, m.addr, currentUser);
+                    
+                    html += `<div class="message-card" data-msg-index="${msgIndex}">
                         <div class="message-header">
                             <span class="message-sender">👤 ${m.addr.slice(0,6)}...${m.addr.slice(-4)}</span>
                             <span class="message-time">${d}</span>
                         </div>
                         <div class="message-text">${escapeHtml(m.text)}</div>
                         ${v > 0 ? `<div class="message-amount">💎 ${v} zkLTC</div>` : ''}
-                        <a href="${tweetUrl}" target="_blank" class="btn-share-x">
-                            ${xIcon} Compartilhar
-                        </a>
+                        <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+                            <a href="${tweetUrl}" target="_blank" class="btn-share-x">
+                                ${xIcon} Share
+                            </a>
+                        </div>
+                        <div class="reactions-bar">${reactionsBar}</div>
                     </div>`;
                 }
                 els.messagesList.innerHTML = html;
@@ -604,7 +1033,7 @@
                 els.nextBtn.disabled = isSearching ? msgs.length < LIMIT : currentOffset + LIMIT >= Number(await contract.getMessageCount());
             } catch(err) { 
                 console.error("Load error:", err);
-                els.messagesList.innerHTML = `<div class="error">❌ ${err.message || "Load failed"}. <button onclick="location.reload()" style="margin-left:10px;padding:5px 10px;">Recarregar</button></div>`; 
+                els.messagesList.innerHTML = `<div class="error">❌ ${err.message || "Load failed"}. <button onclick="location.reload()" style="margin-left:10px;padding:5px 10px;">Reload</button></div>`; 
             }
         }
 
