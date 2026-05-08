@@ -105,14 +105,16 @@
         }
         button:hover:not(:disabled) { transform: translateY(-2px); }
         .btn-share-x {
-            background: #000; /* Estilo do X */
+            background: #000;
             color: white;
             font-size: 12px;
-            padding: 6px 12px;
-            margin-top: 10px;
-            display: flex;
+            padding: 8px 16px;
+            margin-top: 15px;
+            border-radius: 20px;
+            display: inline-flex;
             align-items: center;
-            gap: 5px;
+            text-decoration: none;
+            font-weight: bold;
         }
 
         /* MENSAGENS */
@@ -122,7 +124,7 @@
         .message-text { font-size: 16px; line-height: 1.6; word-wrap: break-word; }
 
         .hidden { display: none; }
-        input, textarea { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; margin-top: 5px; }
+        textarea { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; margin-top: 5px; resize: vertical; }
     </style>
 </head>
 <body>
@@ -146,12 +148,11 @@
         <div class="card">
             <div id="walletStatus" style="padding:10px; border-radius:8px; margin-bottom:10px; background:#fee;">🔌 Not Connected</div>
             <button id="connectBtn">🔗 Connect Wallet</button>
-            <button id="switchNetworkBtn" class="hidden">🔄 Switch to LitVM</button>
         </div>
 
         <div class="card">
             <h2>✨ Post a Message</h2>
-            <textarea id="messageInput" placeholder="Write something immortal..." maxlength="280"></textarea>
+            <textarea id="messageInput" placeholder="Write something immortal..." maxlength="280" rows="3"></textarea>
             <button id="postBtn" style="margin-top:15px;">🚀 Post Message</button>
         </div>
 
@@ -162,7 +163,7 @@
 
         <footer>
             <div style="text-align: center; color: white; padding: 20px;">
-                Developed with ❤️ by <a href="https://x.com/EDSOSI" target="_blank" style="color: #4facfe;">@EDSOSI</a>
+                Developed with ❤️ by <a href="https://x.com/EDSOSI" target="_blank" style="color: #4facfe; text-decoration: none;">@EDSOSI</a>
             </div>
         </footer>
     </div>
@@ -174,8 +175,7 @@
         const ABI = [
             "function postMessage(string) external payable",
             "function getMessageCount() view returns (uint256)",
-            "function getMessage(uint256) view returns (address,string,uint256,uint256)",
-            "function totalMessages() view returns (uint256)"
+            "function getMessage(uint256) view returns (address,string,uint256,uint256)"
         ];
 
         let signer, contract;
@@ -189,29 +189,66 @@
         };
 
         els.connectBtn.onclick = async () => {
-            const provider = new ethers.BrowserProvider(window.ethereum);
-            const accounts = await provider.send("eth_requestAccounts", []);
-            signer = await provider.getSigner();
-            contract = new ethers.Contract(CONFIG.contractAddress, ABI, signer);
-            els.walletStatus.textContent = "✅ Connected: " + accounts[0].slice(0,6);
-            els.walletStatus.style.background = "#dcfce7";
-            loadMessages();
+            try {
+                if (!window.ethereum) return alert("MetaMask not found!");
+                const provider = new ethers.BrowserProvider(window.ethereum);
+                const accounts = await provider.send("eth_requestAccounts", []);
+                signer = await provider.getSigner();
+                contract = new ethers.Contract(CONFIG.contractAddress, ABI, signer);
+                
+                els.walletStatus.textContent = "✅ Connected: " + accounts[0].slice(0,6) + "..." + accounts[0].slice(-4);
+                els.walletStatus.style.background = "#dcfce7";
+                els.connectBtn.classList.add('hidden');
+                loadMessages();
+            } catch (err) {
+                console.error(err);
+            }
         };
 
         els.postBtn.onclick = async () => {
+            if(!contract) return alert("Connect wallet first!");
             const txt = els.messageInput.value;
             if(!txt) return;
-            const tx = await contract.postMessage(txt);
-            await tx.wait();
-            location.reload();
+            try {
+                const tx = await contract.postMessage(txt);
+                await tx.wait();
+                els.messageInput.value = "";
+                loadMessages();
+            } catch (err) {
+                console.error(err);
+            }
         };
 
         async function loadMessages() {
-            const count = await contract.getMessageCount();
-            let html = "";
-            for(let i = Number(count)-1; i >= 0; i--) {
-                const [addr, text, ts] = await contract.getMessage(i);
-                const date = new Date(Number(ts) * 1000).toLocaleString();
-                
-                // 🔥 Lógica do Botão Compartilhar
-                const shareText = encodeURIComponent(`I
+            try {
+                const count = await contract.getMessageCount();
+                let html = "";
+                for(let i = Number(count)-1; i >= 0; i--) {
+                    const [addr, text, ts] = await contract.getMessage(i);
+                    const date = new Date(Number(ts) * 1000).toLocaleString();
+                    
+                    const shareText = encodeURIComponent(`I just posted a message on the LitVM Guestbook: "${text}" @LitecoinVM #LITVM`);
+                    const shareUrl = `https://twitter.com/intent/tweet?text=${shareText}`;
+
+                    html += `
+                        <div class="message-card">
+                            <div class="message-header">
+                                <span class="message-sender">${addr.slice(0,6)}...${addr.slice(-4)}</span>
+                                <span style="font-size:12px; color:#888;">${date}</span>
+                            </div>
+                            <div class="message-text">${text}</div>
+                            <a href="${shareUrl}" target="_blank" class="btn-share-x">
+                                𝕏 Compartilhar
+                            </a>
+                        </div>
+                    `;
+                }
+                els.messagesList.innerHTML = html || "No messages yet.";
+            } catch (err) {
+                els.messagesList.innerHTML = "Error loading messages.";
+                console.error(err);
+            }
+        }
+    </script>
+</body>
+</html>
