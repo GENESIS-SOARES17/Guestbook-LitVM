@@ -970,33 +970,6 @@ input:focus{
             </div>
         </div>
 
-        <!-- SEARCH -->
-        <div class="card">
-            <div class="card-header">🔎 Search by Address</div>
-
-            <div class="card-body">
-
-                <div style="display:flex;gap:10px;flex-wrap:wrap;">
-
-                    <input
-                        id="searchInput"
-                        placeholder="0x..."
-                        disabled
-                    />
-
-                    <button id="searchBtn" disabled>
-                        Search
-                    </button>
-
-                    <button id="clearSearchBtn" class="hidden">
-                        Clear
-                    </button>
-
-                </div>
-
-            </div>
-        </div>
-
         <!-- FEED -->
         <div class="card">
             <div class="card-header">📜 Recent Messages</div>
@@ -1143,7 +1116,6 @@ const ABI = [
     "function postMessageWithToken(string) external payable",
     "function getMessageCount() view returns (uint256)",
     "function getMessage(uint256) view returns (address,string,uint256,uint256)",
-    "function getMessagesByAddress(address,uint256,uint256) view returns (tuple(address sender, string text, uint256 timestamp, uint256 amount)[])",
     "function totalMessages() view returns (uint256)"
 ];
 
@@ -1158,9 +1130,6 @@ let currentUser = null;
 
 let currentOffset = 0;
 const LIMIT = 10;
-
-let isSearching = false;
-let searchAddr = null;
 
 /* ======================================================
    DOM
@@ -1183,10 +1152,6 @@ const els = {
     totalCount:document.getElementById("totalCount"),
     totalTokens:document.getElementById("totalTokens"),
     currentPage:document.getElementById("currentPage"),
-
-    searchInput:document.getElementById("searchInput"),
-    searchBtn:document.getElementById("searchBtn"),
-    clearSearchBtn:document.getElementById("clearSearchBtn"),
 
     messagesList:document.getElementById("messagesList"),
 
@@ -1638,9 +1603,6 @@ function connectedUI(address){
     els.tokenAmount.disabled = false;
     els.postBtn.disabled = false;
     
-    els.searchInput.disabled = false;
-    els.searchBtn.disabled = false;
-    
     // Update wallet card & profile
     updateWalletCard(address);
     fetchBalance(address);
@@ -1668,9 +1630,6 @@ function disconnectedUI(){
     els.messageInput.disabled = true;
     els.tokenAmount.disabled = true;
     els.postBtn.disabled = true;
-    
-    els.searchInput.disabled = true;
-    els.searchBtn.disabled = true;
     
     // Reset wallet card & profile
     updateWalletCard(null);
@@ -1851,51 +1810,39 @@ async function loadMessages(){
         els.messagesList.innerHTML =
             `<div style="padding:20px;">Loading...</div>`;
 
+        const total =
+            Number(await contract.getMessageCount());
+
+        if(total === 0){
+
+            els.messagesList.innerHTML =
+                `<div style="padding:20px;">
+                    No messages yet.
+                </div>`;
+
+            return;
+        }
+
+        const start =
+            Math.max(0,total-currentOffset-LIMIT);
+
+        const end =
+            total-currentOffset;
+
         let messages = [];
 
-        if(isSearching && searchAddr){
+        for(let i=end-1;i>=start;i--){
 
-            messages =
-                await contract.getMessagesByAddress(
-                    searchAddr,
-                    BigInt(LIMIT),
-                    BigInt(currentOffset)
-                );
+            const data =
+                await contract.getMessage(i);
 
-        }else{
-
-            const total =
-                Number(await contract.getMessageCount());
-
-            if(total === 0){
-
-                els.messagesList.innerHTML =
-                    `<div style="padding:20px;">
-                        No messages yet.
-                    </div>`;
-
-                return;
-            }
-
-            const start =
-                Math.max(0,total-currentOffset-LIMIT);
-
-            const end =
-                total-currentOffset;
-
-            for(let i=end-1;i>=start;i--){
-
-                const data =
-                    await contract.getMessage(i);
-
-                messages.push({
-                    index:i,
-                    addr:data[0],
-                    text:data[1],
-                    timestamp:data[2],
-                    amount:data[3]
-                });
-            }
+            messages.push({
+                index:i,
+                addr:data[0],
+                text:data[1],
+                timestamp:data[2],
+                amount:data[3]
+            });
         }
 
         let html = "";
@@ -2040,48 +1987,6 @@ async function loadMessages(){
             </div>`;
     }
 }
-
-/* ======================================================
-   SEARCH
-====================================================== */
-
-els.searchBtn.addEventListener("click",async()=>{
-
-    const addr =
-        els.searchInput.value.trim();
-
-    if(!ethers.isAddress(addr)){
-
-        alert("Invalid address");
-
-        return;
-    }
-
-    searchAddr = addr;
-
-    isSearching = true;
-
-    currentOffset = 0;
-
-    els.clearSearchBtn.classList.remove("hidden");
-
-    await loadMessages();
-});
-
-els.clearSearchBtn.addEventListener("click",async()=>{
-
-    isSearching = false;
-
-    searchAddr = null;
-
-    currentOffset = 0;
-
-    els.searchInput.value = "";
-
-    els.clearSearchBtn.classList.add("hidden");
-
-    await loadMessages();
-});
 
 /* ======================================================
    PAGINATION
