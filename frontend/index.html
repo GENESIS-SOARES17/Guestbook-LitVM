@@ -746,4 +746,336 @@ input:focus{
                     <div class="address-box">
                         <div id="walletAddress" class="address-display">
                             Not connected
-                       
+                        </div>
+                        <button id="copyBtn" onclick="copyAddress()" class="btn-small" disabled title="Copy Address">
+                            📋 Copy
+                        </button>
+                        <a id="explorerBtn" href="#" target="_blank" class="btn-small" title="View on Explorer" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;">
+                            🔍
+                        </a>
+                    </div>
+                </div>
+
+                <!-- zkLTC Balance -->
+                <div class="wallet-info-section">
+                    <div class="wallet-label">💰 zkLTC Balance</div>
+                    <div class="balance-card">
+                        <div id="balanceDisplay" class="balance-amount">
+                            0.00
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </aside>
+
+    <!-- CENTER -->
+    <main class="center-column">
+
+        <!-- WALLET -->
+        <div class="card">
+            <div class="card-header">🔗 Wallet Connection</div>
+
+            <div class="card-body">
+
+                <div class="wallet-row">
+
+                    <div id="walletStatus" class="status">
+                        Not Connected
+                    </div>
+
+                    <div id="networkBadge" class="status network hidden">
+                        LitVM • Chain 4441
+                    </div>
+
+                    <button id="connectBtn">
+                        Connect Wallet
+                    </button>
+
+                    <button id="switchNetworkBtn" class="hidden">
+                        Switch to LitVM
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- SHARE -->
+        <div class="card">
+            <div class="card-header">💬 Share Something</div>
+
+            <div class="card-body">
+
+                <div style="margin-bottom:14px;color:#6b7280;font-size:14px;">
+                    All messages are permanent on-chain and limited to a maximum of 280 characters.
+                </div>
+
+                <div id="msgStatus"></div>
+
+                <div class="form-group">
+                    <label class="label">
+                        Your Message
+                    </label>
+
+                    <textarea
+                        id="messageInput"
+                        maxlength="280"
+                        placeholder="Write something permanent on-chain..."
+                        disabled
+                    ></textarea>
+
+                    <div class="char-info">
+                        <span id="charCount">0</span>/280
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="label">
+                        Optional zkLTC Amount
+                    </label>
+
+                    <input
+                        type="number"
+                        id="tokenAmount"
+                        placeholder="0.00"
+                        step="0.000000000000000001"
+                        min="0"
+                        disabled
+                    />
+                </div>
+
+                <button id="postBtn" disabled>
+                    🚀 Post Message
+                </button>
+
+            </div>
+        </div>
+
+        <!-- STATS -->
+        <div class="card">
+            <div class="card-header">📊 Guestbook Stats</div>
+
+            <div class="card-body">
+
+                <div class="stats-grid">
+
+                    <div class="stat">
+                        <div class="stat-title">Total Messages</div>
+                        <div class="stat-value" id="totalCount">0</div>
+                    </div>
+
+                    <div class="stat">
+                        <div class="stat-title">Tokens Sent</div>
+                        <div class="stat-value" id="totalTokens">0</div>
+                    </div>
+
+                    <div class="stat">
+                        <div class="stat-title">Current Page</div>
+                        <div class="stat-value" id="currentPage">1</div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- SEARCH -->
+        <div class="card">
+            <div class="card-header">🔎 Search by Address</div>
+
+            <div class="card-body">
+
+                <div style="display:flex;gap:10px;flex-wrap:wrap;">
+
+                    <input
+                        id="searchInput"
+                        placeholder="0x..."
+                        disabled
+                    />
+
+                    <button id="searchBtn" disabled>
+                        Search
+                    </button>
+
+                    <button id="clearSearchBtn" class="hidden">
+                        Clear
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- FEED -->
+        <div class="card">
+            <div class="card-header">📜 Recent Messages</div>
+
+            <div class="card-body">
+
+                <div id="messagesList">
+                    Loading messages...
+                </div>
+
+                <div
+                    id="pagination"
+                    class="hidden"
+                    style="margin-top:20px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap;"
+                >
+
+                    <button id="prevBtn">
+                        ⬅ Previous
+                    </button>
+
+                    <div
+                        id="pageInfo"
+                        style="display:flex;align-items:center;font-weight:bold;"
+                    >
+                        Page 1
+                    </div>
+
+                    <button id="nextBtn">
+                        Next ➡
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="footer">
+            Built exclusively for LitVM • Web3 Social Guestbook
+        </div>
+
+    </main>
+
+    <!-- RIGHT -->
+    <aside class="right-column">
+
+        <div class="card">
+            <div class="card-header">🌐 Communities</div>
+
+            <div class="card-body">
+
+                <div class="community">
+                    <strong>LitVM Builders</strong>
+                    Web3 developers building decentralized applications.
+                </div>
+
+                <div class="community">
+                    <strong>zkLTC Community</strong>
+                    Blockchain users exploring Layer2 Litecoin ecosystems.
+                </div>
+
+                <div class="community">
+                    <strong>Blockchain Memories</strong>
+                    Permanent messages and decentralized social history.
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">ℹ About Project</div>
+
+            <div class="card-body">
+
+                <p style="line-height:1.7;font-size:14px;color:#6b7280;">
+                    Guestbook LitVM is a decentralized social guestbook built on LitVM.
+                    Messages are stored permanently on-chain using zkLTC infrastructure.
+                </p>
+
+            </div>
+        </div>
+
+        <!-- MARKET SENTIMENT CARD -->
+        <div class="card">
+            <div class="card-header">📊 Market Sentiment</div>
+            <div class="card-body">
+                
+                <div class="sentiment-card">
+                    <div class="sentiment-title">⚡ LitVM Community Sentiment</div>
+                    
+                    <div class="sentiment-main">
+                        <div class="sentiment-emoji" id="sentimentEmoji">😊</div>
+                        <div class="sentiment-info">
+                            <div class="sentiment-label">Overall Mood</div>
+                            <div class="sentiment-value" id="sentimentValue">65%</div>
+                        </div>
+                    </div>
+
+                    <div class="sentiment-bar">
+                        <div class="sentiment-fill" id="sentimentFill" style="width:65%"></div>
+                    </div>
+
+                    <div class="sentiment-stats">
+                        <div class="sentiment-stat bullish">
+                            <div class="sentiment-stat-value" id="bullishCount">58%</div>
+                            <div class="sentiment-stat-label">🚀 Bullish</div>
+                        </div>
+                        <div class="sentiment-stat neutral">
+                            <div class="sentiment-stat-value" id="neutralCount">27%</div>
+                            <div class="sentiment-stat-label">😐 Neutral</div>
+                        </div>
+                        <div class="sentiment-stat bearish">
+                            <div class="sentiment-stat-value" id="bearishCount">15%</div>
+                            <div class="sentiment-stat-label">📉 Bearish</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </aside>
+
+</div>
+
+<!-- ======================================================
+     SCRIPT
+====================================================== -->
+
+<script type="module">
+
+import { ethers } from "https://esm.run/ethers@6.13.0";
+
+/* ======================================================
+   CONTRACT CONFIG
+====================================================== */
+
+const CONFIG = {
+    contractAddress:"0x472e230DfFA8c896b05A9a46c84BFb391756918e",
+    chainId:4441
+};
+
+const ABI = [
+    "function postMessage(string) external payable",
+    "function postMessageWithToken(string) external payable",
+    "function getMessageCount() view returns (uint256)",
+    "function getMessage(uint256) view returns (address,string,uint256,uint256)",
+    "function getMessagesByAddress(address,uint256,uint256) view returns (tuple(address sender, string text, uint256 timestamp, uint256 amount)[])",
+    "function totalMessages() view returns (uint256)"
+];
+
+/* ======================================================
+   VARIABLES
+====================================================== */
+
+let provider;
+let signer;
+let contract;
+let currentUser = null;
+
+let currentOffset = 0;
+const LIMIT = 10;
+
+let isSearching = false;
+let searchAddr = null;
+
+/* ======================================================
+   DOM
+====================================================== */
+
+const
