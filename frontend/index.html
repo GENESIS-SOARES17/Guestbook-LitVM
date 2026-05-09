@@ -21,6 +21,8 @@
     --muted:#6b7280;
     --hover:#5f7ec7;
     --shadow:0 2px 8px rgba(0,0,0,0.08);
+    --danger:#ef4444;
+    --danger-hover:#dc2626;
 }
 
 *{
@@ -280,6 +282,22 @@ button:disabled{
     cursor:not-allowed;
 }
 
+button.danger{
+    background:linear-gradient(to bottom,#f87171,#ef4444);
+}
+
+button.danger:hover{
+    background:linear-gradient(to bottom,#ef4444,#dc2626);
+}
+
+button.secondary{
+    background:linear-gradient(to bottom,#94a3b8,#64748b);
+}
+
+button.secondary:hover{
+    background:linear-gradient(to bottom,#64748b,#475569);
+}
+
 .full-btn{
     width:100%;
 }
@@ -351,6 +369,16 @@ input:focus{
 .network{
     background:#d7f7df;
     color:#137333;
+}
+
+.balance-display-inline{
+    background:#f0fdf4;
+    color:#166534;
+    border:1px solid #bbf7d0;
+    padding:10px 14px;
+    border-radius:10px;
+    font-size:14px;
+    font-weight:bold;
 }
 
 /* =========================================================
@@ -747,7 +775,7 @@ input:focus{
         <div class="ticker-wrap">
             <div class="ticker">
                 <span>🚀 Live on LitVM blockchain</span>
-                <span> zkLTC social interactions powered by decentralized infrastructure</span>
+                <span>⚡ zkLTC social interactions powered by decentralized infrastructure</span>
                 <span>💬 Share permanent memories directly on-chain forever</span>
                 <span>🔗 Fast Layer2 blockchain experience</span>
                 <span>🌐 Decentralized social guestbook powered by Web3</span>
@@ -838,6 +866,10 @@ input:focus{
                         Not Connected
                     </div>
 
+                    <div id="balanceInline" class="balance-display-inline hidden">
+                        💰 0.00 zkLTC
+                    </div>
+
                     <div id="networkBadge" class="status network hidden">
                         LitVM • Chain 4441
                     </div>
@@ -846,7 +878,11 @@ input:focus{
                         Connect Wallet
                     </button>
 
-                    <button id="switchNetworkBtn" class="hidden">
+                    <button id="disconnectBtn" class="danger hidden">
+                        🔌 Disconnect
+                    </button>
+
+                    <button id="switchNetworkBtn" class="secondary hidden">
                         Switch to LitVM
                     </button>
 
@@ -908,7 +944,7 @@ input:focus{
 
         <!-- STATS -->
         <div class="card">
-            <div class="card-header"> Guestbook Stats</div>
+            <div class="card-header">📊 Guestbook Stats</div>
 
             <div class="card-body">
 
@@ -978,7 +1014,7 @@ input:focus{
                 >
 
                     <button id="prevBtn">
-                         Previous
+                        ⬅ Previous
                     </button>
 
                     <div
@@ -1133,9 +1169,11 @@ let searchAddr = null;
 const els = {
 
     walletStatus:document.getElementById("walletStatus"),
+    balanceInline:document.getElementById("balanceInline"),
     networkBadge:document.getElementById("networkBadge"),
 
     connectBtn:document.getElementById("connectBtn"),
+    disconnectBtn:document.getElementById("disconnectBtn"),
     switchNetworkBtn:document.getElementById("switchNetworkBtn"),
 
     messageInput:document.getElementById("messageInput"),
@@ -1251,22 +1289,24 @@ window.copyAddress = function(){
     }
 }
 
-function updateWalletCard(address){
+function updateWalletCard(address, balance = "0.00"){
     if(address){
         const shortAddr = `${address.slice(0,6)}...${address.slice(-4)}`;
         els.walletAddress.textContent = shortAddr;
         els.walletAddress.title = address;
         
+        els.balanceDisplay.textContent = balance;
+        els.balanceInline.textContent = `💰 ${balance} zkLTC`;
+        
         els.copyBtn.disabled = false;
         
         els.explorerBtn.href = 
             `https://liteforge.explorer.caldera.xyz/address/${address}`;
-        
-        fetchBalance(address);
     }else{
         els.walletAddress.textContent = 'Not connected';
         els.walletAddress.title = '';
         els.balanceDisplay.textContent = '0.00';
+        els.balanceInline.textContent = '💰 0.00 zkLTC';
         
         els.copyBtn.disabled = true;
         
@@ -1279,11 +1319,16 @@ async function fetchBalance(address){
         if(provider){
             const balance = await provider.getBalance(address);
             const formatted = ethers.formatEther(balance);
-            els.balanceDisplay.textContent = parseFloat(formatted).toFixed(4);
+            const display = parseFloat(formatted).toFixed(4);
+            els.balanceDisplay.textContent = display;
+            els.balanceInline.textContent = `💰 ${display} zkLTC`;
+            return display;
         }
     }catch(err){
         console.log('Error fetching balance:', err);
         els.balanceDisplay.textContent = '0.00';
+        els.balanceInline.textContent = '💰 0.00 zkLTC';
+        return "0.00";
     }
 }
 
@@ -1563,27 +1608,77 @@ els.connectBtn.addEventListener("click",async()=>{
     }
 });
 
+/* ======================================================
+   DISCONNECT
+====================================================== */
+
+els.disconnectBtn.addEventListener("click",()=>{
+    // Clear current user
+    currentUser = null;
+    signer = null;
+    contract = null;
+    
+    // Reset UI to disconnected state
+    disconnectedUI();
+});
+
 function connectedUI(address){
-
-    els.walletStatus.innerHTML =
-        `✅ ${address.slice(0,6)}...${address.slice(-4)}`;
-
+    const shortAddr = `${address.slice(0,6)}...${address.slice(-4)}`;
+    
+    els.walletStatus.innerHTML = `✅ ${shortAddr}`;
+    els.walletStatus.className = 'status';
+    
     els.networkBadge.classList.remove("hidden");
-
+    els.balanceInline.classList.remove("hidden");
+    
     els.connectBtn.classList.add("hidden");
-
+    els.disconnectBtn.classList.remove("hidden");
+    
     els.messageInput.disabled = false;
     els.tokenAmount.disabled = false;
     els.postBtn.disabled = false;
-
+    
     els.searchInput.disabled = false;
     els.searchBtn.disabled = false;
     
     // Update wallet card & profile
     updateWalletCard(address);
+    fetchBalance(address);
     applyIdenticon(address);
+    
+    els.profileName.textContent = "LitVM User";
+    els.walletType.textContent = "Connected";
+    els.profileDesc.textContent = "Decentralized social identity connected directly to the blockchain. Share memories forever on-chain.";
+    
     markUserActive(address);
     registerEarlyAdopter(address);
+}
+
+function disconnectedUI(){
+    els.walletStatus.textContent = "Not Connected";
+    els.walletStatus.className = 'status';
+    
+    els.networkBadge.classList.add("hidden");
+    els.balanceInline.classList.add("hidden");
+    
+    els.connectBtn.classList.remove("hidden");
+    els.disconnectBtn.classList.add("hidden");
+    els.switchNetworkBtn.classList.add("hidden");
+    
+    els.messageInput.disabled = true;
+    els.tokenAmount.disabled = true;
+    els.postBtn.disabled = true;
+    
+    els.searchInput.disabled = true;
+    els.searchBtn.disabled = true;
+    
+    // Reset wallet card & profile
+    updateWalletCard(null);
+    applyIdenticon(null);
+    
+    els.profileName.textContent = "LitVM User";
+    els.walletType.textContent = "Wallet Not Connected";
+    els.profileDesc.textContent = "Decentralized social identity connected directly to the blockchain. Share memories forever on-chain.";
 }
 
 /* ======================================================
@@ -1592,6 +1687,8 @@ function connectedUI(address){
 
 async function checkNetwork(){
 
+    if(!provider) return;
+    
     const net = await provider.getNetwork();
 
     if(Number(net.chainId) !== CONFIG.chainId){
@@ -1714,7 +1811,7 @@ els.postBtn.addEventListener("click",async()=>{
     }catch(err){
 
         showMsg(
-            " " + (err.shortMessage || err.message),
+            "❌ " + (err.shortMessage || err.message),
             "error"
         );
 
@@ -2015,7 +2112,13 @@ if(window.ethereum){
 
     window.ethereum.on(
         "accountsChanged",
-        ()=>location.reload()
+        (accounts)=>{
+            if(accounts.length === 0){
+                disconnectedUI();
+            }else{
+                location.reload();
+            }
+        }
     );
 
     window.ethereum.on(
