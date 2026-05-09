@@ -1,16 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>LitBook • Decentralized Social Guestbook</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Guestbook LitVM</title>
 
 <style>
+/* =========================================================
+   🎨 ORKUT STYLE WEB3 SOCIAL UI
+========================================================= */
 
-/* =========================================
-   RESET
-========================================= */
+:root{
+    --blue-main:#6B8DD6;
+    --blue-soft:#8FA8E8;
+    --blue-hover:#5A78C7;
+
+    --bg:#F3F4F6;
+    --white:#ffffff;
+
+    --text:#374151;
+    --text-soft:#6b7280;
+
+    --border:#c7d5f4;
+
+    --shadow:0 2px 8px rgba(0,0,0,.08);
+
+    --radius:14px;
+}
 
 *{
     margin:0;
@@ -18,570 +34,448 @@
     box-sizing:border-box;
 }
 
-/* =========================================
-   COLORS
-========================================= */
-
-:root{
-    --blue-main:#6B8DD6;
-    --blue-soft:#8FA8E8;
-    --blue-light:#dbe7ff;
-    --bg:#F3F4F6;
-    --white:#ffffff;
-    --text:#374151;
-    --border:#bfd0f5;
-    --hover:#5b7fcf;
-    --shadow:0 2px 8px rgba(107,141,214,.18);
-}
-
-/* =========================================
-   BODY
-========================================= */
-
 body{
     font-family:Verdana, Arial, sans-serif;
     background:var(--bg);
     color:var(--text);
-    padding-top:95px;
     overflow-x:hidden;
 }
 
-/* =========================================
+/* =========================================================
    HEADER
-========================================= */
+========================================================= */
 
-.topbar{
+.top-header{
     position:fixed;
     top:0;
     left:0;
     width:100%;
+    background:linear-gradient(to bottom,#9eb8ef,#7f9ce0);
+    border-bottom:2px solid #5f80d1;
     z-index:999;
-    background:linear-gradient(to bottom,var(--blue-soft),var(--blue-main));
-    border-bottom:1px solid #98b2ef;
-    box-shadow:var(--shadow);
+    box-shadow:0 2px 10px rgba(0,0,0,.15);
 }
 
-.top-inner{
+.header-inner{
+    max-width:1400px;
+    margin:auto;
+    padding:14px 20px;
     display:flex;
     align-items:center;
-    gap:16px;
-    padding:12px 18px;
+    gap:20px;
 }
 
 .logo{
-    width:58px;
-    height:58px;
-    object-fit:contain;
-    background:white;
-    border-radius:14px;
-    padding:6px;
-    box-shadow:0 2px 6px rgba(0,0,0,.18);
+    display:flex;
+    align-items:center;
+    gap:14px;
+    min-width:320px;
 }
 
-.brand h1{
+.logo img{
+    width:68px;
+    height:68px;
+    object-fit:contain;
+}
+
+.logo h1{
     color:white;
     font-size:34px;
-    font-weight:bold;
-    line-height:1;
+    text-shadow:1px 1px 2px rgba(0,0,0,.2);
 }
 
-.brand p{
-    color:#eef4ff;
-    font-size:12px;
-    margin-top:4px;
-}
+/* =========================================================
+   🔥 TICKER DOBRO DO TAMANHO
+========================================================= */
 
-/* =========================================
-   TICKER
-========================================= */
+.ticker-wrapper{
+    flex:1;
+    overflow:hidden;
+    background:rgba(255,255,255,.18);
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,.3);
+    height:64px;
+    display:flex;
+    align-items:center;
+}
 
 .ticker{
-    width:100%;
-    overflow:hidden;
     white-space:nowrap;
-    background:rgba(255,255,255,.18);
-    border-top:1px solid rgba(255,255,255,.15);
-    border-bottom:1px solid rgba(255,255,255,.15);
-}
-
-.ticker-track{
-    display:inline-block;
-    padding-left:100%;
-    animation:ticker 42s linear infinite;
+    animation:tickerMove 45s linear infinite;
     color:white;
-    font-size:13px;
+    font-size:18px;
     font-weight:bold;
-    padding-top:7px;
-    padding-bottom:7px;
 }
 
-.ticker-track:hover{
+.ticker-wrapper:hover .ticker{
     animation-play-state:paused;
 }
 
-.ticker-item{
-    display:inline-block;
+.ticker span{
     margin-right:70px;
 }
 
-@keyframes ticker{
-    0%{transform:translateX(0);}
-    100%{transform:translateX(-100%);}
+@keyframes tickerMove{
+    0%{
+        transform:translateX(100%);
+    }
+    100%{
+        transform:translateX(-100%);
+    }
 }
 
-/* =========================================
-   LAYOUT
-========================================= */
+/* =========================================================
+   MAIN LAYOUT
+========================================================= */
+
+.page{
+    max-width:1400px;
+    margin:auto;
+    padding:140px 14px 30px;
+}
 
 .layout{
-    width:100%;
-    max-width:1400px;
-    margin:18px auto;
     display:grid;
-    grid-template-columns:240px minmax(0,1fr) 240px;
+    grid-template-columns:260px minmax(0,1fr) 260px;
     gap:18px;
-    padding:0 12px;
-    overflow:hidden;
-}
-
-.main-column{
-    min-width:0;
     width:100%;
 }
 
-/* =========================================
+/* =========================================================
    CARDS
-========================================= */
+========================================================= */
 
-.sidebar-card,
-.box{
+.card{
     background:var(--white);
     border:1px solid var(--border);
-    border-radius:16px;
-    overflow:hidden;
+    border-radius:var(--radius);
     box-shadow:var(--shadow);
-    width:100%;
+    overflow:hidden;
 }
 
 .card-header{
-    background:linear-gradient(to bottom,#95b0ee,#6B8DD6);
+    background:linear-gradient(to bottom,#95b0ec,#7795de);
     color:white;
     font-weight:bold;
-    font-size:15px;
-    padding:11px 16px;
+    padding:12px 16px;
+    font-size:16px;
 }
 
-.card-content,
-.box-body{
-    padding:18px;
+.card-body{
+    padding:16px;
 }
 
-/* =========================================
-   PROFILE
-========================================= */
+/* =========================================================
+   PROFILE SIDEBAR
+========================================================= */
 
-.avatar{
+.profile{
+    text-align:center;
+}
+
+.profile-avatar{
     width:110px;
     height:110px;
     border-radius:50%;
-    margin:10px auto 18px;
-    background:linear-gradient(to bottom,#8FA8E8,#6B8DD6);
+    margin:auto;
+    background:linear-gradient(135deg,#6B8DD6,#8FA8E8);
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:52px;
     color:white;
-    border:6px solid #dce7ff;
-}
-
-.profile-name{
-    text-align:center;
-    font-size:22px;
+    font-size:40px;
     font-weight:bold;
-    margin-bottom:10px;
+    margin-bottom:14px;
 }
 
-.profile-desc{
-    text-align:center;
-    line-height:1.6;
-    font-size:13px;
-    color:#5d6471;
-}
-
-.profile-links{
-    margin-top:18px;
-    border-top:1px solid #e5edff;
-    padding-top:14px;
-}
-
-.profile-links div{
+.profile h3{
     margin-bottom:8px;
-    font-size:13px;
 }
 
-/* =========================================
-   INPUTS
-========================================= */
-
-textarea,
-input{
-    width:100%;
-    max-width:100%;
-    border:1px solid #bcd0ff;
-    border-radius:12px;
-    padding:14px;
+.profile p{
+    color:var(--text-soft);
     font-size:14px;
-    font-family:Verdana;
+    line-height:1.5;
+}
+
+/* =========================================================
+   FORMS
+========================================================= */
+
+input,
+textarea{
+    width:100%;
+    border:1px solid #bfd0f5;
+    border-radius:10px;
+    padding:12px;
+    font-size:15px;
+    font-family:Verdana, Arial, sans-serif;
     outline:none;
-    background:#fdfefe;
+    background:white;
 }
 
 textarea{
-    min-height:140px;
+    min-height:120px;
     resize:vertical;
 }
 
-textarea:focus,
-input:focus{
+input:focus,
+textarea:focus{
     border-color:var(--blue-main);
-    box-shadow:0 0 0 3px rgba(107,141,214,.15);
 }
 
-/* =========================================
+.form-group{
+    margin-bottom:16px;
+}
+
+.char-info{
+    margin-top:8px;
+    color:var(--text-soft);
+    font-size:13px;
+    display:flex;
+    justify-content:space-between;
+}
+
+/* =========================================================
    BUTTONS
-========================================= */
+========================================================= */
 
 button{
     border:none;
-    border-radius:10px;
-    padding:12px 18px;
-    background:linear-gradient(to bottom,#88a7ee,#5f82d7);
+    background:linear-gradient(to bottom,#7d9ce7,#6286da);
     color:white;
+    padding:12px 18px;
+    border-radius:10px;
     cursor:pointer;
     font-weight:bold;
     transition:.2s;
-    box-shadow:0 2px 6px rgba(107,141,214,.3);
 }
 
 button:hover{
-    background:linear-gradient(to bottom,#6f93e5,#5479d3);
-    transform:translateY(-1px);
+    background:linear-gradient(to bottom,#6d90e4,#5579cb);
 }
 
-.btn-green{
-    background:linear-gradient(to bottom,#7ad39a,#35b36c);
+button:disabled{
+    opacity:.6;
+    cursor:not-allowed;
 }
 
-.btn-green:hover{
-    background:linear-gradient(to bottom,#64ca88,#28a75f);
+.btn-secondary{
+    background:linear-gradient(to bottom,#9db2ec,#8099e3);
 }
 
-.char-counter{
-    text-align:right;
-    font-size:12px;
-    color:#6b7280;
-    margin-top:6px;
-}
-
-/* =========================================
-   WALLET
-========================================= */
-
-.wallet-flex{
-    width:100%;
-    display:flex;
-    flex-wrap:wrap;
-    gap:12px;
-    align-items:center;
-}
+/* =========================================================
+   STATUS
+========================================================= */
 
 .status{
-    background:#eef4ff;
-    color:#4d6cb8;
-    padding:10px 14px;
-    border-radius:12px;
+    padding:10px;
+    border-radius:10px;
     font-size:14px;
-    font-weight:bold;
-    border:1px solid #cbdcff;
-}
-
-.network-badge{
-    background:#d7f5e1;
-    color:#1c9150;
-    padding:10px 14px;
-    border-radius:12px;
-    font-size:13px;
-    font-weight:bold;
-}
-
-/* =========================================
-   STATS
-========================================= */
-
-.stats{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-    gap:14px;
-}
-
-.stat{
-    background:#f4f7ff;
-    border:1px solid #d9e4ff;
-    border-radius:14px;
-    text-align:center;
-    padding:20px;
-}
-
-.stat h3{
-    font-size:14px;
-    color:#5c6d88;
     margin-bottom:10px;
 }
 
-.stat-value{
-    font-size:26px;
-    font-weight:bold;
-    color:#5b7fcf;
+.success{
+    background:#dcfce7;
+    color:#166534;
 }
 
-/* =========================================
-   FEED
-========================================= */
-
-.feed{
-    width:100%;
-    overflow:hidden;
-    display:flex;
-    flex-direction:column;
-    gap:16px;
+.error{
+    background:#fee2e2;
+    color:#991b1b;
 }
+
+/* =========================================================
+   MESSAGE FEED
+========================================================= */
 
 .message{
-    background:#fcfdff;
-    border:1px solid #dbe5ff;
-    border-radius:16px;
+    border:1px solid #dbe5fb;
+    border-radius:14px;
     padding:16px;
+    margin-bottom:16px;
     transition:.2s;
-    overflow-wrap:break-word;
-    word-break:break-word;
+    background:#fcfdff;
 }
 
 .message:hover{
-    border-color:#9db7f0;
+    border-color:#8FA8E8;
     transform:translateY(-2px);
 }
 
-.msg-top{
+.message-top{
     display:flex;
-    justify-content:space-between;
-    gap:10px;
-    margin-bottom:12px;
-}
-
-.msg-user{
-    display:flex;
-    align-items:center;
     gap:12px;
+    align-items:center;
+    margin-bottom:14px;
 }
 
-.msg-avatar{
-    width:52px;
-    height:52px;
+.avatar{
+    width:54px;
+    height:54px;
     border-radius:50%;
-    background:linear-gradient(to bottom,#9bb5f0,#6B8DD6);
+    background:linear-gradient(135deg,#6B8DD6,#8FA8E8);
+    color:white;
     display:flex;
     align-items:center;
     justify-content:center;
-    color:white;
     font-weight:bold;
     font-size:18px;
 }
 
-.msg-address{
-    font-size:14px;
+.message-meta{
+    flex:1;
+}
+
+.wallet{
     font-weight:bold;
-    color:#567ad0;
-}
-
-.msg-time{
-    font-size:12px;
-    color:#6b7280;
-}
-
-.msg-text{
-    line-height:1.7;
+    color:#5b74c9;
     font-size:14px;
+}
+
+.time{
+    font-size:12px;
+    color:var(--text-soft);
+    margin-top:4px;
+}
+
+.message-text{
+    line-height:1.7;
     margin-bottom:14px;
-    overflow-wrap:break-word;
     word-break:break-word;
 }
 
 .amount{
     display:inline-block;
-    background:#edf4ff;
-    color:#4f74c9;
-    border-radius:20px;
-    padding:8px 14px;
+    background:#edf3ff;
+    color:#4b66b1;
+    padding:8px 12px;
+    border-radius:999px;
     font-size:13px;
     font-weight:bold;
     margin-bottom:14px;
 }
 
-/* =========================================
+/* =========================================================
    REACTIONS
-========================================= */
+========================================================= */
 
 .reactions{
     display:flex;
-    flex-wrap:wrap;
     gap:8px;
+    flex-wrap:wrap;
+    margin-top:12px;
 }
 
-.react{
-    background:#f1f5ff;
-    border:1px solid #d5e2ff;
-    border-radius:30px;
-    padding:8px 14px;
-    font-size:13px;
+.react-btn{
+    border:1px solid #cfe0ff;
+    background:#f4f8ff;
+    color:#4763b5;
+    padding:7px 12px;
+    border-radius:999px;
     cursor:pointer;
+    font-size:13px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+
+.react-btn.active{
+    background:#6B8DD6;
+    color:white;
+}
+
+/* =========================================================
+   SHARE BUTTON
+========================================================= */
+
+.share-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    margin-top:10px;
     text-decoration:none;
-    color:#374151;
+    color:white;
+    background:#6B8DD6;
+    padding:10px 14px;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:bold;
 }
 
-.react:hover{
-    background:#dce8ff;
+.share-btn:hover{
+    background:#5579cb;
 }
 
-/* =========================================
-   COMMUNITY
-========================================= */
+/* =========================================================
+   COMMUNITY LIST
+========================================================= */
 
 .community{
-    background:#f4f7ff;
-    border:1px solid #d9e5ff;
-    border-radius:12px;
-    padding:12px;
-    margin-bottom:12px;
+    padding:10px 0;
+    border-bottom:1px solid #edf1fc;
+    font-size:14px;
 }
 
-.community h4{
-    color:#5a7fd0;
-    margin-bottom:6px;
+.community:last-child{
+    border-bottom:none;
 }
 
-/* =========================================
+/* =========================================================
    RESPONSIVE
-========================================= */
+========================================================= */
 
-@media(max-width:1150px){
-
-    .layout{
-        grid-template-columns:220px minmax(0,1fr);
-    }
-
-    .layout aside:last-child{
-        grid-column:1 / -1;
-    }
-
-}
-
-@media(max-width:860px){
-
-    body{
-        padding-top:125px;
-    }
+@media(max-width:1100px){
 
     .layout{
         grid-template-columns:1fr;
-        gap:14px;
-        padding:0 10px 20px;
     }
 
-    .top-inner{
-        flex-direction:column;
-        align-items:flex-start;
-        gap:10px;
+    .left-sidebar,
+    .right-sidebar{
+        order:2;
     }
 
-    .brand h1{
-        font-size:28px;
-    }
-
-    .wallet-flex{
-        flex-direction:column;
-        align-items:stretch;
-    }
-
-    .wallet-flex button,
-    .wallet-flex .status,
-    .wallet-flex .network-badge{
-        width:100%;
-        text-align:center;
-    }
-
-    .stats{
-        grid-template-columns:1fr;
-    }
-
-    .msg-top{
-        flex-direction:column;
-        align-items:flex-start;
-    }
-
-    .react{
-        flex:1;
-        text-align:center;
-    }
-
-}
-
-@media(max-width:480px){
-
-    body{
-        padding-top:140px;
-    }
-
-    .layout{
-        padding:0 6px 20px;
-    }
-
-    .card-header{
-        font-size:14px;
-        padding:10px 12px;
-    }
-
-    .box-body,
-    .card-content{
-        padding:14px;
-    }
-
-    .brand h1{
-        font-size:24px;
-    }
-
-    .brand p{
-        font-size:11px;
+    .center{
+        order:1;
     }
 
     .logo{
-        width:52px;
-        height:52px;
+        min-width:auto;
     }
 
-    button{
+    .logo h1{
+        font-size:24px;
+    }
+
+    .ticker-wrapper{
+        height:56px;
+    }
+
+    .ticker{
+        font-size:15px;
+    }
+}
+
+@media(max-width:768px){
+
+    .header-inner{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .ticker-wrapper{
         width:100%;
     }
 
-}
+    .page{
+        padding-top:190px;
+    }
 
-.hidden{
-    display:none;
-}
-
-.loading{
-    text-align:center;
-    padding:30px;
-    color:#6b7280;
+    .message-top{
+        flex-direction:column;
+        align-items:flex-start;
+    }
 }
 
 </style>
@@ -589,570 +483,846 @@ button:hover{
 
 <body>
 
-<!-- =========================================
-HEADER
-========================================= -->
+<!-- ======================================================
+     HEADER
+====================================================== -->
 
-<header class="topbar">
+<header class="top-header">
+    <div class="header-inner">
 
-<div class="top-inner">
+        <div class="logo">
+            <!-- 🔥 LOGO NOVAMENTE -->
+            <img src="./LITVM 2.png" alt="LitVM Logo">
 
-<img src="./LITVM 2.png" class="logo" alt="LitVM Logo">
+            <h1>Guestbook LitVM</h1>
+        </div>
 
-<div class="brand">
-<h1>LitBook</h1>
-<p>Decentralized Social Guestbook powered by LitVM</p>
-</div>
+        <!-- 🔥 TICKER DOBRO DO TAMANHO -->
+        <div class="ticker-wrapper">
+            <div class="ticker">
+                <span>🚀 Live on LitVM blockchain</span>
+                <span>💎 zkLTC social interactions powered by decentralized infrastructure</span>
+                <span>📜 Share permanent memories directly on-chain forever</span>
+                <span>⚡ Fast Layer2 blockchain experience</span>
+                <span>🌐 Web3 nostalgia meets classic social networks</span>
+            </div>
+        </div>
 
-</div>
-
-<div class="ticker">
-
-<div class="ticker-track">
-
-<span class="ticker-item">⚡ Live on LitVM blockchain</span>
-
-<span class="ticker-item">💎 zkLTC social interactions powered by decentralized infrastructure</span>
-
-<span class="ticker-item">📝 Share permanent memories directly on-chain forever</span>
-
-<span class="ticker-item">🚀 Fast Layer2 blockchain experience</span>
-
-<span class="ticker-item">🌐 Nostalgic Web3 social network</span>
-
-</div>
-
-</div>
-
+    </div>
 </header>
 
-<!-- =========================================
-LAYOUT
-========================================= -->
+<!-- ======================================================
+     PAGE
+====================================================== -->
+
+<div class="page">
 
 <div class="layout">
 
-<!-- LEFT -->
+    <!-- ==================================================
+         LEFT SIDEBAR
+    =================================================== -->
 
-<aside>
+    <aside class="left-sidebar">
 
-<div class="sidebar-card">
+        <div class="card">
+            <div class="card-header">
+                👤 User Profile
+            </div>
 
-<div class="card-header">
-👤 My Profile
+            <div class="card-body profile">
+
+                <div class="profile-avatar">
+                    W3
+                </div>
+
+                <h3>LitVM User</h3>
+
+                <p>
+                    A decentralized social identity connected directly to the blockchain community.
+                </p>
+
+            </div>
+        </div>
+
+    </aside>
+
+    <!-- ==================================================
+         CENTER
+    =================================================== -->
+
+    <main class="center">
+
+        <!-- WALLET -->
+
+        <div class="card">
+
+            <div class="card-header">
+                🔗 Wallet Connection
+            </div>
+
+            <div class="card-body">
+
+                <div id="walletStatus" class="status error">
+                    Wallet not connected
+                </div>
+
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+
+                    <button id="connectBtn">
+                        Connect MetaMask
+                    </button>
+
+                    <button id="switchNetworkBtn" class="btn-secondary" style="display:none">
+                        Switch to LitVM
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- SHARE -->
+
+        <div class="card" style="margin-top:18px">
+
+            <div class="card-header">
+                ✨ Share Something
+            </div>
+
+            <div class="card-body">
+
+                <!-- 🔥 OBSERVAÇÃO 280 -->
+                <div style="
+                    background:#edf4ff;
+                    border:1px solid #cfe0ff;
+                    padding:12px;
+                    border-radius:10px;
+                    margin-bottom:18px;
+                    color:#4763b5;
+                    font-size:14px;
+                    line-height:1.6;
+                ">
+                    📜 All messages are permanently stored on-chain.<br>
+                    ✍️ Maximum allowed: <strong>280 characters</strong>.
+                </div>
+
+                <div id="msgStatus"></div>
+
+                <div class="form-group">
+
+                    <textarea
+                        id="messageInput"
+                        maxlength="280"
+                        placeholder="Share your decentralized memory..."
+                        disabled
+                    ></textarea>
+
+                    <div class="char-info">
+                        <span>On-chain social message</span>
+                        <span id="charCount">0/280</span>
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+                    <input
+                        type="number"
+                        id="tokenAmount"
+                        placeholder="Optional zkLTC amount"
+                        disabled
+                    />
+                </div>
+
+                <button id="postBtn" disabled>
+                    🚀 Post Message
+                </button>
+
+            </div>
+        </div>
+
+        <!-- SEARCH -->
+
+        <div class="card" style="margin-top:18px">
+
+            <div class="card-header">
+                🔍 Search by Address
+            </div>
+
+            <div class="card-body">
+
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="0x..."
+                        disabled
+                    />
+
+                    <button id="searchBtn" disabled>
+                        Search
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- STATS -->
+
+        <div class="card" style="margin-top:18px">
+
+            <div class="card-header">
+                📊 Guestbook Stats
+            </div>
+
+            <div class="card-body">
+
+                <div style="
+                    display:grid;
+                    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+                    gap:14px;
+                ">
+
+                    <div class="message">
+                        <strong>Total Messages</strong>
+                        <div id="totalCount" style="font-size:28px;margin-top:8px">
+                            0
+                        </div>
+                    </div>
+
+                    <div class="message">
+                        <strong>Total zkLTC</strong>
+                        <div id="totalTokens" style="font-size:28px;margin-top:8px">
+                            0
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- FEED -->
+
+        <div class="card" style="margin-top:18px">
+
+            <div class="card-header">
+                💬 Recent Messages
+            </div>
+
+            <div class="card-body">
+
+                <div id="messagesList">
+                    Loading...
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- ==================================================
+         RIGHT SIDEBAR
+    =================================================== -->
+
+    <aside class="right-sidebar">
+
+        <div class="card">
+
+            <div class="card-header">
+                🌐 Communities
+            </div>
+
+            <div class="card-body">
+
+                <div class="community">
+                    💎 LitVM Builders
+                </div>
+
+                <div class="community">
+                    ⚡ zkLTC Community
+                </div>
+
+                <div class="community">
+                    📜 Blockchain Memories
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card" style="margin-top:18px">
+
+            <div class="card-header">
+                ℹ️ About Project
+            </div>
+
+            <div class="card-body">
+
+                <p style="font-size:14px;line-height:1.7;color:#6b7280">
+                    Guestbook LitVM is a decentralized social guestbook built on LitVM Layer2 infrastructure, allowing permanent social interactions directly on-chain.
+                </p>
+
+            </div>
+        </div>
+
+    </aside>
+
+</div>
 </div>
 
-<div class="card-content">
-
-<div class="avatar">🧑</div>
-
-<div class="profile-name">
-Guest User
-</div>
-
-<div class="profile-desc">
-Web enthusiast sharing decentralized memories forever on-chain.
-</div>
-
-<div class="profile-links">
-<div>💠 LitVM Network</div>
-<div>🔗 Connected Wallet</div>
-<div>📝 Blockchain Guestbook</div>
-</div>
-
-</div>
-
-</div>
-
-</aside>
-
-<!-- CENTER -->
-
-<main class="main-column">
-
-<!-- WALLET -->
-
-<div class="box">
-
-<div class="card-header">
-🔗 Wallet Connection
-</div>
-
-<div class="box-body">
-
-<div class="wallet-flex">
-
-<div id="walletStatus" class="status">
-Not Connected
-</div>
-
-<div id="networkBadge" class="network-badge hidden">
-LitVM • chain 4441
-</div>
-
-<button id="connectBtn">
-Connect Wallet
-</button>
-
-<button id="switchNetworkBtn" class="hidden">
-Switch Network
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-<!-- SHARE -->
-
-<div class="box">
-
-<div class="card-header">
-✨ Share Something
-</div>
-
-<div class="box-body">
-
-<div id="msgStatus"></div>
-
-<textarea
-id="messageInput"
-maxlength="280"
-placeholder="What are you thinking today on the blockchain?"
-disabled
-></textarea>
-
-<div class="char-counter">
-<span id="charCount">0</span>/280
-</div>
-
-<br>
-
-<input
-type="number"
-id="tokenAmount"
-placeholder="Optional zkLTC amount"
-step="0.000000000000000001"
-disabled
->
-
-<br><br>
-
-<button id="postBtn" class="btn-green" disabled>
-🚀 Post Message
-</button>
-
-</div>
-
-</div>
-
-<!-- STATS -->
-
-<div class="box">
-
-<div class="card-header">
-📊 Guestbook Stats
-</div>
-
-<div class="box-body">
-
-<div class="stats">
-
-<div class="stat">
-<h3>Total Messages</h3>
-<div class="stat-value" id="totalCount">0</div>
-</div>
-
-<div class="stat">
-<h3>zkLTC Sent</h3>
-<div class="stat-value" id="totalTokens">0</div>
-</div>
-
-<div class="stat">
-<h3>Current Page</h3>
-<div class="stat-value" id="currentPage">1</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<!-- SEARCH -->
-
-<div class="box">
-
-<div class="card-header">
-🔍 Search by Address
-</div>
-
-<div class="box-body">
-
-<div style="display:flex;gap:10px;flex-wrap:wrap;">
-
-<input
-id="searchInput"
-placeholder="0x..."
-disabled
->
-
-<button id="searchBtn" disabled>
-Search
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-<!-- MESSAGES -->
-
-<div class="box">
-
-<div class="card-header">
-💬 Recent Messages
-</div>
-
-<div class="box-body">
-
-<div id="messagesList" class="loading">
-Loading blockchain messages...
-</div>
-
-</div>
-
-</div>
-
-</main>
-
-<!-- RIGHT -->
-
-<aside>
-
-<div class="sidebar-card">
-
-<div class="card-header">
-🌐 Communities
-</div>
-
-<div class="card-content">
-
-<div class="community">
-<h4>LitVM Builders</h4>
-<p>Smart contract creators and dApp developers.</p>
-</div>
-
-<div class="community">
-<h4>zkLTC Community</h4>
-<p>Users exploring Layer2 Litecoin experiences.</p>
-</div>
-
-<div class="community">
-<h4>Blockchain Memories</h4>
-<p>Permanent decentralized social interactions.</p>
-</div>
-
-</div>
-
-</div>
-
-<br>
-
-<div class="sidebar-card">
-
-<div class="card-header">
-ℹ️ About Project
-</div>
-
-<div class="card-content" style="line-height:1.8;font-size:13px;">
-
-LitBook is a nostalgic decentralized social network built on LitVM.
-
-Share permanent messages and preserve memories forever on-chain.
-
-</div>
-
-</div>
-
-</aside>
-
-</div>
+<!-- ======================================================
+     JAVASCRIPT ORIGINAL PRESERVADO
+====================================================== -->
 
 <script type="module">
 
 import { ethers } from "https://esm.run/ethers@6.13.0";
 
+/* ======================================================
+   🔥 NÃO ALTERAR WEB3
+====================================================== */
+
 const CONFIG = {
-contractAddress:"0x472e230DfFA8c896b05A9a46c84BFb391756918e",
-chainId:4441
+    contractAddress:"0x472e230DfFA8c896b05A9a46c84BFb391756918e",
+    chainId:4441
 };
 
 const ABI = [
-"function postMessage(string) external payable",
-"function postMessageWithToken(string) external payable",
-"function getMessageCount() view returns (uint256)",
-"function getMessage(uint256) view returns (address,string,uint256,uint256)",
-"function totalMessages() view returns (uint256)"
+    "function postMessage(string) external payable",
+    "function postMessageWithToken(string) external payable",
+    "function getMessageCount() view returns (uint256)",
+    "function getMessage(uint256) view returns (address,string,uint256,uint256)",
+    "function getMessagesByAddress(address,uint256,uint256) view returns (tuple(address sender, string text, uint256 timestamp, uint256 amount)[])",
+    "function totalMessages() view returns (uint256)"
 ];
 
-let provider;
-let signer;
-let contract;
+let provider, signer, contract, currentUser;
+
+/* ======================================================
+   ELEMENTOS
+====================================================== */
 
 const els = {
-connectBtn:document.getElementById("connectBtn"),
-switchNetworkBtn:document.getElementById("switchNetworkBtn"),
-walletStatus:document.getElementById("walletStatus"),
-networkBadge:document.getElementById("networkBadge"),
-messageInput:document.getElementById("messageInput"),
-tokenAmount:document.getElementById("tokenAmount"),
-postBtn:document.getElementById("postBtn"),
-messagesList:document.getElementById("messagesList"),
-totalCount:document.getElementById("totalCount"),
-totalTokens:document.getElementById("totalTokens"),
-charCount:document.getElementById("charCount")
+    connectBtn:document.getElementById("connectBtn"),
+    switchNetworkBtn:document.getElementById("switchNetworkBtn"),
+    walletStatus:document.getElementById("walletStatus"),
+    messageInput:document.getElementById("messageInput"),
+    tokenAmount:document.getElementById("tokenAmount"),
+    postBtn:document.getElementById("postBtn"),
+    charCount:document.getElementById("charCount"),
+    messagesList:document.getElementById("messagesList"),
+    totalCount:document.getElementById("totalCount"),
+    totalTokens:document.getElementById("totalTokens"),
+    searchInput:document.getElementById("searchInput"),
+    searchBtn:document.getElementById("searchBtn"),
+    msgStatus:document.getElementById("msgStatus")
 };
 
+/* ======================================================
+   CHAR COUNT
+====================================================== */
+
 els.messageInput.addEventListener("input",()=>{
-els.charCount.textContent =
-els.messageInput.value.length;
+
+    if(els.messageInput.value.length > 280){
+        els.messageInput.value = els.messageInput.value.slice(0,280);
+    }
+
+    els.charCount.textContent =
+        `${els.messageInput.value.length}/280`;
 });
 
-els.connectBtn.addEventListener("click",async()=>{
+/* ======================================================
+   WALLET CONNECT
+====================================================== */
 
-try{
+els.connectBtn.addEventListener("click", async()=>{
 
-if(!window.ethereum){
-alert("Install MetaMask");
-return;
+    if(!window.ethereum){
+        alert("MetaMask not found");
+        return;
+    }
+
+    try{
+
+        const accounts = await window.ethereum.request({
+            method:"eth_requestAccounts"
+        });
+
+        currentUser = accounts[0];
+
+        provider = new ethers.BrowserProvider(window.ethereum);
+
+        signer = await provider.getSigner();
+
+        contract = new ethers.Contract(
+            CONFIG.contractAddress,
+            ABI,
+            signer
+        );
+
+        els.walletStatus.className = "status success";
+
+        els.walletStatus.innerHTML =
+            `Connected: ${accounts[0].slice(0,6)}...${accounts[0].slice(-4)}`;
+
+        els.messageInput.disabled = false;
+        els.tokenAmount.disabled = false;
+        els.postBtn.disabled = false;
+        els.searchInput.disabled = false;
+        els.searchBtn.disabled = false;
+
+        await checkNetwork();
+
+    }catch(err){
+
+        console.log(err);
+
+    }
+
+});
+
+/* ======================================================
+   NETWORK
+====================================================== */
+
+async function checkNetwork(){
+
+    const net = await provider.getNetwork();
+
+    if(Number(net.chainId)!==CONFIG.chainId){
+
+        els.switchNetworkBtn.style.display="inline-block";
+
+    }else{
+
+        els.switchNetworkBtn.style.display="none";
+
+        await loadMessages();
+        await loadStats();
+
+    }
 }
 
-await window.ethereum.request({
-method:"eth_requestAccounts"
+/* ======================================================
+   SWITCH NETWORK
+====================================================== */
+
+els.switchNetworkBtn.addEventListener("click", async()=>{
+
+    try{
+
+        await window.ethereum.request({
+            method:'wallet_switchEthereumChain',
+            params:[{
+                chainId:ethers.toBeHex(CONFIG.chainId)
+            }]
+        });
+
+    }catch(e){
+
+        if(e.code===4902){
+
+            await window.ethereum.request({
+                method:'wallet_addEthereumChain',
+                params:[{
+                    chainId:ethers.toBeHex(CONFIG.chainId),
+                    chainName:'LitVM LiteForge',
+                    nativeCurrency:{
+                        name:'zkLTC',
+                        symbol:'zkLTC',
+                        decimals:18
+                    },
+                    rpcUrls:['https://liteforge.rpc.caldera.xyz/http'],
+                    blockExplorerUrls:['https://liteforge.explorer.caldera.xyz']
+                }]
+            });
+
+        }
+
+    }
+
 });
 
-provider = new ethers.BrowserProvider(window.ethereum);
+/* ======================================================
+   POST MESSAGE
+====================================================== */
 
-signer = await provider.getSigner();
+els.postBtn.addEventListener("click", async()=>{
 
-contract = new ethers.Contract(
-CONFIG.contractAddress,
-ABI,
-signer
-);
+    const txt = els.messageInput.value.trim();
 
-const addr = await signer.getAddress();
+    if(!txt){
+        return;
+    }
 
-els.walletStatus.innerHTML =
-`Connected: ${addr.slice(0,6)}...${addr.slice(-4)}`;
+    if(txt.length > 280){
+        showMsg("Maximum 280 characters","error");
+        return;
+    }
 
-els.networkBadge.classList.remove("hidden");
+    try{
 
-els.messageInput.disabled = false;
-els.tokenAmount.disabled = false;
-els.postBtn.disabled = false;
+        showMsg("Sending transaction...","success");
 
-await loadStats();
-await loadMessages();
+        const val =
+            els.tokenAmount.value.trim();
 
-}catch(err){
+        const value =
+            val ? ethers.parseEther(val) : 0n;
 
-console.error(err);
-alert("Wallet connection failed");
+        const tx =
+            value > 0n
+                ? await contract.postMessageWithToken(txt,{value})
+                : await contract.postMessage(txt);
 
-}
+        await tx.wait();
+
+        showMsg("Message posted successfully!","success");
+
+        els.messageInput.value="";
+        els.tokenAmount.value="";
+        els.charCount.textContent="0/280";
+
+        await loadMessages();
+        await loadStats();
+
+    }catch(err){
+
+        showMsg(err.message,"error");
+
+    }
 
 });
+
+/* ======================================================
+   LOAD STATS
+====================================================== */
 
 async function loadStats(){
 
-try{
+    try{
 
-const total = await contract.totalMessages();
+        const total =
+            await contract.totalMessages();
 
-els.totalCount.textContent =
-Number(total).toLocaleString();
+        els.totalCount.textContent =
+            total.toString();
 
-}catch(e){
-console.log(e);
+    }catch(e){
+
+        console.log(e);
+
+    }
+
 }
 
+/* ======================================================
+   REACTIONS VINCULADAS À CARTEIRA
+====================================================== */
+
+function reactionKey(index,type,wallet){
+
+    return `react_${index}_${type}_${wallet}`;
+
 }
+
+function getReactions(index){
+
+    return JSON.parse(
+        localStorage.getItem(`reactions_${index}`) ||
+        '{"like":0,"love":0,"fire":0,"wow":0}'
+    );
+
+}
+
+window.reactMessage = function(index,type){
+
+    if(!currentUser){
+
+        alert("Connect wallet first");
+        return;
+
+    }
+
+    const wallet = currentUser.toLowerCase();
+
+    const userKey =
+        reactionKey(index,type,wallet);
+
+    const already =
+        localStorage.getItem(userKey);
+
+    let data =
+        getReactions(index);
+
+    if(already){
+
+        data[type]--;
+
+        localStorage.removeItem(userKey);
+
+    }else{
+
+        data[type]++;
+
+        localStorage.setItem(userKey,"1");
+
+    }
+
+    localStorage.setItem(
+        `reactions_${index}`,
+        JSON.stringify(data)
+    );
+
+    loadMessages();
+
+}
+
+/* ======================================================
+   LOAD MESSAGES
+====================================================== */
 
 async function loadMessages(){
 
-try{
+    try{
 
-const total = await contract.getMessageCount();
+        if(!contract){
 
-const totalNum = Number(total);
+            provider =
+                new ethers.BrowserProvider(window.ethereum);
 
-if(totalNum===0){
+            contract =
+                new ethers.Contract(
+                    CONFIG.contractAddress,
+                    ABI,
+                    provider
+                );
+        }
 
-els.messagesList.innerHTML =
-`<div class="loading">No messages yet.</div>`;
+        const total =
+            Number(await contract.getMessageCount());
 
-return;
+        if(total===0){
 
-}
+            els.messagesList.innerHTML =
+                "No messages yet.";
 
-let html = "";
+            return;
+        }
 
-for(let i=totalNum-1;i>=0 && i>=totalNum-10;i--){
+        let html = "";
 
-const msg = await contract.getMessage(i);
+        for(let i=total-1;i>=0;i--){
 
-const addr = msg[0];
-const text = msg[1];
-const time = msg[2];
-const amount = msg[3];
+            const m =
+                await contract.getMessage(i);
 
-const short =
-addr.slice(0,6)+"..."+addr.slice(-4);
+            const addr = m[0];
+            const text = m[1];
+            const ts = Number(m[2]);
+            const amount = m[3];
 
-const date =
-new Date(Number(time)*1000)
-.toLocaleString();
+            const d =
+                new Date(ts*1000)
+                    .toLocaleString();
 
-html += `
+            const reactions =
+                getReactions(i);
 
-<div class="message">
+            /* 🔥 SHARE COMEÇANDO COM @LitecoinVM */
 
-<div class="msg-top">
+            const shareText =
+                encodeURIComponent(
+                    `@LitecoinVM ${text}`
+                );
 
-<div class="msg-user">
+            const shareUrl =
+                `https://twitter.com/intent/tweet?text=${shareText}`;
 
-<div class="msg-avatar">
-${short[2]}
-</div>
+            html += `
+            <div class="message">
 
-<div>
+                <div class="message-top">
 
-<div class="msg-address">
-${short}
-</div>
+                    <div class="avatar">
+                        ${addr.slice(2,4).toUpperCase()}
+                    </div>
 
-<div class="msg-time">
-${date}
-</div>
+                    <div class="message-meta">
 
-</div>
+                        <div class="wallet">
+                            ${addr.slice(0,6)}...${addr.slice(-4)}
+                        </div>
 
-</div>
+                        <div class="time">
+                            ${d}
+                        </div>
 
-</div>
+                    </div>
 
-<div class="msg-text">
-${escapeHtml(text)}
-</div>
+                </div>
 
-${amount > 0n ? `
-<div class="amount">
-💎 ${ethers.formatEther(amount)} zkLTC
-</div>
-` : ""}
+                <div class="message-text">
+                    ${escapeHtml(text)}
+                </div>
 
-<div class="reactions">
+                ${
+                    Number(amount) > 0
+                    ? `<div class="amount">
+                        💎 ${ethers.formatEther(amount)} zkLTC
+                    </div>`
+                    : ''
+                }
 
-<div class="react">❤️ 12</div>
+                <a
+                    href="${shareUrl}"
+                    target="_blank"
+                    class="share-btn"
+                >
+                    Share on X
+                </a>
 
-<div class="react">🔥 4</div>
+                <div class="reactions">
 
-<div class="react">👍 9</div>
+                    <div
+                        class="react-btn"
+                        onclick="reactMessage(${i},'like')"
+                    >
+                        👍 ${reactions.like}
+                    </div>
 
-<a
-class="react"
-target="_blank"
-href="https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}"
->
-🐦 Share
-</a>
+                    <div
+                        class="react-btn"
+                        onclick="reactMessage(${i},'love')"
+                    >
+                        ❤️ ${reactions.love}
+                    </div>
 
-</div>
+                    <div
+                        class="react-btn"
+                        onclick="reactMessage(${i},'fire')"
+                    >
+                        🔥 ${reactions.fire}
+                    </div>
 
-</div>
+                    <div
+                        class="react-btn"
+                        onclick="reactMessage(${i},'wow')"
+                    >
+                        😮 ${reactions.wow}
+                    </div>
 
-`;
+                </div>
 
-}
+            </div>
+            `;
 
-els.messagesList.innerHTML = html;
+        }
 
-}catch(err){
+        els.messagesList.innerHTML = html;
 
-console.log(err);
+    }catch(err){
 
-els.messagesList.innerHTML =
-`<div class="loading">Error loading messages</div>`;
+        console.log(err);
 
-}
-
-}
-
-els.postBtn.addEventListener("click",async()=>{
-
-try{
-
-const text = els.messageInput.value.trim();
-
-if(!text){
-alert("Write something");
-return;
-}
-
-const amount =
-els.tokenAmount.value.trim();
-
-let tx;
-
-if(amount && Number(amount)>0){
-
-tx = await contract.postMessageWithToken(
-text,
-{
-value:ethers.parseEther(amount)
-}
-);
-
-}else{
-
-tx = await contract.postMessage(text);
-
-}
-
-await tx.wait();
-
-els.messageInput.value = "";
-els.tokenAmount.value = "";
-els.charCount.textContent = "0";
-
-await loadStats();
-await loadMessages();
-
-alert("Message posted!");
-
-}catch(err){
-
-console.log(err);
-
-alert("Transaction failed");
+    }
 
 }
 
-});
+/* ======================================================
+   HELPERS
+====================================================== */
+
+function showMsg(txt,type){
+
+    els.msgStatus.className = type;
+
+    els.msgStatus.innerHTML = txt;
+
+    setTimeout(()=>{
+
+        els.msgStatus.innerHTML = "";
+
+    },4000);
+
+}
 
 function escapeHtml(text){
 
-const div = document.createElement("div");
+    const div =
+        document.createElement("div");
 
-div.textContent = text;
+    div.textContent = text;
 
-return div.innerHTML;
+    return div.innerHTML;
 
 }
+
+/* ======================================================
+   AUTO CONNECT
+====================================================== */
+
+window.addEventListener("DOMContentLoaded", async()=>{
+
+    if(window.ethereum){
+
+        try{
+
+            const accounts =
+                await window.ethereum.request({
+                    method:"eth_accounts"
+                });
+
+            if(accounts.length){
+
+                currentUser = accounts[0];
+
+                provider =
+                    new ethers.BrowserProvider(window.ethereum);
+
+                signer =
+                    await provider.getSigner();
+
+                contract =
+                    new ethers.Contract(
+                        CONFIG.contractAddress,
+                        ABI,
+                        signer
+                    );
+
+                els.walletStatus.className =
+                    "status success";
+
+                els.walletStatus.innerHTML =
+                    `Connected: ${accounts[0].slice(0,6)}...${accounts[0].slice(-4)}`;
+
+                els.messageInput.disabled = false;
+                els.tokenAmount.disabled = false;
+                els.postBtn.disabled = false;
+                els.searchInput.disabled = false;
+                els.searchBtn.disabled = false;
+
+                await checkNetwork();
+
+            }else{
+
+                loadMessages();
+
+            }
+
+        }catch(e){
+
+            console.log(e);
+
+        }
+
+    }
+
+});
 
 </script>
 
