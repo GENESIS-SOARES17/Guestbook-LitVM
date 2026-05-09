@@ -220,7 +220,6 @@ button{
     font-weight:bold;
     border-radius:10px;
     cursor:pointer;
-    padding:12px 18px;
     transition:.2s;
     font-size:14px;
 }
@@ -477,6 +476,110 @@ input:focus{
 }
 
 /* =========================================================
+   WALLET CARD STYLES
+========================================================= */
+
+.wallet-info-section{
+    margin-bottom:16px;
+}
+
+.wallet-label{
+    font-size:12px;
+    color:#6b7280;
+    margin-bottom:6px;
+    font-weight:bold;
+}
+
+.address-box{
+    display:flex;
+    gap:8px;
+    align-items:center;
+}
+
+.address-display{
+    flex:1;
+    background:#f0f4ff;
+    padding:10px;
+    border-radius:8px;
+    font-family:monospace;
+    font-size:13px;
+    color:#4767b0;
+    word-break:break-all;
+}
+
+.btn-small{
+    padding:8px 12px;
+    white-space:nowrap;
+    font-size:13px;
+}
+
+.balance-card{
+    padding:14px;
+    background:linear-gradient(135deg,#f0f4ff,#e0e8ff);
+    border-radius:12px;
+    border:1px solid #c5d7ff;
+}
+
+.balance-amount{
+    font-size:28px;
+    font-weight:bold;
+    color:#4767b0;
+    margin-bottom:12px;
+}
+
+.balance-buttons{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+}
+
+.badges-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+}
+
+.badge-item{
+    padding:10px;
+    background:#f8f9fa;
+    border:2px solid #e0e0e0;
+    border-radius:10px;
+    text-align:center;
+    opacity:0.5;
+    transition:all 0.3s;
+}
+
+.badge-item.active{
+    opacity:1;
+    border-color:#6B8DD6;
+    background:#f0f4ff;
+}
+
+.badge-icon{
+    font-size:24px;
+    margin-bottom:4px;
+}
+
+.badge-name{
+    font-size:11px;
+    font-weight:bold;
+    color:#666;
+}
+
+.quick-links{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.quick-btn{
+    padding:10px;
+    text-align:left;
+    font-size:13px;
+    width:100%;
+}
+
+/* =========================================================
    FOOTER
 ========================================================= */
 
@@ -580,6 +683,66 @@ input:focus{
                     Decentralized social identity connected directly to the blockchain.
                     Share memories forever on-chain.
                 </p>
+
+            </div>
+        </div>
+
+        <!-- WALLET INFO CARD -->
+        <div class="card">
+            <div class="card-header">💼 Wallet Info</div>
+            <div class="card-body">
+                
+                <!-- Wallet Address -->
+                <div class="wallet-info-section">
+                    <div class="wallet-label">📍 Wallet Address</div>
+                    <div class="address-box">
+                        <div id="walletAddress" class="address-display">
+                            Not connected
+                        </div>
+                        <button id="copyBtn" onclick="copyAddress()" class="btn-small" disabled title="Copy Address">
+                            📋 Copy
+                        </button>
+                        <a id="explorerBtn" href="#" target="_blank" class="btn-small" title="View on Explorer" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;">
+                            🔍
+                        </a>
+                    </div>
+                </div>
+
+                <!-- zkLTC Balance -->
+                <div class="wallet-info-section">
+                    <div class="wallet-label">💰 zkLTC Balance</div>
+                    <div class="balance-card">
+                        <div id="balanceDisplay" class="balance-amount">
+                            0.00
+                        </div>
+                        <div class="balance-buttons">
+                            <button id="receiveBtn" disabled>
+                                📥 Receive
+                            </button>
+                            <button id="sendBtn" disabled>
+                                📤 Send
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="wallet-info-section">
+                    <div class="wallet-label">⚡ Quick Links</div>
+                    <div class="quick-links">
+                        <button id="myHistoryBtn" class="quick-btn" disabled>
+                            📜 My History
+                        </button>
+                        <button id="settingsBtn" class="quick-btn" disabled>
+                            ⚙️ Settings
+                        </button>
+                        <a href="https://liteforge.explorer.caldera.xyz" target="_blank" style="text-decoration:none;">
+                            <button class="quick-btn">
+                                🔗 Explore Blockchain
+                            </button>
+                        </a>
+                    </div>
+                </div>
 
             </div>
         </div>
@@ -882,8 +1045,146 @@ const els = {
     pagination:document.getElementById("pagination"),
 
     charCount:document.getElementById("charCount"),
-    msgStatus:document.getElementById("msgStatus")
+    msgStatus:document.getElementById("msgStatus"),
+    
+    // Wallet Card Elements
+    walletAddress:document.getElementById("walletAddress"),
+    copyBtn:document.getElementById("copyBtn"),
+    explorerBtn:document.getElementById("explorerBtn"),
+    balanceDisplay:document.getElementById("balanceDisplay"),
+    receiveBtn:document.getElementById("receiveBtn"),
+    sendBtn:document.getElementById("sendBtn"),
+    myHistoryBtn:document.getElementById("myHistoryBtn"),
+    settingsBtn:document.getElementById("settingsBtn")
 };
+
+/* ======================================================
+   WALLET CARD FUNCTIONS
+====================================================== */
+
+window.copyAddress = function(){
+    const address = els.walletAddress.title;
+    if(address && address !== 'Not connected'){
+        navigator.clipboard.writeText(address).then(()=>{
+            const original = els.copyBtn.textContent;
+            els.copyBtn.textContent = '✅ Copied!';
+            setTimeout(()=>{
+                els.copyBtn.textContent = original;
+            }, 2000);
+        });
+    }
+}
+
+function updateWalletCard(address){
+    if(address){
+        const shortAddr = `${address.slice(0,6)}...${address.slice(-4)}`;
+        els.walletAddress.textContent = shortAddr;
+        els.walletAddress.title = address;
+        
+        els.copyBtn.disabled = false;
+        els.receiveBtn.disabled = false;
+        els.sendBtn.disabled = false;
+        els.myHistoryBtn.disabled = false;
+        els.settingsBtn.disabled = false;
+        
+        els.explorerBtn.href = 
+            `https://liteforge.explorer.caldera.xyz/address/${address}`;
+        
+        checkBadges(address);
+        fetchBalance(address);
+    }else{
+        els.walletAddress.textContent = 'Not connected';
+        els.walletAddress.title = '';
+        els.balanceDisplay.textContent = '0.00';
+        
+        els.copyBtn.disabled = true;
+        els.receiveBtn.disabled = true;
+        els.sendBtn.disabled = true;
+        els.myHistoryBtn.disabled = true;
+        els.settingsBtn.disabled = true;
+        
+        els.explorerBtn.href = '#';
+        
+        resetBadges();
+    }
+}
+
+async function fetchBalance(address){
+    try{
+        if(provider){
+            const balance = await provider.getBalance(address);
+            const formatted = ethers.formatEther(balance);
+            els.balanceDisplay.textContent = parseFloat(formatted).toFixed(4);
+        }
+    }catch(err){
+        console.log('Error fetching balance:', err);
+        els.balanceDisplay.textContent = '0.00';
+    }
+}
+
+function checkBadges(address){
+    const hasFirstMessage = localStorage.getItem(`user_${address}_first_message`);
+    if(hasFirstMessage){
+        activateBadge('badgeFirst');
+    }
+    
+    const earlyAdopters = JSON.parse(localStorage.getItem('early_adopters') || '[]');
+    if(earlyAdopters.includes(address)){
+        activateBadge('badgeEarly');
+    }
+    
+    const messageCount = localStorage.getItem(`user_${address}_message_count`) || 0;
+    if(messageCount >= 10){
+        activateBadge('badgeTop');
+    }
+    
+    const lastActive = localStorage.getItem(`user_${address}_last_active`);
+    if(lastActive){
+        const daysDiff = (Date.now() - parseInt(lastActive)) / (1000 * 60 * 60 * 24);
+        if(daysDiff <= 7){
+            activateBadge('badgeActive');
+        }
+    }
+}
+
+function activateBadge(badgeId){
+    const badge = document.getElementById(badgeId);
+    if(badge){
+        badge.classList.add('active');
+    }
+}
+
+function resetBadges(){
+    ['badgeFirst', 'badgeEarly', 'badgeTop', 'badgeActive'].forEach(id=>{
+        const badge = document.getElementById(id);
+        if(badge){
+            badge.classList.remove('active');
+        }
+    });
+}
+
+function markFirstMessage(address){
+    localStorage.setItem(`user_${address}_first_message`, 'true');
+}
+
+function updateUserMessageCount(address){
+    const key = `user_${address}_message_count`;
+    const current = parseInt(localStorage.getItem(key) || '0');
+    localStorage.setItem(key, (current + 1).toString());
+}
+
+function markUserActive(address){
+    localStorage.setItem(`user_${address}_last_active`, Date.now().toString());
+}
+
+function registerEarlyAdopter(address){
+    const key = 'early_adopters';
+    const adopters = JSON.parse(localStorage.getItem(key) || '[]');
+    if(!adopters.includes(address) && adopters.length < 100){
+        adopters.push(address);
+        localStorage.setItem(key, JSON.stringify(adopters));
+    }
+}
 
 /* ======================================================
    HELPERS
@@ -1084,6 +1385,11 @@ function connectedUI(address){
 
     els.searchInput.disabled = false;
     els.searchBtn.disabled = false;
+    
+    // Update wallet card
+    updateWalletCard(address);
+    markUserActive(address);
+    registerEarlyAdopter(address);
 }
 
 /* ======================================================
@@ -1200,6 +1506,12 @@ els.postBtn.addEventListener("click",async()=>{
         await tx.wait();
 
         showMsg("✅ Message posted successfully!");
+
+        // Mark achievements
+        if(currentUser){
+            markFirstMessage(currentUser);
+            updateUserMessageCount(currentUser);
+        }
 
         els.messageInput.value = "";
         els.tokenAmount.value = "";
