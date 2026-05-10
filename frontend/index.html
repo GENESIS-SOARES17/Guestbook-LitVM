@@ -611,6 +611,52 @@ input:focus{
 }
 
 /* =========================================================
+   NETWORK INFO CARD STYLES
+========================================================= */
+
+.network-info-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px;
+    margin-bottom:10px;
+    background:linear-gradient(135deg,#f8fbff,#f0f4ff);
+    border:1px solid #dce8ff;
+    border-radius:10px;
+}
+
+.network-info-label{
+    font-size:12px;
+    color:#6b7280;
+    font-weight:bold;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.network-info-value{
+    font-size:13px;
+    font-weight:bold;
+    color:#4767b0;
+    font-family:monospace;
+}
+
+.network-status-online{
+    color:#10b981;
+}
+
+.network-status-offline{
+    color:#ef4444;
+}
+
+.network-refresh-btn{
+    width:100%;
+    margin-top:8px;
+    padding:8px;
+    font-size:12px;
+}
+
+/* =========================================================
    WALLET CARD STYLES
 ========================================================= */
 
@@ -871,6 +917,54 @@ input:focus{
                     Decentralized social identity connected directly to the blockchain.
                     Share memories forever on-chain.
                 </p>
+
+            </div>
+        </div>
+
+        <!-- NETWORK INFO CARD -->
+        <div class="card">
+            <div class="card-header">⛽ Network Info</div>
+            <div class="card-body">
+                
+                <div class="network-info-item">
+                    <div class="network-info-label">
+                        <span>🟢</span> Network Status
+                    </div>
+                    <div id="networkStatus" class="network-info-value network-status-offline">
+                        Offline
+                    </div>
+                </div>
+
+                <div class="network-info-item">
+                    <div class="network-info-label">
+                        <span>🔢</span> Block Number
+                    </div>
+                    <div id="blockNumber" class="network-info-value">
+                        -
+                    </div>
+                </div>
+
+                <div class="network-info-item">
+                    <div class="network-info-label">
+                        <span>⚡</span> Gas Price
+                    </div>
+                    <div id="gasPrice" class="network-info-value">
+                        -
+                    </div>
+                </div>
+
+                <div class="network-info-item">
+                    <div class="network-info-label">
+                        <span>⏱️</span> Block Time
+                    </div>
+                    <div id="blockTime" class="network-info-value">
+                        ~2s
+                    </div>
+                </div>
+
+                <button id="refreshNetworkBtn" class="network-refresh-btn" onclick="refreshNetworkInfo()">
+                    🔄 Refresh
+                </button>
 
             </div>
         </div>
@@ -1231,6 +1325,8 @@ let currentUser = null;
 let currentOffset = 0;
 const LIMIT = 10;
 
+let networkUpdateInterval;
+
 /* ======================================================
    DOM
 ====================================================== */
@@ -1275,8 +1371,66 @@ const els = {
     avatarSvgContainer:document.getElementById("avatarSvgContainer"),
     profileName:document.getElementById("profileName"),
     walletType:document.getElementById("walletType"),
-    profileDesc:document.getElementById("profileDesc")
+    profileDesc:document.getElementById("profileDesc"),
+
+    // Network Info Elements
+    networkStatus:document.getElementById("networkStatus"),
+    blockNumber:document.getElementById("blockNumber"),
+    gasPrice:document.getElementById("gasPrice"),
+    blockTime:document.getElementById("blockTime")
 };
+
+/* ======================================================
+   NETWORK INFO FUNCTIONS
+====================================================== */
+
+window.refreshNetworkInfo = async function(){
+    await updateNetworkInfo();
+}
+
+async function updateNetworkInfo(){
+    if(!provider){
+        els.networkStatus.textContent = "Offline";
+        els.networkStatus.className = "network-info-value network-status-offline";
+        els.blockNumber.textContent = "-";
+        els.gasPrice.textContent = "-";
+        return;
+    }
+
+    try{
+        // Update network status
+        els.networkStatus.textContent = "Online";
+        els.networkStatus.className = "network-info-value network-status-online";
+
+        // Get block number
+        const blockNum = await provider.getBlockNumber();
+        els.blockNumber.textContent = "#" + blockNum.toLocaleString();
+
+        // Get gas price
+        const feeData = await provider.getFeeData();
+        const gasGwei = ethers.formatUnits(feeData.gasPrice || 0n, "gwei");
+        els.gasPrice.textContent = parseFloat(gasGwei).toFixed(2) + " Gwei";
+
+    }catch(err){
+        console.log("Error updating network info:", err);
+        els.networkStatus.textContent = "Error";
+        els.networkStatus.className = "network-info-value network-status-offline";
+    }
+}
+
+function startNetworkUpdates(){
+    // Update immediately
+    updateNetworkInfo();
+    
+    // Update every 5 seconds
+    networkUpdateInterval = setInterval(updateNetworkInfo, 5000);
+}
+
+function stopNetworkUpdates(){
+    if(networkUpdateInterval){
+        clearInterval(networkUpdateInterval);
+    }
+}
 
 /* ======================================================
    IDENTICON GENERATOR (GitHub Style)
@@ -1604,6 +1758,9 @@ window.addEventListener("DOMContentLoaded",async()=>{
         ABI,
         provider
     );
+
+    // Start network info updates
+    startNetworkUpdates();
 
     try{
 
