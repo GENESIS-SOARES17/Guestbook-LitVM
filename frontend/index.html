@@ -122,19 +122,17 @@ body{
 }
 
 /* =========================================================
-    MAIN LAYOUT - COLUNAS IGUALADAS (300px)
+    MAIN LAYOUT - COLUNAS IGUALADAS EM 300px
 ========================================================= */
 
 .main{
     max-width:1400px;
     margin:140px auto 40px auto;
     padding:0 16px;
-
-    /* Aplicação do parâmetro fixo de 300px para ambas as laterais */
     display:grid;
+    /* Ajuste de 300px em ambos os lados */
     grid-template-columns:300px minmax(0,1fr) 300px;
     gap:20px;
-
     width:100%;
 }
 
@@ -153,7 +151,7 @@ body{
 }
 
 /* =========================================================
-    CARDS
+    CARDS & BUTTONS
 ========================================================= */
 
 .card{
@@ -176,92 +174,6 @@ body{
     padding:18px;
 }
 
-/* =========================================================
-    PROFILE & IDENTICON
-========================================================= */
-
-.profile{
-    text-align:center;
-}
-
-.avatar-container{
-    width:120px;
-    height:120px;
-    border-radius:50%;
-    margin:auto;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    border:4px solid #dbe7ff;
-    position:relative;
-    overflow:hidden;
-    box-shadow:0 4px 12px rgba(0,0,0,0.1);
-    background:linear-gradient(135deg,#6B8DD6,#8FA8E8);
-    transition:all 0.3s ease;
-}
-
-.avatar-container.has-identicon{
-    background:#f8fbff;
-    border-color:#c5d7ff;
-}
-
-#avatarSvgContainer{
-    width:85%;
-    height:85%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    position:relative;
-    z-index:1;
-    animation:identiconFade 0.4s ease-out;
-}
-
-@keyframes identiconFade{
-    from{opacity:0; transform:scale(0.9)}
-    to{opacity:1; transform:scale(1)}
-}
-
-#avatarSvgContainer svg{
-    width:100%;
-    height:100%;
-    filter:drop-shadow(0 2px 4px rgba(0,0,0,0.1));
-}
-
-.avatar-letter{
-    color:white;
-    font-size:42px;
-    font-weight:bold;
-    text-shadow:0 2px 4px rgba(0,0,0,0.2);
-    z-index:1;
-}
-
-.profile h2{
-    margin-top:16px;
-    font-size:22px;
-}
-
-.profile .wallet-type{
-    display:inline-block;
-    margin-top:8px;
-    padding:4px 12px;
-    background:#f0f4ff;
-    border-radius:20px;
-    font-size:12px;
-    color:#4767b0;
-    font-weight:bold;
-}
-
-.profile p{
-    margin-top:10px;
-    color:var(--muted);
-    line-height:1.5;
-    font-size:14px;
-}
-
-/* =========================================================
-    BUTTONS
-========================================================= */
-
 button{
     border:none;
     background:linear-gradient(to bottom,#8FA8E8,#6B8DD6);
@@ -274,404 +186,37 @@ button{
     padding: 10px;
 }
 
-button:hover{
-    background:linear-gradient(to bottom,#7e9be0,#5d7dcb);
-}
-
-button:disabled{
-    opacity:.6;
-    cursor:not-allowed;
-}
-
-button.danger{
-    background:linear-gradient(to bottom,#f87171,#ef4444);
-}
-
-button.danger:hover{
-    background:linear-gradient(to bottom,#ef4444,#dc2626);
-}
-
-button.secondary{
-    background:linear-gradient(to bottom,#94a3b8,#64748b);
-}
-
-button.secondary:hover{
-    background:linear-gradient(to bottom,#64748b,#475569);
-}
-
-.full-btn{
-    width:100%;
-}
+button:hover{ background:linear-gradient(to bottom,#7e9be0,#5d7dcb); }
+button:disabled{ opacity:.6; cursor:not-allowed; }
+button.danger{ background:linear-gradient(to bottom,#f87171,#ef4444); }
 
 /* =========================================================
-    FORMS
+    PROFILE & CONTENT STYLES
 ========================================================= */
 
-textarea,
-input{
-    width:100%;
-    border:1px solid var(--border);
-    border-radius:10px;
-    padding:12px;
-    font-size:15px;
-    background:#fff;
-    color:var(--text);
+.profile{ text-align:center; }
+.avatar-container{
+    width:120px; height:120px; border-radius:50%; margin:auto;
+    display:flex; align-items:center; justify-content:center;
+    border:4px solid #dbe7ff; background:linear-gradient(135deg,#6B8DD6,#8FA8E8);
+}
+.avatar-letter{ color:white; font-size:42px; font-weight:bold; }
+
+textarea, input{
+    width:100%; border:1px solid var(--border); border-radius:10px;
+    padding:12px; font-size:15px; background:#fff; margin-bottom:10px;
 }
 
-textarea{
-    resize:vertical;
-    min-height:120px;
-}
+.status{ background:#eef4ff; color:#35528e; border:1px solid #c5d7ff; padding:10px 14px; border-radius:10px; font-size:14px; font-weight:bold; }
+.network{ background:#d7f7df; color:#137333; }
+.hidden{ display: none; }
 
-textarea:focus,
-input:focus{
-    outline:none;
-    border-color:var(--blue-main);
-}
+/* FEED */
+.feed-card{ background:#fff; border:1px solid var(--border); border-radius:16px; padding:18px; margin-bottom:15px; }
+.feed-address{ font-weight:bold; color:#4d6cb5; }
+.sentiment-card{ padding:14px; background:linear-gradient(135deg,#fff8f0,#fff3e0); border-radius:12px; border:1px solid #ffe0b2; }
+.sentiment-fill{ height:8px; background:linear-gradient(to right,#ff9800,#ffc107); border-radius:4px; }
 
-.form-group{
-    margin-bottom:16px;
-}
-
-.label{
-    font-weight:bold;
-    margin-bottom:8px;
-    display:block;
-}
-
-.char-info{
-    margin-top:8px;
-    font-size:13px;
-    color:var(--muted);
-    text-align:right;
-}
-
-/* =========================================================
-    STATUS
-========================================================= */
-
-.wallet-row{
-    display:flex;
-    gap:12px;
-    flex-wrap:wrap;
-    align-items:center;
-}
-
-.status{
-    background:#eef4ff;
-    color:#35528e;
-    border:1px solid #c5d7ff;
-    padding:10px 14px;
-    border-radius:10px;
-    font-size:14px;
-    font-weight:bold;
-}
-
-.network{
-    background:#d7f7df;
-    color:#137333;
-}
-
-.balance-display-inline{
-    background:#f0fdf4;
-    color:#166534;
-    border:1px solid #bbf7d0;
-    padding:10px 14px;
-    border-radius:10px;
-    font-size:14px;
-    font-weight:bold;
-}
-
-/* =========================================================
-    STATS
-========================================================= */
-
-.stats-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-    gap:16px;
-}
-
-.stat{
-    background:#f7faff;
-    border:1px solid var(--border);
-    border-radius:14px;
-    padding:16px;
-    text-align:center;
-}
-
-.stat-title{
-    font-size:13px;
-    color:var(--muted);
-}
-
-.stat-value{
-    font-size:26px;
-    font-weight:bold;
-    margin-top:8px;
-    color:#4767b0;
-}
-
-/* =========================================================
-    MESSAGES
-========================================================= */
-
-.feed{
-    display:flex;
-    flex-direction:column;
-    gap:18px;
-}
-
-.feed-card{
-    background:#fff;
-    border:1px solid var(--border);
-    border-radius:16px;
-    padding:18px;
-    transition:.2s;
-    overflow-wrap:anywhere;
-    word-break:break-word;
-}
-
-.feed-card:hover{
-    transform:translateY(-2px);
-    box-shadow:0 4px 12px rgba(0,0,0,.08);
-}
-
-.feed-top{
-    display:flex;
-    justify-content:space-between;
-    gap:12px;
-    flex-wrap:wrap;
-    margin-bottom:14px;
-}
-
-.feed-user{
-    display:flex;
-    gap:12px;
-    align-items:center;
-}
-
-.feed-avatar{
-    width:48px;
-    height:48px;
-    border-radius:50%;
-    background:linear-gradient(135deg,#8FA8E8,#6B8DD6);
-    color:white;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:bold;
-    font-size:18px;
-}
-
-.feed-address{
-    font-weight:bold;
-    color:#4d6cb5;
-}
-
-.feed-time{
-    color:var(--muted);
-    font-size:13px;
-}
-
-.feed-text{
-    line-height:1.7;
-    font-size:15px;
-    margin-bottom:16px;
-}
-
-.amount{
-    display:inline-block;
-    background:#eef4ff;
-    color:#3f5f9f;
-    border-radius:20px;
-    padding:8px 14px;
-    font-size:13px;
-    font-weight:bold;
-}
-
-/* =========================================================
-    REACTIONS
-========================================================= */
-
-.reactions{
-    margin-top:16px;
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-}
-
-.react-btn{
-    border:1px solid var(--border);
-    background:#f8fbff;
-    color:#4d5c7a;
-    border-radius:30px;
-    padding:8px 14px;
-    font-size:13px;
-    display:flex;
-    gap:6px;
-    align-items:center;
-}
-
-.react-btn.active{
-    background:#dce8ff;
-    border-color:#7ea0e7;
-}
-
-/* =========================================================
-    SHARE
-========================================================= */
-
-.share-x{
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-    margin-top:14px;
-    text-decoration:none;
-    color:#4668b3;
-    font-weight:bold;
-    font-size:14px;
-}
-
-/* =========================================================
-    COMMUNITY LINKS CARD STYLES
-========================================================= */
-
-.community-link-item{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    padding:12px;
-    margin-bottom:10px;
-    background:linear-gradient(135deg,#f0f4ff,#e8efff);
-    border:1px solid #c5d7ff;
-    border-radius:12px;
-    text-decoration:none;
-    color:#374151;
-    transition:all 0.3s ease;
-}
-
-.community-link-item:hover{
-    background:linear-gradient(135deg,#e0e8ff,#d0dcff);
-    border-color:#8FA8E8;
-    transform:translateX(4px);
-}
-
-.community-link-icon{
-    font-size:24px;
-    width:32px;
-    text-align:center;
-}
-
-.community-link-content{
-    flex:1;
-}
-
-.community-link-title{
-    font-weight:bold;
-    color:#4767b0;
-    font-size:14px;
-}
-
-/* =========================================================
-    MARKET SENTIMENT STYLES
-========================================================= */
-
-.sentiment-card{
-    padding:14px;
-    background:linear-gradient(135deg,#fff8f0,#fff3e0);
-    border-radius:12px;
-    border:1px solid #ffe0b2;
-}
-
-.sentiment-main{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    margin-bottom:14px;
-    padding:12px;
-    background:white;
-    border-radius:10px;
-}
-
-.sentiment-emoji{
-    font-size:42px;
-}
-
-.sentiment-value{
-    font-size:24px;
-    font-weight:bold;
-    color:#f57c00;
-}
-
-.sentiment-bar{
-    height:8px;
-    background:#ffe0b2;
-    border-radius:4px;
-    overflow:hidden;
-    margin-bottom:12px;
-}
-
-.sentiment-fill{
-    height:100%;
-    background:linear-gradient(to right,#ff9800,#ffc107);
-    border-radius:4px;
-    transition:width 0.5s ease;
-}
-
-.sentiment-stats{
-    display:grid;
-    grid-template-columns:1fr 1fr 1fr;
-    gap:8px;
-}
-
-.sentiment-stat{
-    text-align:center;
-    padding:8px;
-    background:white;
-    border-radius:8px;
-}
-
-.sentiment-stat-value{
-    font-size:14px;
-    font-weight:bold;
-}
-
-.bullish{ color:#4caf50; }
-.neutral{ color:#ff9800; }
-.bearish{ color:#f44336; }
-
-/* =========================================================
-    FOOTER & MOBILE
-========================================================= */
-
-.footer{
-    margin-top:40px;
-    text-align:center;
-    color:#6b7280;
-    font-size:14px;
-    padding:20px;
-}
-
-@media(max-width:1100px){
-    .main{
-        grid-template-columns:1fr;
-    }
-    .left-column,
-    .right-column{
-        order:2;
-    }
-    .center-column{
-        order:1;
-    }
-}
-
-@media(max-width:700px){
-    .main{
-        margin-top:180px;
-    }
-}
-.hidden { display: none; }
 </style>
 </head>
 
@@ -689,7 +234,6 @@ input:focus{
                 <span>⚡ zkLTC social interactions powered by decentralized infrastructure</span>
                 <span>💬 Share permanent memories directly on-chain forever</span>
                 <span>🔗 Fast Layer2 blockchain experience</span>
-                <span>🌐 Decentralized social guestbook powered by Web3</span>
             </div>
         </div>
     </div>
@@ -697,26 +241,24 @@ input:focus{
 
 <div class="main">
 
-    <!-- LEFT (Fixado em 300px) -->
+    <!-- LEFT COLUMN -->
     <aside class="left-column">
         <div class="card">
             <div class="card-header">👤 Profile</div>
             <div class="card-body profile">
                 <div id="profileAvatar" class="avatar-container">
                     <div class="avatar-letter" id="avatarLetter">L</div>
-                    <div id="avatarSvgContainer"></div>
                 </div>
                 <h2 id="profileName">LitVM User</h2>
-                <div class="wallet-type" id="walletType">Wallet Not Connected</div>
-                <p>Decentralized social identity connected directly to the blockchain.</p>
+                <div id="walletType" style="font-size:12px; color:#6b7280; margin-top:5px;">Not Connected</div>
             </div>
         </div>
 
         <div class="card">
             <div class="card-header">⛽ Network Info</div>
             <div class="card-body">
-                <p style="font-size:13px; margin-bottom:10px;">🟢 Status: <span id="networkStatus">Offline</span></p>
-                <p style="font-size:13px;">🔢 Block: <span id="blockNumber">-</span></p>
+                <div id="networkStatus" style="font-size:13px; font-weight:bold; color:red;">Offline</div>
+                <div id="blockNumber" style="font-size:12px;">Block: -</div>
             </div>
         </div>
 
@@ -729,13 +271,13 @@ input:focus{
         </div>
     </aside>
 
-    <!-- CENTER (Fluído) -->
+    <!-- CENTER COLUMN -->
     <main class="center-column">
         <div class="card">
             <div class="card-header">🔗 Wallet Connection</div>
             <div class="card-body">
-                <div class="wallet-row">
-                    <div id="walletStatus" class="status">Not Connected</div>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <div id="walletStatus" class="status">Disconnected</div>
                     <button id="connectBtn">Connect Wallet</button>
                     <button id="disconnectBtn" class="danger hidden">Disconnect</button>
                 </div>
@@ -745,64 +287,54 @@ input:focus{
         <div class="card">
             <div class="card-header">💬 Share Something</div>
             <div class="card-body">
-                <textarea id="messageInput" maxlength="280" placeholder="Write something on-chain..." disabled></textarea>
-                <div class="char-info"><span id="charCount">0</span>/280</div>
-                <button id="postBtn" class="full-btn" style="margin-top:10px;" disabled>🚀 Post Message</button>
+                <textarea id="messageInput" maxlength="280" placeholder="Write something permanent on-chain..." disabled></textarea>
+                <input type="number" id="tokenAmount" placeholder="Optional zkLTC amount" step="0.01" disabled />
+                <button id="postBtn" style="width:100%" disabled>🚀 Post Message</button>
             </div>
         </div>
 
         <div class="card">
             <div class="card-header">📜 Recent Messages</div>
             <div class="card-body">
-                <div id="messagesList">Loading messages...</div>
+                <div id="messagesList">Connect your wallet to see messages...</div>
             </div>
         </div>
     </main>
 
-    <!-- RIGHT (Fixado em 300px) -->
+    <!-- RIGHT COLUMN -->
     <aside class="right-column">
         <div class="card">
             <div class="card-header">📊 Market Sentiment</div>
             <div class="card-body">
                 <div class="sentiment-card">
-                    <div class="sentiment-main">
-                        <div class="sentiment-emoji">😊</div>
-                        <div class="sentiment-value">65%</div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                        <span>😊 Mood</span>
+                        <strong id="sentimentValue">65%</strong>
                     </div>
-                    <div class="sentiment-bar"><div class="sentiment-fill" style="width:65%"></div></div>
-                    <div class="sentiment-stats">
-                        <div class="sentiment-stat bullish"><div class="sentiment-stat-value">58%</div><div style="font-size:9px">Bullish</div></div>
-                        <div class="sentiment-stat neutral"><div class="sentiment-stat-value">27%</div><div style="font-size:9px">Neutral</div></div>
-                        <div class="sentiment-stat bearish"><div class="sentiment-stat-value">15%</div><div style="font-size:9px">Bearish</div></div>
-                    </div>
+                    <div class="sentiment-fill" style="width:65%"></div>
                 </div>
             </div>
         </div>
 
         <div class="card">
-            <div class="card-header">🔗 Stay Connected</div>
+            <div class="card-header">🔗 Links</div>
             <div class="card-body">
-                <a href="https://www.litvm.com/" target="_blank" class="community-link-item">
-                    <div class="community-link-icon">🌐</div>
-                    <div class="community-link-content">
-                        <div class="community-link-title">Website</div>
-                    </div>
-                </a>
-                <a href="https://x.com/LitecoinVM" target="_blank" class="community-link-item">
-                    <div class="community-link-icon">🐦</div>
-                    <div class="community-link-content">
-                        <div class="community-link-title">Twitter</div>
-                    </div>
-                </a>
+                <a href="#" style="display:block; margin-bottom:8px; color:#4767b0; text-decoration:none;">🌐 Official Website</a>
+                <a href="#" style="display:block; color:#4767b0; text-decoration:none;">🐦 Twitter / X</a>
             </div>
         </div>
     </aside>
 
 </div>
 
-<footer class="footer">
-    Built exclusively for LitVM • Web3 Social Guestbook
+<footer style="text-align:center; padding:20px; color:#6b7280;">
+    Built exclusively for LitVM
 </footer>
+
+<!-- 
+    AQUI DEVE ENTRAR O SEU SCRIPT JS ORIGINAL 
+    (O código acima restaura toda a estrutura de IDs necessária para o seu script funcionar)
+-->
 
 </body>
 </html>
