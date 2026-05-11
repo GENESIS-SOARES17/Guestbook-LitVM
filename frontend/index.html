@@ -23,6 +23,7 @@
     --shadow:0 2px 8px rgba(0,0,0,0.08);
     --danger:#ef4444;
     --danger-hover:#dc2626;
+    --gold:#FFD700;
 }
 
 *{
@@ -84,7 +85,7 @@ body{
 }
 
 /* =========================================================
-   TICKER
+   TICKER - ✅ COM BORDA DOURADA
 ========================================================= */
 
 .ticker-wrap{
@@ -92,11 +93,12 @@ body{
     min-width:300px;
     overflow:hidden;
     background:rgba(255,255,255,.18);
-    border:1px solid rgba(255,255,255,.3);
+    border:4px solid var(--gold);
     border-radius:12px;
     height:58px;
     display:flex;
     align-items:center;
+    box-shadow:0 0 15px rgba(255,215,0,0.5);
 }
 
 .ticker{
@@ -153,15 +155,15 @@ body{
 }
 
 /* =========================================================
-   CARDS - SIDEBAR UNIFORM HEIGHT
+   CARDS - ✅ COM BORDA DOURADA
 ========================================================= */
 
 .card{
     background:var(--card);
-    border:1px solid var(--border);
+    border:3px solid var(--gold);
     border-radius:16px;
     overflow:hidden;
-    box-shadow:var(--shadow);
+    box-shadow:0 0 12px rgba(255,215,0,0.3);
 }
 
 /* ✅ Uniform height for sidebar cards - symmetry */
@@ -206,17 +208,17 @@ body{
     display:flex;
     align-items:center;
     justify-content:center;
-    border:4px solid #dbe7ff;
+    border:4px solid var(--gold);
     position:relative;
     overflow:hidden;
-    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+    box-shadow:0 4px 12px rgba(255,215,0,0.4);
     background:linear-gradient(135deg,#6B8DD6,#8FA8E8);
     transition:all 0.3s ease;
 }
 
 .avatar-container.has-identicon{
     background:#f8fbff;
-    border-color:#c5d7ff;
+    border-color:var(--gold);
 }
 
 #avatarSvgContainer{
@@ -263,6 +265,7 @@ body{
     font-size:12px;
     color:#4767b0;
     font-weight:bold;
+    border:2px solid var(--gold);
 }
 
 .profile p{
@@ -273,11 +276,11 @@ body{
 }
 
 /* =========================================================
-   BUTTONS
+   BUTTONS - ✅ COM BORDA DOURADA
 ========================================================= */
 
 button{
-    border:none;
+    border:2px solid var(--gold);
     background:linear-gradient(to bottom,#8FA8E8,#6B8DD6);
     color:white;
     font-weight:bold;
@@ -285,10 +288,12 @@ button{
     cursor:pointer;
     transition:.2s;
     font-size:14px;
+    box-shadow:0 0 8px rgba(255,215,0,0.3);
 }
 
 button:hover{
     background:linear-gradient(to bottom,#7e9be0,#5d7dcb);
+    box-shadow:0 0 12px rgba(255,215,0,0.5);
 }
 
 button:disabled{
@@ -317,18 +322,19 @@ button.secondary:hover{
 }
 
 /* =========================================================
-   FORMS
+   FORMS - ✅ COM BORDA DOURADA
 ========================================================= */
 
 textarea,
 input{
     width:100%;
-    border:1px solid var(--border);
+    border:2px solid var(--gold);
     border-radius:10px;
     padding:12px;
     font-size:15px;
     background:#fff;
     color:var(--text);
+    box-shadow:0 0 8px rgba(255,215,0,0.2);
 }
 
 textarea{
@@ -339,7 +345,8 @@ textarea{
 textarea:focus,
 input:focus{
     outline:none;
-    border-color:var(--blue-main);
+    border-color:var(--gold);
+    box-shadow:0 0 12px rgba(255,215,0,0.5);
 }
 
 .form-group{
@@ -360,7 +367,7 @@ input:focus{
 }
 
 /* =========================================================
-   STATUS
+   STATUS - ✅ COM BORDA DOURADA
 ========================================================= */
 
 .wallet-row{
@@ -373,11 +380,12 @@ input:focus{
 .status{
     background:#eef4ff;
     color:#35528e;
-    border:1px solid #c5d7ff;
+    border:2px solid var(--gold);
     padding:10px 14px;
     border-radius:10px;
     font-size:14px;
     font-weight:bold;
+    box-shadow:0 0 8px rgba(255,215,0,0.3);
 }
 
 .network{
@@ -388,15 +396,16 @@ input:focus{
 .balance-display-inline{
     background:#f0fdf4;
     color:#166534;
-    border:1px solid #bbf7d0;
+    border:2px solid var(--gold);
     padding:10px 14px;
     border-radius:10px;
     font-size:14px;
     font-weight:bold;
+    box-shadow:0 0 8px rgba(255,215,0,0.3);
 }
 
 /* =========================================================
-   STATS
+   STATS - ✅ COM BORDA DOURADA
 ========================================================= */
 
 .stats-grid{
@@ -407,10 +416,11 @@ input:focus{
 
 .stat{
     background:#f7faff;
-    border:1px solid var(--border);
+    border:3px solid var(--gold);
     border-radius:14px;
     padding:16px;
     text-align:center;
+    box-shadow:0 0 10px rgba(255,215,0,0.3);
 }
 
 .stat-title{
@@ -426,7 +436,7 @@ input:focus{
 }
 
 /* =========================================================
-   MESSAGES
+   MESSAGES - ✅ COM BORDA DOURADA
 ========================================================= */
 
 .feed{
@@ -437,17 +447,18 @@ input:focus{
 
 .feed-card{
     background:#fff;
-    border:1px solid var(--border);
+    border:3px solid var(--gold);
     border-radius:16px;
     padding:18px;
     transition:.2s;
     overflow-wrap:anywhere;
     word-break:break-word;
+    box-shadow:0 0 10px rgba(255,215,0,0.3);
 }
 
 .feed-card:hover{
     transform:translateY(-2px);
-    box-shadow:0 4px 12px rgba(0,0,0,.08);
+    box-shadow:0 4px 16px rgba(255,215,0,0.5);
 }
 
 .feed-top{
@@ -475,6 +486,7 @@ input:focus{
     justify-content:center;
     font-weight:bold;
     font-size:18px;
+    border:2px solid var(--gold);
 }
 
 .feed-address{
@@ -501,10 +513,11 @@ input:focus{
     padding:8px 14px;
     font-size:13px;
     font-weight:bold;
+    border:2px solid var(--gold);
 }
 
 /* =========================================================
-   REACTIONS
+   REACTIONS - ✅ COM BORDA DOURADA
 ========================================================= */
 
 .reactions{
@@ -515,7 +528,7 @@ input:focus{
 }
 
 .react-btn{
-    border:1px solid var(--border);
+    border:2px solid var(--gold);
     background:#f8fbff;
     color:#4d5c7a;
     border-radius:30px;
@@ -524,11 +537,13 @@ input:focus{
     display:flex;
     gap:6px;
     align-items:center;
+    box-shadow:0 0 6px rgba(255,215,0,0.3);
 }
 
 .react-btn.active{
     background:#dce8ff;
-    border-color:#7ea0e7;
+    border-color:var(--gold);
+    box-shadow:0 0 10px rgba(255,215,0,0.5);
 }
 
 /* =========================================================
@@ -581,18 +596,19 @@ input:focus{
     padding:12px;
     margin-bottom:10px;
     background:linear-gradient(135deg,#f0f4ff,#e8efff);
-    border:1px solid #c5d7ff;
+    border:2px solid var(--gold);
     border-radius:12px;
     text-decoration:none;
     color:#374151;
     transition:all 0.3s ease;
+    box-shadow:0 0 8px rgba(255,215,0,0.3);
 }
 
 .community-link-item:hover{
     background:linear-gradient(135deg,#e0e8ff,#d0dcff);
-    border-color:#8FA8E8;
+    border-color:var(--gold);
     transform:translateX(4px);
-    box-shadow:0 4px 12px rgba(107,141,214,0.2);
+    box-shadow:0 4px 12px rgba(255,215,0,0.5);
 }
 
 .community-link-icon{
@@ -627,7 +643,7 @@ input:focus{
 }
 
 /* =========================================================
-   NETWORK INFO CARD STYLES
+   NETWORK INFO CARD STYLES - ✅ COM BORDA DOURADA
 ========================================================= */
 
 .network-info-item{
@@ -637,8 +653,9 @@ input:focus{
     padding:12px;
     margin-bottom:10px;
     background:linear-gradient(135deg,#f8fbff,#f0f4ff);
-    border:1px solid #dce8ff;
+    border:2px solid var(--gold);
     border-radius:10px;
+    box-shadow:0 0 8px rgba(255,215,0,0.3);
 }
 
 .network-info-label{
@@ -704,7 +721,8 @@ input:focus{
     background:linear-gradient(135deg,#e0f2fe,#dbeafe);
     padding:12px;
     border-radius:10px;
-    border:1px solid #bae6fd;
+    border:2px solid var(--gold);
+    box-shadow:0 0 8px rgba(255,215,0,0.3);
 }
 
 .testnet-tip-label{
@@ -721,7 +739,7 @@ input:focus{
 }
 
 /* =========================================================
-   WALLET CARD STYLES
+   WALLET CARD STYLES - ✅ COM BORDA DOURADA
 ========================================================= */
 
 .wallet-info-section{
@@ -750,6 +768,8 @@ input:focus{
     font-size:13px;
     color:#4767b0;
     word-break:break-all;
+    border:2px solid var(--gold);
+    box-shadow:0 0 6px rgba(255,215,0,0.3);
 }
 
 .btn-small{
@@ -762,7 +782,8 @@ input:focus{
     padding:14px;
     background:linear-gradient(135deg,#f0f4ff,#e0e8ff);
     border-radius:12px;
-    border:1px solid #c5d7ff;
+    border:3px solid var(--gold);
+    box-shadow:0 0 10px rgba(255,215,0,0.3);
 }
 
 .balance-amount{
@@ -773,14 +794,15 @@ input:focus{
 }
 
 /* =========================================================
-   MARKET SENTIMENT STYLES
+   MARKET SENTIMENT STYLES - ✅ COM BORDA DOURADA
 ========================================================= */
 
 .sentiment-card{
     padding:14px;
     background:linear-gradient(135deg,#fff8f0,#fff3e0);
     border-radius:12px;
-    border:1px solid #ffe0b2;
+    border:3px solid var(--gold);
+    box-shadow:0 0 10px rgba(255,215,0,0.3);
 }
 
 .sentiment-title{
@@ -798,6 +820,7 @@ input:focus{
     padding:12px;
     background:white;
     border-radius:10px;
+    border:2px solid var(--gold);
 }
 
 .sentiment-emoji{
@@ -826,6 +849,7 @@ input:focus{
     border-radius:4px;
     overflow:hidden;
     margin-bottom:12px;
+    border:1px solid var(--gold);
 }
 
 .sentiment-fill{
@@ -847,6 +871,7 @@ input:focus{
     padding:8px;
     background:white;
     border-radius:8px;
+    border:2px solid var(--gold);
 }
 
 .sentiment-stat-value{
