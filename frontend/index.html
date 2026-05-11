@@ -1,2735 +1,296 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8" />
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
 <title>Guestbook LitVM • Social Web3 Guestbook</title>
 
-
-
 <style>
-
 /* =========================================================
-
-   🌐 ORKUT STYLE WEB3 SOCIAL UI — LITVM EDITION
-
+    🌐 ORKUT STYLE WEB3 SOCIAL UI — LITVM EDITION
 ========================================================= */
-
-
 
 :root{
-
     --blue-main:#6B8DD6;
-
     --blue-soft:#8FA8E8;
-
     --blue-light:#dfe9ff;
-
     --bg:#F3F4F6;
-
     --card:#ffffff;
-
     --border:#c9d8f5;
-
     --text:#374151;
-
     --muted:#6b7280;
-
     --hover:#5f7ec7;
-
     --shadow:0 2px 8px rgba(0,0,0,0.08);
-
-    --danger:#ef4444;
-
-    --danger-hover:#dc2626;
-
 }
-
-
 
 *{
-
     margin:0;
-
     padding:0;
-
     box-sizing:border-box;
-
 }
-
-
 
 body{
-
     background:var(--bg);
-
     font-family:Arial, Verdana, sans-serif;
-
     color:var(--text);
-
     overflow-x:hidden;
-
 }
 
-
-
 /* =========================================================
-
-   HEADER
-
+    HEADER
 ========================================================= */
-
-
 
 .top-header{
-
     position:fixed;
-
     top:0;
-
     left:0;
-
     right:0;
-
     z-index:999;
-
     background:linear-gradient(to bottom,#8FA8E8,#6B8DD6);
-
     border-bottom:1px solid #5e7fcb;
-
     box-shadow:0 2px 6px rgba(0,0,0,.1);
-
 }
-
-
 
 .header-inner{
-
     max-width:1400px;
-
     margin:auto;
-
     display:flex;
-
     align-items:center;
-
     gap:16px;
-
     padding:14px 20px;
-
     flex-wrap:wrap;
-
 }
-
-
 
 .logo{
-
     display:flex;
-
     align-items:center;
-
     gap:14px;
-
     min-width:280px;
-
 }
-
-
 
 .logo img{
-
-    width:62px;
-
-    height:62px;
-
+    width:124px; 
+    height:124px; 
     object-fit:contain;
-
 }
-
-
 
 .logo h1{
-
     color:white;
-
     font-size:30px;
-
     letter-spacing:.5px;
-
     text-shadow:1px 1px 0 rgba(0,0,0,.15);
-
 }
 
-
-
 /* =========================================================
-
-   TICKER
-
+    TICKER
 ========================================================= */
-
-
 
 .ticker-wrap{
-
     flex:1;
-
     min-width:300px;
-
     overflow:hidden;
-
     background:rgba(255,255,255,.18);
-
     border:1px solid rgba(255,255,255,.3);
-
     border-radius:12px;
-
     height:58px;
-
     display:flex;
-
     align-items:center;
-
 }
-
-
 
 .ticker{
-
     white-space:nowrap;
-
     animation:ticker 40s linear infinite;
-
     color:white;
-
     font-weight:bold;
-
     font-size:15px;
-
 }
-
-
-
-.ticker:hover{
-
-    animation-play-state:paused;
-
-}
-
-
 
 .ticker span{
-
     display:inline-block;
-
     padding:0 40px;
-
 }
-
-
 
 @keyframes ticker{
-
-    from{transform:translateX(0)}
-
+    from{transform:translateX(100%)}
     to{transform:translateX(-100%)}
-
 }
 
-
-
 /* =========================================================
-
-   MAIN LAYOUT
-
+    MAIN LAYOUT
 ========================================================= */
-
-
 
 .main{
-
     max-width:1400px;
-
-    margin:140px auto 40px auto;
-
+    margin:180px auto 40px auto;
     padding:0 16px;
-
-
-
     display:grid;
-
     grid-template-columns:260px minmax(0,1fr) 260px;
-
     gap:20px;
-
-
-
-    width:100%;
-
 }
-
-
-
-/* IMPORTANT FIX */
-
-.main,
-
-.center-column,
-
-.card,
-
-.feed-card{
-
-    min-width:0;
-
-}
-
-
-
-.left-column,
-
-.right-column{
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:20px;
-
-}
-
-
-
-/* =========================================================
-
-   CARDS
-
-========================================================= */
-
-
 
 .card{
-
     background:var(--card);
-
     border:1px solid var(--border);
-
     border-radius:16px;
-
     overflow:hidden;
-
     box-shadow:var(--shadow);
-
+    margin-bottom:20px;
 }
-
-
 
 .card-header{
-
     background:linear-gradient(to bottom,#8FA8E8,#6B8DD6);
-
     color:white;
-
     font-weight:bold;
-
     padding:12px 16px;
-
     font-size:16px;
-
 }
-
-
 
 .card-body{
-
     padding:18px;
-
 }
-
-
 
 /* =========================================================
-
-   PROFILE & IDENTICON
-
+    INTERFACES
 ========================================================= */
-
-
-
-.profile{
-
-    text-align:center;
-
-}
-
-
-
-.avatar-container{
-
-    width:120px;
-
-    height:120px;
-
-    border-radius:50%;
-
-    margin:auto;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    border:4px solid #dbe7ff;
-
-    position:relative;
-
-    overflow:hidden;
-
-    box-shadow:0 4px 12px rgba(0,0,0,0.1);
-
-    background:linear-gradient(135deg,#6B8DD6,#8FA8E8);
-
-    transition:all 0.3s ease;
-
-}
-
-
-
-.avatar-container.has-identicon{
-
-    background:#f8fbff;
-
-    border-color:#c5d7ff;
-
-}
-
-
-
-#avatarSvgContainer{
-
-    width:85%;
-
-    height:85%;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    position:relative;
-
-    z-index:1;
-
-    animation:identiconFade 0.4s ease-out;
-
-}
-
-
-
-@keyframes identiconFade{
-
-    from{opacity:0; transform:scale(0.9)}
-
-    to{opacity:1; transform:scale(1)}
-
-}
-
-
-
-#avatarSvgContainer svg{
-
-    width:100%;
-
-    height:100%;
-
-    filter:drop-shadow(0 2px 4px rgba(0,0,0,0.1));
-
-}
-
-
-
-.avatar-letter{
-
-    color:white;
-
-    font-size:42px;
-
-    font-weight:bold;
-
-    text-shadow:0 2px 4px rgba(0,0,0,0.2);
-
-    z-index:1;
-
-}
-
-
-
-.profile h2{
-
-    margin-top:16px;
-
-    font-size:22px;
-
-}
-
-
-
-.profile .wallet-type{
-
-    display:inline-block;
-
-    margin-top:8px;
-
-    padding:4px 12px;
-
-    background:#f0f4ff;
-
-    border-radius:20px;
-
-    font-size:12px;
-
-    color:#4767b0;
-
-    font-weight:bold;
-
-}
-
-
-
-.profile p{
-
-    margin-top:10px;
-
-    color:var(--muted);
-
-    line-height:1.5;
-
-    font-size:14px;
-
-}
-
-
-
-/* =========================================================
-
-   BUTTONS
-
-========================================================= */
-
-
 
 button{
-
-    border:none;
-
-    background:linear-gradient(to bottom,#8FA8E8,#6B8DD6);
-
-    color:white;
-
+    background:white;
+    color:var(--blue-main);
+    border:1px solid white;
+    padding:10px 20px;
+    border-radius:20px;
     font-weight:bold;
-
-    border-radius:10px;
-
     cursor:pointer;
-
-    transition:.2s;
-
-    font-size:14px;
-
+    transition: 0.2s;
 }
-
-
 
 button:hover{
-
-    background:linear-gradient(to bottom,#7e9be0,#5d7dcb);
-
+    background:var(--blue-light);
 }
 
-
-
-button:disabled{
-
-    opacity:.6;
-
-    cursor:not-allowed;
-
-}
-
-
-
-button.danger{
-
-    background:linear-gradient(to bottom,#f87171,#ef4444);
-
-}
-
-
-
-button.danger:hover{
-
-    background:linear-gradient(to bottom,#ef4444,#dc2626);
-
-}
-
-
-
-button.secondary{
-
-    background:linear-gradient(to bottom,#94a3b8,#64748b);
-
-}
-
-
-
-button.secondary:hover{
-
-    background:linear-gradient(to bottom,#64748b,#475569);
-
-}
-
-
-
-.full-btn{
-
-    width:100%;
-
-}
-
-
-
-/* =========================================================
-
-   FORMS
-
-========================================================= */
-
-
-
-textarea,
-
-input{
-
-    width:100%;
-
-    border:1px solid var(--border);
-
-    border-radius:10px;
-
-    padding:12px;
-
-    font-size:15px;
-
-    background:#fff;
-
-    color:var(--text);
-
-}
-
-
-
-textarea{
-
-    resize:vertical;
-
-    min-height:120px;
-
-}
-
-
-
-textarea:focus,
-
-input:focus{
-
-    outline:none;
-
-    border-color:var(--blue-main);
-
-}
-
-
-
-.form-group{
-
-    margin-bottom:16px;
-
-}
-
-
-
-.label{
-
-    font-weight:bold;
-
-    margin-bottom:8px;
-
-    display:block;
-
-}
-
-
-
-.char-info{
-
-    margin-top:8px;
-
-    font-size:13px;
-
-    color:var(--muted);
-
-    text-align:right;
-
-}
-
-
-
-/* =========================================================
-
-   STATUS
-
-========================================================= */
-
-
-
-.wallet-row{
-
-    display:flex;
-
-    gap:12px;
-
-    flex-wrap:wrap;
-
-    align-items:center;
-
-}
-
-
-
-.status{
-
-    background:#eef4ff;
-
-    color:#35528e;
-
-    border:1px solid #c5d7ff;
-
-    padding:10px 14px;
-
-    border-radius:10px;
-
-    font-size:14px;
-
-    font-weight:bold;
-
-}
-
-
-
-.network{
-
-    background:#d7f7df;
-
-    color:#137333;
-
-}
-
-
-
-.balance-display-inline{
-
-    background:#f0fdf4;
-
-    color:#166534;
-
-    border:1px solid #bbf7d0;
-
-    padding:10px 14px;
-
-    border-radius:10px;
-
-    font-size:14px;
-
-    font-weight:bold;
-
-}
-
-
-
-/* =========================================================
-
-   STATS
-
-========================================================= */
-
-
-
-.stats-grid{
-
-    display:grid;
-
-    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-
-    gap:16px;
-
-}
-
-
-
-.stat{
-
-    background:#f7faff;
-
-    border:1px solid var(--border);
-
-    border-radius:14px;
-
-    padding:16px;
-
-    text-align:center;
-
-}
-
-
-
-.stat-title{
-
-    font-size:13px;
-
-    color:var(--muted);
-
-}
-
-
-
-.stat-value{
-
-    font-size:26px;
-
-    font-weight:bold;
-
-    margin-top:8px;
-
-    color:#4767b0;
-
-}
-
-
-
-/* =========================================================
-
-   MESSAGES
-
-========================================================= */
-
-
-
-.feed{
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:18px;
-
-}
-
-
-
-.feed-card{
-
-    background:#fff;
-
-    border:1px solid var(--border);
-
-    border-radius:16px;
-
-    padding:18px;
-
-    transition:.2s;
-
-    overflow-wrap:anywhere;
-
-    word-break:break-word;
-
-}
-
-
-
-.feed-card:hover{
-
-    transform:translateY(-2px);
-
-    box-shadow:0 4px 12px rgba(0,0,0,.08);
-
-}
-
-
-
-.feed-top{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    gap:12px;
-
-    flex-wrap:wrap;
-
-    margin-bottom:14px;
-
-}
-
-
-
-.feed-user{
-
-    display:flex;
-
-    gap:12px;
-
-    align-items:center;
-
-}
-
-
-
-.feed-avatar{
-
-    width:48px;
-
-    height:48px;
-
-    border-radius:50%;
-
-    background:linear-gradient(135deg,#8FA8E8,#6B8DD6);
-
+.btn-post{
+    background:var(--blue-main);
     color:white;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    font-weight:bold;
-
-    font-size:18px;
-
-}
-
-
-
-.feed-address{
-
-    font-weight:bold;
-
-    color:#4d6cb5;
-
-}
-
-
-
-.feed-time{
-
-    color:var(--muted);
-
-    font-size:13px;
-
-}
-
-
-
-.feed-text{
-
-    line-height:1.7;
-
-    font-size:15px;
-
-    margin-bottom:16px;
-
-}
-
-
-
-.amount{
-
-    display:inline-block;
-
-    background:#eef4ff;
-
-    color:#3f5f9f;
-
-    border-radius:20px;
-
-    padding:8px 14px;
-
-    font-size:13px;
-
-    font-weight:bold;
-
-}
-
-
-
-/* =========================================================
-
-   REACTIONS
-
-========================================================= */
-
-
-
-.reactions{
-
-    margin-top:16px;
-
-    display:flex;
-
-    flex-wrap:wrap;
-
-    gap:10px;
-
-}
-
-
-
-.react-btn{
-
-    border:1px solid var(--border);
-
-    background:#f8fbff;
-
-    color:#4d5c7a;
-
-    border-radius:30px;
-
-    padding:8px 14px;
-
-    font-size:13px;
-
-    display:flex;
-
-    gap:6px;
-
-    align-items:center;
-
-}
-
-
-
-.react-btn.active{
-
-    background:#dce8ff;
-
-    border-color:#7ea0e7;
-
-}
-
-
-
-/* =========================================================
-
-   SHARE
-
-========================================================= */
-
-
-
-.share-x{
-
-    display:inline-flex;
-
-    align-items:center;
-
-    gap:8px;
-
-    margin-top:14px;
-
-    text-decoration:none;
-
-    color:#4668b3;
-
-    font-weight:bold;
-
-    font-size:14px;
-
-}
-
-
-
-/* =========================================================
-
-   COMMUNITY
-
-========================================================= */
-
-
-
-.community{
-
-    padding:10px 0;
-
-    border-bottom:1px solid #edf2ff;
-
-}
-
-
-
-.community:last-child{
-
-    border-bottom:none;
-
-}
-
-
-
-.community strong{
-
-    display:block;
-
-    margin-bottom:4px;
-
-}
-
-
-
-/* =========================================================
-
-   COMMUNITY LINKS CARD
-
-========================================================= */
-
-
-
-.community-links{
-
-    padding:12px 0;
-
-}
-
-
-
-.community-link-item{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:12px;
-
-    padding:12px;
-
-    margin-bottom:10px;
-
-    background:linear-gradient(135deg,#f0f4ff,#e8efff);
-
-    border:1px solid #c5d7ff;
-
-    border-radius:12px;
-
-    text-decoration:none;
-
-    color:#374151;
-
-    transition:all 0.3s ease;
-
-}
-
-
-
-.community-link-item:hover{
-
-    background:linear-gradient(135deg,#e0e8ff,#d0dcff);
-
-    border-color:#8FA8E8;
-
-    transform:translateX(4px);
-
-    box-shadow:0 4px 12px rgba(107,141,214,0.2);
-
-}
-
-
-
-.community-link-icon{
-
-    font-size:24px;
-
-    width:32px;
-
-    text-align:center;
-
-}
-
-
-
-.community-link-content{
-
-    flex:1;
-
-}
-
-
-
-.community-link-title{
-
-    font-weight:bold;
-
-    color:#4767b0;
-
-    font-size:14px;
-
-    margin-bottom:2px;
-
-}
-
-
-
-.community-link-url{
-
-    font-size:11px;
-
-    color:#6b7280;
-
-    word-break:break-all;
-
-}
-
-
-
-.community-info-text{
-
-    font-size:13px;
-
-    color:#6b7280;
-
-    line-height:1.6;
-
-    margin-bottom:16px;
-
-    padding:0 4px;
-
-}
-
-
-
-/* =========================================================
-
-   NETWORK INFO CARD STYLES
-
-========================================================= */
-
-
-
-.network-info-item{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    padding:12px;
-
-    margin-bottom:10px;
-
-    background:linear-gradient(135deg,#f8fbff,#f0f4ff);
-
-    border:1px solid #dce8ff;
-
-    border-radius:10px;
-
-}
-
-
-
-.network-info-label{
-
-    font-size:12px;
-
-    color:#6b7280;
-
-    font-weight:bold;
-
-    display:flex;
-
-    align-items:center;
-
-    gap:8px;
-
-}
-
-
-
-.network-info-value{
-
-    font-size:13px;
-
-    font-weight:bold;
-
-    color:#4767b0;
-
-    font-family:monospace;
-
-}
-
-
-
-.network-status-online{
-
-    color:#10b981;
-
-}
-
-
-
-.network-status-offline{
-
-    color:#ef4444;
-
-}
-
-
-
-.network-refresh-btn{
-
     width:100%;
-
-    margin-top:8px;
-
-    padding:8px;
-
-    font-size:12px;
-
+    margin-top:10px;
 }
 
-
-
-/* =========================================================
-
-   LITVM TESTNET CARD STYLES
-
-========================================================= */
-
-
-
-.testnet-card-content{
-
-    text-align:center;
-
-    padding:10px 0;
-
-}
-
-
-
-.testnet-emoji{
-
-    font-size:48px;
-
-    margin-bottom:12px;
-
-    display:block;
-
-}
-
-
-
-.testnet-title{
-
-    color:#4767b0;
-
-    margin-bottom:10px;
-
-    font-size:16px;
-
-}
-
-
-
-.testnet-text{
-
-    color:#6b7280;
-
-    font-size:13px;
-
-    line-height:1.6;
-
-    margin-bottom:12px;
-
-}
-
-
-
-.testnet-tip-box{
-
-    background:linear-gradient(135deg,#e0f2fe,#dbeafe);
-
-    padding:12px;
-
-    border-radius:10px;
-
-    border:1px solid #bae6fd;
-
-}
-
-
-
-.testnet-tip-label{
-
-    font-size:12px;
-
-    color:#0369a1;
-
-    font-weight:bold;
-
-    margin-bottom:4px;
-
-}
-
-
-
-.testnet-tip-text{
-
-    font-size:11px;
-
-    color:#075985;
-
-    line-height:1.5;
-
-}
-
-
-
-/* =========================================================
-
-   WALLET CARD STYLES
-
-========================================================= */
-
-
-
-.wallet-info-section{
-
-    margin-bottom:16px;
-
-}
-
-
-
-.wallet-label{
-
-    font-size:12px;
-
-    color:#6b7280;
-
-    margin-bottom:6px;
-
-    font-weight:bold;
-
-}
-
-
-
-.address-box{
-
-    display:flex;
-
-    gap:8px;
-
-    align-items:center;
-
-}
-
-
-
-.address-display{
-
-    flex:1;
-
-    background:#f0f4ff;
-
-    padding:10px;
-
-    border-radius:8px;
-
-    font-family:monospace;
-
-    font-size:13px;
-
-    color:#4767b0;
-
-    word-break:break-all;
-
-}
-
-
-
-.btn-small{
-
-    padding:8px 12px;
-
-    white-space:nowrap;
-
-    font-size:13px;
-
-}
-
-
-
-.balance-card{
-
-    padding:14px;
-
-    background:linear-gradient(135deg,#f0f4ff,#e0e8ff);
-
-    border-radius:12px;
-
-    border:1px solid #c5d7ff;
-
-}
-
-
-
-.balance-amount{
-
-    font-size:28px;
-
-    font-weight:bold;
-
-    color:#4767b0;
-
-    margin-bottom:12px;
-
-}
-
-
-
-/* =========================================================
-
-   MARKET SENTIMENT STYLES
-
-========================================================= */
-
-
-
-.sentiment-card{
-
-    padding:14px;
-
-    background:linear-gradient(135deg,#fff8f0,#fff3e0);
-
-    border-radius:12px;
-
-    border:1px solid #ffe0b2;
-
-}
-
-
-
-.sentiment-title{
-
-    font-size:13px;
-
-    color:#6b7280;
-
-    margin-bottom:12px;
-
-    font-weight:bold;
-
-}
-
-
-
-.sentiment-main{
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-    margin-bottom:14px;
-
-    padding:12px;
-
-    background:white;
-
-    border-radius:10px;
-
-}
-
-
-
-.sentiment-emoji{
-
-    font-size:42px;
-
-}
-
-
-
-.sentiment-info{
-
-    text-align:right;
-
-}
-
-
-
-.sentiment-label{
-
-    font-size:12px;
-
-    color:#6b7280;
-
-    margin-bottom:4px;
-
-}
-
-
-
-.sentiment-value{
-
-    font-size:24px;
-
-    font-weight:bold;
-
-    color:#f57c00;
-
-}
-
-
-
-.sentiment-bar{
-
-    height:8px;
-
-    background:#ffe0b2;
-
-    border-radius:4px;
-
-    overflow:hidden;
-
-    margin-bottom:12px;
-
-}
-
-
-
-.sentiment-fill{
-
-    height:100%;
-
-    background:linear-gradient(to right,#ff9800,#ffc107);
-
-    border-radius:4px;
-
-    transition:width 0.5s ease;
-
-}
-
-
-
-.sentiment-stats{
-
-    display:grid;
-
-    grid-template-columns:1fr 1fr 1fr;
-
-    gap:8px;
-
-    margin-top:12px;
-
-}
-
-
-
-.sentiment-stat{
-
-    text-align:center;
-
-    padding:8px;
-
-    background:white;
-
-    border-radius:8px;
-
-}
-
-
-
-.sentiment-stat-value{
-
-    font-size:16px;
-
-    font-weight:bold;
-
-    margin-bottom:4px;
-
-}
-
-
-
-.sentiment-stat.bullish .sentiment-stat-value{
-
-    color:#4caf50;
-
-}
-
-
-
-.sentiment-stat.neutral .sentiment-stat-value{
-
-    color:#ff9800;
-
-}
-
-
-
-.sentiment-stat.bearish .sentiment-stat-value{
-
-    color:#f44336;
-
-}
-
-
-
-.sentiment-stat-label{
-
-    font-size:10px;
-
-    color:#6b7280;
-
-}
-
-
-
-/* =========================================================
-
-   FOOTER
-
-========================================================= */
-
-
-
-.footer{
-
-    margin-top:40px;
-
-    text-align:center;
-
-    color:#6b7280;
-
-    font-size:14px;
-
-    padding:20px;
-
-}
-
-
-
-/* =========================================================
-
-   MOBILE
-
-========================================================= */
-
-
-
-@media(max-width:1100px){
-
-
-
-    .main{
-
-        grid-template-columns:1fr;
-
-    }
-
-
-
-    .left-column,
-
-    .right-column{
-
-        order:2;
-
-    }
-
-
-
-    .center-column{
-
-        order:1;
-
-    }
-
-
-
-}
-
-
-
-@media(max-width:700px){
-
-
-
-    .header-inner{
-
-        flex-direction:column;
-
-        align-items:flex-start;
-
-    }
-
-
-
-    .logo h1{
-
-        font-size:24px;
-
-    }
-
-
-
-    .main{
-
-        margin-top:180px;
-
-    }
-
-
-
-    .ticker-wrap{
-
-        width:100%;
-
-    }
-
-
-
+.hidden { display: none; }
+
+#walletAddress {
+    font-size: 11px;
+    word-break: break-all;
+    background: #f0f4ff;
+    padding: 8px;
+    border-radius: 8px;
+    margin-top: 10px;
 }
 
 </style>
-
 </head>
-
-
-
 <body>
 
-
-
-<!-- ======================================================
-
-     HEADER
-
-====================================================== -->
-
-
-
 <header class="top-header">
-
     <div class="header-inner">
-
-
-
         <div class="logo">
-
             <img src="./LITVM 2.png" alt="LitVM Logo">
-
             <h1>Guestbook LitVM</h1>
-
         </div>
-
-
-
         <div class="ticker-wrap">
-
             <div class="ticker">
-
                 <span>🚀 Live on LitVM blockchain</span>
-
                 <span>⚡ zkLTC social interactions powered by decentralized infrastructure</span>
-
                 <span>💬 Share permanent memories directly on-chain forever</span>
-
-                <span>🔗 Fast Layer2 blockchain experience</span>
-
-                <span>🌐 Decentralized social guestbook powered by Web3</span>
-
             </div>
-
         </div>
-
-
-
+        <button id="connectBtn">Connect Wallet</button>
     </div>
-
 </header>
 
-
-
-<!-- ======================================================
-
-     MAIN
-
-====================================================== -->
-
-
-
 <div class="main">
-
-
-
     <!-- LEFT -->
-
-    <aside class="left-column">
-
-
-
+    <aside>
         <div class="card">
-
             <div class="card-header">👤 Profile</div>
-
-            <div class="card-body profile">
-
-
-
-                <!-- AVATAR CONTAINER -->
-
-                <div id="profileAvatar" class="avatar-container">
-
-                    <div class="avatar-letter" id="avatarLetter">L</div>
-
-                    <div id="avatarSvgContainer"></div>
-
-                </div>
-
-
-
-                <h2 id="profileName">LitVM User</h2>
-
-                <div class="wallet-type" id="walletType">Wallet Not Connected</div>
-
-
-
-                <p id="profileDesc">
-
-                    Decentralized social identity connected directly to the blockchain.
-
-                    Share memories forever on-chain.
-
-                </p>
-
-
-
+            <div class="card-body" style="text-align:center;">
+                <div style="width:80px; height:80px; background:#dfe9ff; border-radius:50%; margin:0 auto 10px; display:flex; align-items:center; justify-content:center; font-size:30px;">👤</div>
+                <div id="walletAddress">Disconnected</div>
             </div>
-
         </div>
-
-
-
-        <!-- NETWORK INFO CARD -->
-
-        <div class="card">
-
-            <div class="card-header">⛽ Network Info</div>
-
-            <div class="card-body">
-
-                
-
-                <div class="network-info-item">
-
-                    <div class="network-info-label">
-
-                        <span>🟢</span> Network Status
-
-                    </div>
-
-                    <div id="networkStatus" class="network-info-value network-status-offline">
-
-                        Offline
-
-                    </div>
-
-                </div>
-
-
-
-                <div class="network-info-item">
-
-                    <div class="network-info-label">
-
-                        <span>🔢</span> Block Number
-
-                    </div>
-
-                    <div id="blockNumber" class="network-info-value">
-
-                        -
-
-                    </div>
-
-                </div>
-
-
-
-                <div class="network-info-item">
-
-                    <div class="network-info-label">
-
-                        <span>⚡</span> Gas Price
-
-                    </div>
-
-                    <div id="gasPrice" class="network-info-value">
-
-                        -
-
-                    </div>
-
-                </div>
-
-
-
-                <div class="network-info-item">
-
-                    <div class="network-info-label">
-
-                        <span>⏱️</span> Block Time
-
-                    </div>
-
-                    <div id="blockTime" class="network-info-value">
-
-                        ~2s
-
-                    </div>
-
-                </div>
-
-
-
-                <button id="refreshNetworkBtn" class="network-refresh-btn" onclick="refreshNetworkInfo()">
-
-                    🔄 Refresh
-
-                </button>
-
-
-
-            </div>
-
-        </div>
-
-
-
-        <!-- LITVM TESTNET CARD -->
-
-        <div class="card">
-
-            <div class="card-header">🚀 LitVM Testnet</div>
-
-            <div class="card-body">
-
-                
-
-                <div class="testnet-card-content">
-
-                    <span class="testnet-emoji">🌟</span>
-
-                    <h3 class="testnet-title">Testnet Active!</h3>
-
-                    <p class="testnet-text">
-
-                        Experience Layer2 speed with zkLTC. 
-
-                        Fast, cheap and decentralized!
-
-                    </p>
-
-                    <div class="testnet-tip-box">
-
-                        <div class="testnet-tip-label">💡 Tip</div>
-
-                        <div class="testnet-tip-text">
-
-                            Join the Web3 revolution and leave your permanent message on the blockchain!
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-
-            </div>
-
-        </div>
-
-
-
-        <!-- WALLET INFO CARD -->
-
-        <div class="card">
-
-            <div class="card-header">💼 Wallet Info</div>
-
-            <div class="card-body">
-
-                
-
-                <!-- Wallet Address -->
-
-                <div class="wallet-info-section">
-
-                    <div class="wallet-label">📍 Wallet Address</div>
-
-                    <div class="address-box">
-
-                        <div id="walletAddress" class="address-display">
-
-                            Not connected
-
-                        </div>
-
-                        <button id="copyBtn" onclick="copyAddress()" class="btn-small" disabled title="Copy Address">
-
-                            📋 Copy
-
-                        </button>
-
-                        <a id="explorerBtn" href="#" target="_blank" class="btn-small" title="View on Explorer" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;">
-
-                            🔍
-
-                        </a>
-
-                    </div>
-
-                </div>
-
-
-
-                <!-- zkLTC Balance -->
-
-                <div class="wallet-info-section">
-
-                    <div class="wallet-label">💰 zkLTC Balance</div>
-
-                    <div class="balance-card">
-
-                        <div id="balanceDisplay" class="balance-amount">
-
-                            0.00
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-
-            </div>
-
-        </div>
-
-
-
     </aside>
-
-
 
     <!-- CENTER -->
-
-    <main class="center-column">
-
-
-
-        <!-- WALLET -->
-
+    <main>
         <div class="card">
-
-            <div class="card-header">🔗 Wallet Connection</div>
-
-
-
+            <div class="card-header">💬 Post a Message</div>
             <div class="card-body">
-
-
-
-                <div class="wallet-row">
-
-
-
-                    <div id="walletStatus" class="status">
-
-                        Not Connected
-
-                    </div>
-
-
-
-                    <div id="balanceInline" class="balance-display-inline hidden">
-
-                        💰 0.00 zkLTC
-
-                    </div>
-
-
-
-                    <div id="networkBadge" class="status network hidden">
-
-                        LitVM • Chain 4441
-
-                    </div>
-
-
-
-                    <button id="connectBtn">
-
-                        Connect Wallet
-
-                    </button>
-
-
-
-                    <button id="disconnectBtn" class="danger hidden">
-
-                        🔌 Disconnect
-
-                    </button>
-
-
-
-                    <button id="switchNetworkBtn" class="secondary hidden">
-
-                        Switch to LitVM
-
-                    </button>
-
-
-
-                </div>
-
-
-
+                <textarea id="messageInput" style="width:100%; height:100px; border:1px solid var(--border); border-radius:12px; padding:10px; resize:none;" placeholder="Write something on the blockchain..."></textarea>
+                <button id="postBtn" class="btn-post">Post Message</button>
             </div>
-
         </div>
 
-
-
-        <!-- SHARE -->
-
-        <div class="card">
-
-            <div class="card-header">💬 Share Something</div>
-
-
-
-            <div class="card-body">
-
-
-
-                <div style="margin-bottom:14px;color:#6b7280;font-size:14px;">
-
-                    All messages are permanent on-chain and limited to a maximum of 280 characters.
-
+        <div id="feedArea">
+            <div class="card">
+                <div class="card-body" style="text-align:center; color:var(--muted);">
+                    Connect your wallet to see the messages.
                 </div>
-
-
-
-                <div id="msgStatus"></div>
-
-
-
-                <div class="form-group">
-
-                    <label class="label">
-
-                        Your Message
-
-                    </label>
-
-
-
-                    <textarea
-
-                        id="messageInput"
-
-                        maxlength="280"
-
-                        placeholder="Write something permanent on-chain..."
-
-                        disabled
-
-                    ></textarea>
-
-
-
-                    <div class="char-info">
-
-                        <span id="charCount">0</span>/280
-
-                    </div>
-
-                </div>
-
-
-
-                <div class="form-group">
-
-                    <label class="label">
-
-                        Optional zkLTC Amount
-
-                    </label>
-
-
-
-                    <input
-
-                        type="number"
-
-                        id="tokenAmount"
-
-                        placeholder="0.00"
-
-                        step="0.000000000000000001"
-
-                        min="0"
-
-                        disabled
-
-                    />
-
-                </div>
-
-
-
-                <button id="postBtn" disabled>
-
-                    🚀 Post Message
-
-                </button>
-
-
-
             </div>
-
         </div>
-
-
-
-        <!-- STATS -->
-
-        <div class="card">
-
-            <div class="card-header">📊 Guestbook Stats</div>
-
-
-
-            <div class="card-body">
-
-
-
-                <div class="stats-grid">
-
-
-
-                    <div class="stat">
-
-                        <div class="stat-title">Total Messages</div>
-
-                        <div class="stat-value" id="totalCount">0</div>
-
-                    </div>
-
-
-
-                    <div class="stat">
-
-                        <div class="stat-title">Tokens Sent</div>
-
-                        <div class="stat-value" id="totalTokens">0</div>
-
-                    </div>
-
-
-
-                    <div class="stat">
-
-                        <div class="stat-title">Current Page</div>
-
-                        <div class="stat-value" id="currentPage">1</div>
-
-                    </div>
-
-
-
-                </div>
-
-
-
-            </div>
-
-        </div>
-
-
-
-        <!-- FEED -->
-
-        <div class="card">
-
-            <div class="card-header">📜 Recent Messages</div>
-
-
-
-            <div class="card-body">
-
-
-
-                <div id="messagesList">
-
-                    Loading messages...
-
-                </div>
-
-
-
-                <div
-
-                    id="pagination"
-
-                    class="hidden"
-
-                    style="margin-top:20px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap;"
-
-                >
-
-
-
-                    <button id="prevBtn">
-
-                        ⬅ Previous
-
-                    </button>
-
-
-
-                    <div
-
-                        id="pageInfo"
-
-                        style="display:flex;align-items:center;font-weight:bold;"
-
-                    >
-
-                        Page 1
-
-                    </div>
-
-
-
-                    <button id="nextBtn">
-
-                        Next ➡
-
-                    </button>
-
-
-
-                </div>
-
-
-
-            </div>
-
-        </div>
-
-
-
-        <div class="footer">
-
-            Built exclusively for LitVM • Web3 Social Guestbook
-
-        </div>
-
-
-
     </main>
 
-
-
     <!-- RIGHT -->
-
-    <aside class="right-column">
-
-
-
+    <aside>
         <div class="card">
-
-            <div class="card-header">🌐 Communities</div>
-
-
-
+            <div class="card-header">📊 Stats</div>
             <div class="card-body">
-
-
-
-                <div class="community">
-
-                    <strong>LitVM Builders</strong>
-
-                    Web3 developers building decentralized applications.
-
-                </div>
-
-
-
-                <div class="community">
-
-                    <strong>zkLTC Community</strong>
-
-                    Blockchain users exploring Layer2 Litecoin ecosystems.
-
-                </div>
-
-
-
-                <div class="community">
-
-                    <strong>Blockchain Memories</strong>
-
-                    Permanent messages and decentralized social history.
-
-                </div>
-
-
-
+                <p style="font-size:13px;">Network: LitVM</p>
+                <p style="font-size:13px;">Status: Online</p>
             </div>
-
         </div>
-
-
-
-        <div class="card">
-
-            <div class="card-header">ℹ About Project</div>
-
-
-
-            <div class="card-body">
-
-
-
-                <p style="line-height:1.7;font-size:14px;color:#6b7280;">
-
-                    Guestbook LitVM is a decentralized social guestbook built on LitVM.
-
-                    Messages are stored permanently on-chain using zkLTC infrastructure.
-
-                </p>
-
-
-
-            </div>
-
-        </div>
-
-
-
-        <!-- COMMUNITY LINKS CARD -->
-
-        <div class="card">
-
-            <div class="card-header">🔗 Stay Connected</div>
-
-            <div class="card-body">
-
-                
-
-                <div class="community-info-text">
-
-                    To stay informed, also visit our communities:
-
-                </div>
-
-
-
-                <div class="community-links">
-
-                    
-
-                    <a href="https://www.litvm.com/" target="_blank" class="community-link-item">
-
-                        <div class="community-link-icon">🌐</div>
-
-                        <div class="community-link-content">
-
-                            <div class="community-link-title">Website</div>
-
-                            <div class="community-link-url">www.litvm.com</div>
-
-                        </div>
-
-                    </a>
-
-
-
-                    <a href="https://x.com/LitecoinVM" target="_blank" class="community-link-item">
-
-                        <div class="community-link-icon">🐦</div>
-
-                        <div class="community-link-content">
-
-                            <div class="community-link-title">X (Twitter)</div>
-
-                            <div class="community-link-url">@LitecoinVM</div>
-
-                        </div>
-
-                    </a>
-
-
-
-                    <a href="https://t.me/litecoinvm" target="_blank" class="community-link-item">
-
-                        <div class="community-link-icon">✈️</div>
-
-                        <div class="community-link-content">
-
-                            <div class="community-link-title">Telegram</div>
-
-                            <div class="community-link-url">t.me/litecoinvm</div>
-
-                        </div>
-
-                    </a>
-
-
-
-                </div>
-
-
-
-            </div>
-
-        </div>
-
-
-
-        <!-- MARKET SENTIMENT CARD -->
-
-        <div class="card">
-
-            <div class="card-header">📊 Market Sentiment</div>
-
-            <div class="card-body">
-
-                
-
-                <div class="sentiment-card">
-
-                    <div class="sentiment-title">⚡ LitVM Community Sentiment</div>
-
-                    
-
-                    <div class="sentiment-main">
-
-                        <div class="sentiment-emoji" id="sentimentEmoji">😊</div>
-
-                        <div class="sentiment-info">
-
-                            <div class="sentiment-label">Overall Mood</div>
-
-                            <div class="sentiment-value" id="sentimentValue">65%</div>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="sentiment-bar">
-
-                        <div class="sentiment-fill" id="sentimentFill" style="width:65%"></div>
-
-                    </div>
-
-
-
-                    <div class="sentiment-stats">
-
-                        <div class="sentiment-stat bullish">
-
-                            <div class="sentiment-stat-value" id="bullishCount">58%</div>
-
-                            <div class="sentiment-stat-label">🚀 Bullish</div>
-
-                        </div>
-
-                        <div class="sentiment-stat neutral">
-
-                            <div class="sentiment-stat-value" id="neutralCount">27%</div>
-
-                            <div class="sentiment-stat-label">😐 Neutral</div>
-
-                        </div>
-
-                        <div class="sentiment-stat bearish">
-
-                            <div class="sentiment-stat-value" id="bearishCount">15%</div>
-
-                            <div class="sentiment-stat-label">📉 Bearish</div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-
-            </div>
-
-        </div>
-
-
-
     </aside>
-
-
-
 </div>
 
-
-
-<!-- ======================================================
-
-     SCRIPT
-
-====================================================== -->
-
-
-
+<!-- CORREÇÃO DA CONEXÃO DA CARTEIRA -->
 <script type="module">
+    // Importando a versão estável da ethers.js via CDN (ESM)
+    import { ethers } from "https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.min.js";
 
+    const connectBtn = document.getElementById('connectBtn');
+    const walletAddress = document.getElementById('walletAddress');
 
+    async function connectWallet() {
+        if (window.ethereum) {
+            try {
+                const provider = new ethers.BrowserProvider(window.ethereum);
+                const accounts = await provider.send("eth_requestAccounts", []);
+                const address = accounts[0];
+                
+                walletAddress.innerText = address;
+                connectBtn.innerText = "Connected";
+                console.log("Connected to:", address);
+            } catch (error) {
+                console.error("User denied account access", error);
+                alert("Connection failed!");
+            }
+        } else {
+            alert("Please install MetaMask!");
+        }
+    }
 
-import { ethers } from "https
+    connectBtn.addEventListener('click', connectWallet);
+
+    // Listener para troca de conta
+    if (window.ethereum) {
+        window.ethereum.on('accountsChanged', (accounts) => {
+            if (accounts.length > 0) {
+                walletAddress.innerText = accounts[0];
+            } else {
+                walletAddress.innerText = "Disconnected";
+                connectBtn.innerText = "Connect Wallet";
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
