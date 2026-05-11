@@ -1,312 +1,511 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guestbook LitVM • Social Web3 Guestbook</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Guestbook LitVM • Social Web3 Guestbook</title>
 
-    <style>
-        /* =========================================================
-            🌐 ORKUT STYLE WEB3 SOCIAL UI — LITVM EDITION
-        ========================================================= */
+<style>
+/* =========================================================
+    🌐 ORKUT STYLE WEB3 SOCIAL UI — LITVM EDITION
+========================================================= */
 
-        :root {
-            --blue-main: #6B8DD6;
-            --blue-soft: #8FA8E8;
-            --blue-light: #dfe9ff;
-            --bg: #F3F4F6;
-            --card: #ffffff;
-            --border: #c9d8f5;
-            --text: #374151;
-            --muted: #6b7280;
-            --hover: #5f7ec7;
-            --shadow: 0 2px 8px rgba(0,0,0,0.08);
-            --danger: #ef4444;
-        }
+:root{
+    --blue-main:#6B8DD6;
+    --blue-soft:#8FA8E8;
+    --blue-light:#dfe9ff;
+    --bg:#F3F4F6;
+    --card:#ffffff;
+    --border:#c9d8f5;
+    --text:#374151;
+    --muted:#6b7280;
+    --hover:#5f7ec7;
+    --shadow:0 2px 8px rgba(0,0,0,0.08);
+    --danger:#ef4444;
+    --danger-hover:#dc2626;
+}
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
 
-        body {
-            background: var(--bg);
-            font-family: Arial, Verdana, sans-serif;
-            color: var(--text);
-            overflow-x: hidden;
-        }
+body{
+    background:var(--bg);
+    font-family:Arial, Verdana, sans-serif;
+    color:var(--text);
+    overflow-x:hidden;
+}
 
-        /* =========================================================
-            HEADER
-        ========================================================= */
+/* =========================================================
+    HEADER
+========================================================= */
 
-        .top-header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 999;
-            background: linear-gradient(to bottom, #8FA8E8, #6B8DD6);
-            border-bottom: 1px solid #5e7fcb;
-            box-shadow: 0 2px 6px rgba(0,0,0,.1);
-        }
+.top-header{
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    z-index:999;
+    background:linear-gradient(to bottom,#8FA8E8,#6B8DD6);
+    border-bottom:1px solid #5e7fcb;
+    box-shadow:0 2px 6px rgba(0,0,0,.1);
+}
 
-        .header-inner {
-            max-width: 1400px;
-            margin: auto;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 10px 20px;
-            flex-wrap: wrap;
-        }
+.header-inner{
+    max-width:1400px;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    gap:16px;
+    padding:14px 20px;
+    flex-wrap:wrap;
+}
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            min-width: 320px;
-        }
+.logo{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    min-width:280px;
+}
 
-        .logo img {
-            width: 124px;   /* TAMANHO ATUALIZADO */
-            height: 124px;  /* TAMANHO ATUALIZADO */
-            object-fit: contain;
-            border-radius: 8px;
-        }
+.logo img{
+    width:124px; /* Tamanho ajustado conforme solicitado */
+    height:124px; 
+    object-fit:contain;
+}
 
-        .logo h1 {
-            color: white;
-            font-size: 28px;
-            letter-spacing: .5px;
-            text-shadow: 1px 1px 0 rgba(0,0,0,.15);
-        }
+.logo h1{
+    color:white;
+    font-size:30px;
+    letter-spacing:.5px;
+    text-shadow:1px 1px 0 rgba(0,0,0,.15);
+}
 
-        /* =========================================================
-            TICKER (LETREIRO)
-        ========================================================= */
+/* =========================================================
+    TICKER
+========================================================= */
 
-        .ticker-wrap {
-            flex: 1;
-            min-width: 300px;
-            overflow: hidden;
-            background: rgba(255,255,255,.18);
-            border: 1px solid rgba(255,255,255,.3);
-            border-radius: 12px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-        }
+.ticker-wrap{
+    flex:1;
+    min-width:300px;
+    overflow:hidden;
+    background:rgba(255,255,255,.18);
+    border:1px solid rgba(255,255,255,.3);
+    border-radius:12px;
+    height:58px;
+    display:flex;
+    align-items:center;
+}
 
-        .ticker {
-            white-space: nowrap;
-            animation: ticker 30s linear infinite;
-            color: white;
-            font-weight: bold;
-            font-size: 14px;
-        }
+.ticker{
+    white-space:nowrap;
+    animation:ticker 40s linear infinite;
+    color:white;
+    font-weight:bold;
+    font-size:15px;
+}
 
-        .ticker span {
-            display: inline-block;
-            padding: 0 40px;
-        }
+.ticker:hover{
+    animation-play-state:paused;
+}
 
-        @keyframes ticker {
-            from { transform: translateX(100%); }
-            to { transform: translateX(-100%); }
-        }
+.ticker span{
+    display:inline-block;
+    padding:0 40px;
+}
 
-        /* =========================================================
-            MAIN LAYOUT
-        ========================================================= */
+@keyframes ticker{
+    from{transform:translateX(0)}
+    to{transform:translateX(-100%)}
+}
 
-        .main {
-            max-width: 1300px;
-            margin: 160px auto 40px auto; /* Compensando o tamanho da logo */
-            padding: 0 20px;
-            display: grid;
-            grid-template-columns: 240px 1fr 280px;
-            gap: 20px;
-        }
+/* =========================================================
+    MAIN LAYOUT
+========================================================= */
 
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            margin-bottom: 20px;
-        }
+.main{
+    max-width:1400px;
+    margin:180px auto 40px auto;
+    padding:0 16px;
 
-        .card-header {
-            background: #E8EEFF;
-            color: var(--blue-main);
-            font-weight: bold;
-            padding: 10px 15px;
-            border-bottom: 1px solid var(--border);
-            font-size: 14px;
-        }
+    display:grid;
+    grid-template-columns:260px minmax(0,1fr) 260px;
+    gap:20px;
 
-        .card-body {
-            padding: 15px;
-        }
+    width:100%;
+}
 
-        /* =========================================================
-            POST AREA & BUTTONS
-        ========================================================= */
+.main,
+.center-column,
+.card,
+.feed-card{
+    min-width:0;
+}
 
-        textarea {
-            width: 100%;
-            height: 80px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 10px;
-            font-family: inherit;
-            resize: none;
-            margin-bottom: 10px;
-        }
+.left-column,
+.right-column{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
 
-        .btn-post {
-            background: var(--blue-main);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-            float: right;
-        }
+/* =========================================================
+    CARDS & COMPONENTS
+========================================================= */
 
-        .btn-post:hover {
-            background: var(--hover);
-        }
+.card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:var(--shadow);
+}
 
-        .wallet-btn {
-            background: white;
-            color: var(--blue-main);
-            border: 1px solid white;
-            padding: 8px 15px;
-            border-radius: 12px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+.card-header{
+    background:linear-gradient(to bottom,#8FA8E8,#6B8DD6);
+    color:white;
+    font-weight:bold;
+    padding:12px 16px;
+    font-size:16px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
 
-        /* =========================================================
-            RESPONSIVIDADE
-        ========================================================= */
+.card-body{
+    padding:18px;
+}
 
-        @media (max-width: 900px) {
-            .main {
-                grid-template-columns: 1fr;
-                margin-top: 200px;
-            }
-            .left-column, .right-column {
-                display: none;
-            }
-        }
-    </style>
+/* PROFILE CARD */
+.profile-box{
+    text-align:center;
+}
+
+.profile-avatar{
+    width:140px;
+    height:140px;
+    background:#dfe9ff;
+    border-radius:50%;
+    margin:0 auto 15px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:50px;
+    border:4px solid white;
+    box-shadow:0 2px 10px rgba(0,0,0,0.05);
+    overflow:hidden;
+}
+
+.profile-avatar img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.profile-name{
+    font-size:18px;
+    font-weight:bold;
+    margin-bottom:4px;
+    color:var(--blue-main);
+}
+
+.profile-addr{
+    font-size:11px;
+    color:var(--muted);
+    word-break:break-all;
+    background:#f8faff;
+    padding:6px;
+    border-radius:8px;
+}
+
+/* POST BOX */
+.post-box textarea{
+    width:100%;
+    height:110px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:14px;
+    font-family:inherit;
+    font-size:15px;
+    resize:none;
+    margin-bottom:12px;
+    transition:border-color 0.2s;
+    background:#fafbff;
+}
+
+.post-box textarea:focus{
+    outline:none;
+    border-color:var(--blue-main);
+    background:#fff;
+}
+
+.post-actions{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.char-counter{
+    font-size:12px;
+    color:var(--muted);
+}
+
+/* BUTTONS */
+.btn{
+    padding:10px 22px;
+    border-radius:25px;
+    border:none;
+    font-weight:bold;
+    cursor:pointer;
+    transition:all 0.2s;
+    font-size:14px;
+}
+
+.btn-primary{
+    background:linear-gradient(to bottom,#8FA8E8,#6B8DD6);
+    color:white;
+    box-shadow:0 2px 4px rgba(107,141,214,0.3);
+}
+
+.btn-primary:hover:not(:disabled){
+    background:var(--hover);
+    transform:translateY(-1px);
+}
+
+.btn-primary:disabled{
+    opacity:0.5;
+    cursor:not-allowed;
+}
+
+.btn-outline{
+    background:white;
+    border:1px solid white;
+    color:var(--blue-main);
+}
+
+.btn-outline:hover{
+    background:rgba(255,255,255,0.9);
+}
+
+/* FEED CARDS */
+.feed-card{
+    background:white;
+    border:1px solid var(--border);
+    border-radius:16px;
+    margin-bottom:20px;
+    box-shadow:var(--shadow);
+    display:flex;
+    flex-direction:column;
+}
+
+.feed-header{
+    padding:14px 18px;
+    border-bottom:1px solid #f1f5f9;
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.feed-avatar{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    background:var(--blue-light);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+    color:var(--blue-main);
+    font-size:18px;
+}
+
+.feed-info{
+    flex:1;
+}
+
+.feed-user{
+    font-weight:bold;
+    font-size:14px;
+    color:var(--blue-main);
+}
+
+.feed-time{
+    font-size:11px;
+    color:var(--muted);
+}
+
+.feed-content{
+    padding:18px;
+    font-size:15px;
+    line-height:1.5;
+    word-break:break-word;
+}
+
+.feed-footer{
+    padding:10px 18px;
+    background:#f8faff;
+    border-top:1px solid #f1f5f9;
+    display:flex;
+    justify-content:flex-end;
+}
+
+.share-x-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    text-decoration:none;
+    color:#1DA1F2;
+    font-weight:bold;
+    font-size:12px;
+    transition:opacity 0.2s;
+}
+
+.share-x-btn:hover{
+    opacity:0.7;
+}
+
+/* UTILS */
+.hidden{ display:none; }
+
+.status-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:12px;
+    padding:4px 10px;
+    background:#ecfdf5;
+    color:#059669;
+    border-radius:12px;
+    font-weight:bold;
+}
+
+.status-dot{
+    width:8px;
+    height:8px;
+    background:#10b981;
+    border-radius:50%;
+}
+
+@media (max-width:950px){
+    .main{
+        grid-template-columns:1fr;
+        margin-top:240px;
+    }
+    .left-column, .right-column{
+        order:2;
+    }
+    .center-column{
+        order:1;
+    }
+}
+</style>
 </head>
 <body>
 
-    <header class="top-header">
-        <div class="header-inner">
-            <div class="logo">
-                <img src="./LITVM 2.png" alt="LitVM Logo">
-                <h1>Guestbook</h1>
-            </div>
-
-            <div class="ticker-wrap">
-                <div class="ticker">
-                    <span>🚀 Live on LitVM Testnet</span>
-                    <span>⚡ Decentralized Guestbook Architecture</span>
-                    <span>🔗 Chain ID: 267</span>
-                    <span>💬 Share your permanent message on-chain</span>
-                </div>
-            </div>
-
-            <button class="wallet-btn" id="connectBtn">Connect Wallet</button>
+<header class="top-header">
+    <div class="header-inner">
+        <div class="logo">
+            <img src="./LITVM 2.png" alt="LitVM Logo">
+            <h1>Guestbook LitVM</h1>
         </div>
-    </header>
 
-    <div class="main">
-        <!-- COLUNA ESQUERDA: PERFIL -->
-        <aside class="left-column">
-            <div class="card">
-                <div class="card-header">Profile</div>
-                <div class="card-body" style="text-align: center;">
-                    <div style="width: 100px; height: 100px; background: #dfe9ff; border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 40px;">👤</div>
-                    <p id="userAddress" style="font-size: 12px; color: var(--muted); word-break: break-all;">Not Connected</p>
-                </div>
+        <div class="ticker-wrap">
+            <div class="ticker" id="tickerContent">
+                <span>🚀 Live on LitVM blockchain</span>
+                <span>⚡ zkLTC social interactions powered by decentralized infrastructure</span>
+                <span>💬 Share permanent memories directly on-chain forever</span>
+                <span>🔗 Fast Layer2 blockchain experience</span>
+                <span>🌐 Decentralized social guestbook powered by Web3</span>
             </div>
-            
-            <div class="card">
-                <div class="card-header">Links</div>
-                <div class="card-body">
-                    <ul style="list-style: none; font-size: 13px; line-height: 2;">
-                        <li><a href="#" style="color: var(--blue-main); text-decoration: none;">🏠 Home</a></li>
-                        <li><a href="#" style="color: var(--blue-main); text-decoration: none;">📜 Explorer</a></li>
-                        <li><a href="#" style="color: var(--blue-main); text-decoration: none;">⚙️ Settings</a></li>
-                    </ul>
-                </div>
-            </div>
-        </aside>
+        </div>
 
-        <!-- COLUNA CENTRAL: FEED -->
-        <main class="center-column">
-            <div class="card">
-                <div class="card-header">What's on your mind?</div>
-                <div class="card-body">
-                    <textarea id="messageInput" maxlength="270" placeholder="Type your on-chain message..."></textarea>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span id="charCount" style="font-size: 12px; color: var(--muted);">0 / 270</span>
-                        <button class="btn-post" id="postBtn">Post to Mural</button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="feedArea">
-                <!-- Posts aparecerão aqui -->
-                <div class="card">
-                    <div class="card-body" style="text-align: center; color: var(--muted);">
-                        Loading messages from LitVM...
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        <!-- COLUNA DIREITA: INFO -->
-        <aside class="right-column">
-            <div class="card">
-                <div class="card-header">System Status</div>
-                <div class="card-body">
-                    <p style="font-size: 13px;"><strong>Network:</strong> Neura / LitVM</p>
-                    <p style="font-size: 13px;"><strong>Status:</strong> <span style="color: green;">● Online</span></p>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">About</div>
-                <div class="card-body">
-                    <p style="font-size: 12px; color: var(--text);">
-                        This dApp uses LitVM to store immutable messages on the blockchain. 
-                        Inspired by the classic social web UI.
-                    </p>
-                </div>
-            </div>
-        </aside>
+        <button class="btn btn-outline" id="connectBtn">Connect Wallet</button>
     </div>
+</header>
 
-    <script>
-        // Lógica simples de contador de caracteres
-        const textarea = document.getElementById('messageInput');
-        const charCount = document.getElementById('charCount');
+<div class="main">
+    <!-- LEFT SIDE -->
+    <aside class="left-column">
+        <div class="card">
+            <div class="card-header">👤 Profile</div>
+            <div class="card-body profile-box">
+                <div class="profile-avatar" id="profileAvatar">L</div>
+                <div class="profile-name" id="profileName">Guest</div>
+                <div class="profile-addr" id="userAddress">Not connected</div>
+            </div>
+        </div>
 
-        textarea.addEventListener('input', () => {
-            charCount.textContent = `${textarea.value.length} / 270`;
-        });
-    </script>
+        <div class="card">
+            <div class="card-header">📊 Stats</div>
+            <div class="card-body">
+                <p style="font-size:13px; margin-bottom:8px;"><strong>Posts:</strong> <span id="postCount">0</span></p>
+                <div class="status-badge">
+                    <span class="status-dot"></span> LitVM Online
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- CENTER FEED -->
+    <main class="center-column">
+        <div class="card" id="postSection">
+            <div class="card-header">💬 Leave a Message</div>
+            <div class="card-body post-box">
+                <textarea id="messageInput" maxlength="270" placeholder="What's on your mind?"></textarea>
+                <div class="post-actions">
+                    <span class="char-counter"><span id="charCount">0</span> / 270</span>
+                    <button class="btn btn-primary" id="postBtn" disabled>Post to Mural</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="feedArea">
+            <!-- Loading state -->
+            <div class="card">
+                <div class="card-body" style="text-align:center; color:var(--muted);">
+                    Connect wallet to see the mural...
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- RIGHT SIDE -->
+    <aside class="right-column">
+        <div class="card">
+            <div class="card-header">ℹ️ Info</div>
+            <div class="card-body">
+                <p style="font-size:13px; line-height:1.4;">
+                    <strong>Guestbook LitVM</strong> is a decentralized social application built on <strong>LitVM</strong>. 
+                    Your messages are immutable and stored forever.
+                </p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">🔗 Network</div>
+            <div class="card-body" style="font-size:13px;">
+                <p><strong>Chain:</strong> LitVM Testnet</p>
+                <p><strong>Chain ID:</strong> 267</p>
+                <p><strong>Currency:</strong> zkLTC</p>
+            </div>
+        </div>
+    </aside>
+</div>
+
+<script>
+    // Front-end logic only for UI interactions
+    const textarea = document.getElementById('messageInput');
+    const charCount = document.getElementById('charCount');
+    const postBtn = document.getElementById('postBtn');
+
+    textarea.addEventListener('input', () => {
+        const len = textarea.value.length;
+        charCount.textContent = len;
+        postBtn.disabled = len === 0;
+    });
+</script>
 
 </body>
 </html>
