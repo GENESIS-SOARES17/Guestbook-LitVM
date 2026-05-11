@@ -7,7 +7,7 @@
 
 <style>
 /* =========================================================
-    🌐 ORKUT STYLE WEB3 SOCIAL UI — LITVM EDITION
+   🌐 ORKUT STYLE WEB3 SOCIAL UI — LITVM EDITION
 ========================================================= */
 
 :root{
@@ -39,7 +39,7 @@ body{
 }
 
 /* =========================================================
-    HEADER
+   HEADER
 ========================================================= */
 
 .top-header{
@@ -84,7 +84,7 @@ body{
 }
 
 /* =========================================================
-    TICKER
+   TICKER
 ========================================================= */
 
 .ticker-wrap{
@@ -122,7 +122,7 @@ body{
 }
 
 /* =========================================================
-    MAIN LAYOUT - TAMANHOS FIXOS EM 300px
+   MAIN LAYOUT
 ========================================================= */
 
 .main{
@@ -131,8 +131,7 @@ body{
     padding:0 16px;
 
     display:grid;
-    /* Alterado de 260px para 300px fixos */
-    grid-template-columns:300px minmax(0,1fr) 300px;
+    grid-template-columns:260px minmax(0,1fr) 260px;
     gap:20px;
 
     width:100%;
@@ -154,7 +153,7 @@ body{
 }
 
 /* =========================================================
-    CARDS
+   CARDS
 ========================================================= */
 
 .card{
@@ -178,7 +177,7 @@ body{
 }
 
 /* =========================================================
-    PROFILE & IDENTICON
+   PROFILE & IDENTICON
 ========================================================= */
 
 .profile{
@@ -260,7 +259,7 @@ body{
 }
 
 /* =========================================================
-    BUTTONS
+   BUTTONS
 ========================================================= */
 
 button{
@@ -304,7 +303,7 @@ button.secondary:hover{
 }
 
 /* =========================================================
-    FORMS
+   FORMS
 ========================================================= */
 
 textarea,
@@ -347,7 +346,7 @@ input:focus{
 }
 
 /* =========================================================
-    STATUS
+   STATUS
 ========================================================= */
 
 .wallet-row{
@@ -383,7 +382,7 @@ input:focus{
 }
 
 /* =========================================================
-    STATS
+   STATS
 ========================================================= */
 
 .stats-grid{
@@ -413,7 +412,7 @@ input:focus{
 }
 
 /* =========================================================
-    MESSAGES
+   MESSAGES
 ========================================================= */
 
 .feed{
@@ -491,7 +490,7 @@ input:focus{
 }
 
 /* =========================================================
-    REACTIONS
+   REACTIONS
 ========================================================= */
 
 .reactions{
@@ -519,7 +518,7 @@ input:focus{
 }
 
 /* =========================================================
-    SHARE
+   SHARE
 ========================================================= */
 
 .share-x{
@@ -534,7 +533,7 @@ input:focus{
 }
 
 /* =========================================================
-    COMMUNITY
+   COMMUNITY
 ========================================================= */
 
 .community{
@@ -552,7 +551,7 @@ input:focus{
 }
 
 /* =========================================================
-    COMMUNITY LINKS CARD
+   COMMUNITY LINKS CARD
 ========================================================= */
 
 .community-links{
@@ -612,7 +611,7 @@ input:focus{
 }
 
 /* =========================================================
-    NETWORK INFO CARD STYLES
+   NETWORK INFO CARD STYLES
 ========================================================= */
 
 .network-info-item{
@@ -658,7 +657,7 @@ input:focus{
 }
 
 /* =========================================================
-    LITVM TESTNET CARD STYLES
+   LITVM TESTNET CARD STYLES
 ========================================================= */
 
 .testnet-card-content{
@@ -706,7 +705,7 @@ input:focus{
 }
 
 /* =========================================================
-    WALLET CARD STYLES
+   WALLET CARD STYLES
 ========================================================= */
 
 .wallet-info-section{
@@ -758,7 +757,7 @@ input:focus{
 }
 
 /* =========================================================
-    MARKET SENTIMENT STYLES
+   MARKET SENTIMENT STYLES
 ========================================================= */
 
 .sentiment-card{
@@ -858,7 +857,7 @@ input:focus{
 }
 
 /* =========================================================
-    FOOTER
+   FOOTER
 ========================================================= */
 
 .footer{
@@ -870,7 +869,7 @@ input:focus{
 }
 
 /* =========================================================
-    MOBILE
+   MOBILE
 ========================================================= */
 
 @media(max-width:1100px){
@@ -1360,9 +1359,1007 @@ input:focus{
 
 </div>
 
+<!-- ======================================================
+     SCRIPT
+====================================================== -->
+
 <script type="module">
+
 import { ethers } from "https://esm.run/ethers@6.13.0";
-// Seu código script continua aqui normalmente...
+
+/* ======================================================
+   CONTRACT CONFIG
+====================================================== */
+
+const CONFIG = {
+    contractAddress:"0x472e230DfFA8c896b05A9a46c84BFb391756918e",
+    chainId:4441
+};
+
+const ABI = [
+    "function postMessage(string) external payable",
+    "function postMessageWithToken(string) external payable",
+    "function getMessageCount() view returns (uint256)",
+    "function getMessage(uint256) view returns (address,string,uint256,uint256)",
+    "function totalMessages() view returns (uint256)"
+];
+
+/* ======================================================
+   VARIABLES
+====================================================== */
+
+let provider;
+let signer;
+let contract;
+let currentUser = null;
+
+let currentOffset = 0;
+const LIMIT = 10;
+
+let networkUpdateInterval;
+
+/* ======================================================
+   DOM
+====================================================== */
+
+const els = {
+
+    walletStatus:document.getElementById("walletStatus"),
+    balanceInline:document.getElementById("balanceInline"),
+    networkBadge:document.getElementById("networkBadge"),
+
+    connectBtn:document.getElementById("connectBtn"),
+    disconnectBtn:document.getElementById("disconnectBtn"),
+    switchNetworkBtn:document.getElementById("switchNetworkBtn"),
+
+    messageInput:document.getElementById("messageInput"),
+    tokenAmount:document.getElementById("tokenAmount"),
+    postBtn:document.getElementById("postBtn"),
+
+    totalCount:document.getElementById("totalCount"),
+    totalTokens:document.getElementById("totalTokens"),
+    currentPage:document.getElementById("currentPage"),
+
+    messagesList:document.getElementById("messagesList"),
+
+    prevBtn:document.getElementById("prevBtn"),
+    nextBtn:document.getElementById("nextBtn"),
+    pageInfo:document.getElementById("pageInfo"),
+    pagination:document.getElementById("pagination"),
+
+    charCount:document.getElementById("charCount"),
+    msgStatus:document.getElementById("msgStatus"),
+    
+    // Wallet Card Elements
+    walletAddress:document.getElementById("walletAddress"),
+    copyBtn:document.getElementById("copyBtn"),
+    explorerBtn:document.getElementById("explorerBtn"),
+    balanceDisplay:document.getElementById("balanceDisplay"),
+    
+    // Profile Elements
+    profileAvatar:document.getElementById("profileAvatar"),
+    avatarLetter:document.getElementById("avatarLetter"),
+    avatarSvgContainer:document.getElementById("avatarSvgContainer"),
+    profileName:document.getElementById("profileName"),
+    walletType:document.getElementById("walletType"),
+    profileDesc:document.getElementById("profileDesc"),
+
+    // Network Info Elements
+    networkStatus:document.getElementById("networkStatus"),
+    blockNumber:document.getElementById("blockNumber"),
+    gasPrice:document.getElementById("gasPrice"),
+    blockTime:document.getElementById("blockTime")
+};
+
+/* ======================================================
+   NETWORK INFO FUNCTIONS
+====================================================== */
+
+window.refreshNetworkInfo = async function(){
+    await updateNetworkInfo();
+}
+
+async function updateNetworkInfo(){
+    if(!provider){
+        els.networkStatus.textContent = "Offline";
+        els.networkStatus.className = "network-info-value network-status-offline";
+        els.blockNumber.textContent = "-";
+        els.gasPrice.textContent = "-";
+        return;
+    }
+
+    try{
+        // Update network status
+        els.networkStatus.textContent = "Online";
+        els.networkStatus.className = "network-info-value network-status-online";
+
+        // Get block number
+        const blockNum = await provider.getBlockNumber();
+        els.blockNumber.textContent = "#" + blockNum.toLocaleString();
+
+        // Get gas price
+        const feeData = await provider.getFeeData();
+        const gasGwei = ethers.formatUnits(feeData.gasPrice || 0n, "gwei");
+        els.gasPrice.textContent = parseFloat(gasGwei).toFixed(2) + " Gwei";
+
+    }catch(err){
+        console.log("Error updating network info:", err);
+        els.networkStatus.textContent = "Error";
+        els.networkStatus.className = "network-info-value network-status-offline";
+    }
+}
+
+function startNetworkUpdates(){
+    // Update immediately
+    updateNetworkInfo();
+    
+    // Update every 5 seconds
+    networkUpdateInterval = setInterval(updateNetworkInfo, 5000);
+}
+
+function stopNetworkUpdates(){
+    if(networkUpdateInterval){
+        clearInterval(networkUpdateInterval);
+    }
+}
+
+/* ======================================================
+   IDENTICON GENERATOR (GitHub Style)
+====================================================== */
+
+function generateIdenticon(address){
+    const seed = address.toLowerCase().replace("0x","");
+    
+    // Deterministic foreground color from first 6 hex chars
+    const r = (parseInt(seed.substring(0,2),16) % 180) + 60;
+    const g = (parseInt(seed.substring(2,4),16) % 180) + 60;
+    const b = (parseInt(seed.substring(4,6),16) % 180) + 60;
+    const fgColor = `rgb(${r},${g},${b})`;
+    const bgColor = `rgba(${r},${g},${b},0.08)`;
+
+    // 5x5 grid, symmetrical
+    const grid = [];
+    for(let y=0; y<5; y++){
+        grid[y] = [];
+        for(let x=0; x<3; x++){
+            const idx = (y*3 + x) % seed.length;
+            const val = seed.charCodeAt(idx);
+            grid[y][x] = val % 2;
+        }
+        grid[y][3] = grid[y][1]; // mirror
+        grid[y][4] = grid[y][0]; // mirror
+    }
+
+    let svg = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">`;
+    svg += `<rect width="100" height="100" fill="${bgColor}" rx="12"/>`;
+    
+    const cellSize = 16;
+    const padding = 12;
+    
+    for(let y=0; y<5; y++){
+        for(let x=0; x<5; x++){
+            if(grid[y][x]){
+                svg += `<rect x="${padding + x*cellSize}" y="${padding + y*cellSize}" 
+                        width="${cellSize}" height="${cellSize}" 
+                        fill="${fgColor}" rx="3"/>`;
+            }
+        }
+    }
+    svg += `</svg>`;
+    return svg;
+}
+
+function applyIdenticon(address){
+    if(!address || address === "Not connected"){
+        els.profileAvatar.classList.remove("has-identicon");
+        els.avatarSvgContainer.innerHTML = "";
+        els.avatarLetter.style.display = "block";
+        return;
+    }
+    
+    els.profileAvatar.classList.add("has-identicon");
+    els.avatarLetter.style.display = "none";
+    els.avatarSvgContainer.innerHTML = generateIdenticon(address);
+}
+
+/* ======================================================
+   WALLET CARD FUNCTIONS
+====================================================== */
+
+window.copyAddress = function(){
+    const address = els.walletAddress.title;
+    if(address && address !== 'Not connected'){
+        navigator.clipboard.writeText(address).then(()=>{
+            const original = els.copyBtn.textContent;
+            els.copyBtn.textContent = '✅ Copied!';
+            setTimeout(()=>{
+                els.copyBtn.textContent = original;
+            }, 2000);
+        });
+    }
+}
+
+function updateWalletCard(address, balance = "0.00"){
+    if(address){
+        const shortAddr = `${address.slice(0,6)}...${address.slice(-4)}`;
+        els.walletAddress.textContent = shortAddr;
+        els.walletAddress.title = address;
+        
+        els.balanceDisplay.textContent = balance;
+        els.balanceInline.textContent = `💰 ${balance} zkLTC`;
+        
+        els.copyBtn.disabled = false;
+        
+        els.explorerBtn.href = 
+            `https://liteforge.explorer.caldera.xyz/address/${address}`;
+    }else{
+        els.walletAddress.textContent = 'Not connected';
+        els.walletAddress.title = '';
+        els.balanceDisplay.textContent = '0.00';
+        els.balanceInline.textContent = '💰 0.00 zkLTC';
+        
+        els.copyBtn.disabled = true;
+        
+        els.explorerBtn.href = '#';
+    }
+}
+
+async function fetchBalance(address){
+    try{
+        if(provider){
+            const balance = await provider.getBalance(address);
+            const formatted = ethers.formatEther(balance);
+            const display = parseFloat(formatted).toFixed(4);
+            els.balanceDisplay.textContent = display;
+            els.balanceInline.textContent = `💰 ${display} zkLTC`;
+            return display;
+        }
+    }catch(err){
+        console.log('Error fetching balance:', err);
+        els.balanceDisplay.textContent = '0.00';
+        els.balanceInline.textContent = '💰 0.00 zkLTC';
+        return "0.00";
+    }
+}
+
+function markUserActive(address){
+    localStorage.setItem(`user_${address}_last_active`, Date.now().toString());
+}
+
+function registerEarlyAdopter(address){
+    const key = 'early_adopters';
+    const adopters = JSON.parse(localStorage.getItem(key) || '[]');
+    if(!adopters.includes(address) && adopters.length < 100){
+        adopters.push(address);
+        localStorage.setItem(key, JSON.stringify(adopters));
+    }
+}
+
+/* ======================================================
+   MARKET SENTIMENT FUNCTIONS
+====================================================== */
+
+function calculateMarketSentiment(){
+    const bullishWords = ['bullish', 'moon', 'rocket', 'pump', 'gain', 'up', 'great', 'awesome', 'amazing', 'love'];
+    const bearishWords = ['bearish', 'dump', 'crash', 'down', 'bad', 'terrible', 'hate', 'sell'];
+    
+    let bullish = 0;
+    let bearish = 0;
+    let neutral = 0;
+    
+    const messages = document.querySelectorAll('.feed-text');
+    
+    messages.forEach(msg => {
+        const text = msg.textContent.toLowerCase();
+        let found = false;
+        
+        bullishWords.forEach(word => {
+            if(text.includes(word)){
+                bullish++;
+                found = true;
+            }
+        });
+        
+        if(!found){
+            bearishWords.forEach(word => {
+                if(text.includes(word)){
+                    bearish++;
+                    found = true;
+                }
+            });
+        }
+        
+        if(!found) neutral++;
+    });
+    
+    if(bullish === 0 && bearish === 0 && neutral === 0){
+        bullish = 58;
+        neutral = 27;
+        bearish = 15;
+    }
+    
+    const total = bullish + bearish + neutral;
+    const bullishPct = Math.round((bullish / total) * 100);
+    const neutralPct = Math.round((neutral / total) * 100);
+    const bearishPct = Math.round((bearish / total) * 100);
+    
+    document.getElementById('bullishCount').textContent = bullishPct + '%';
+    document.getElementById('neutralCount').textContent = neutralPct + '%';
+    document.getElementById('bearishCount').textContent = bearishPct + '%';
+    
+    const overallSentiment = bullishPct - bearishPct;
+    const sentimentValue = 50 + (overallSentiment / 2);
+    
+    document.getElementById('sentimentValue').textContent = Math.round(sentimentValue) + '%';
+    document.getElementById('sentimentFill').style.width = sentimentValue + '%';
+    
+    let emoji = '😐';
+    if(sentimentValue >= 70) emoji = '🚀';
+    else if(sentimentValue >= 60) emoji = '😊';
+    else if(sentimentValue >= 50) emoji = '🙂';
+    else if(sentimentValue >= 40) emoji = '😟';
+    else if(sentimentValue >= 30) emoji = '😰';
+    else emoji = '📉';
+    
+    document.getElementById('sentimentEmoji').textContent = emoji;
+    
+    const fill = document.getElementById('sentimentFill');
+    if(sentimentValue >= 60){
+        fill.style.background = 'linear-gradient(to right,#4caf50,#8bc34a)';
+    }else if(sentimentValue >= 40){
+        fill.style.background = 'linear-gradient(to right,#ff9800,#ffc107)';
+    }else{
+        fill.style.background = 'linear-gradient(to right,#f44336,#ff5722)';
+    }
+}
+
+/* ======================================================
+   HELPERS
+====================================================== */
+
+function showMsg(text,color=""){
+    els.msgStatus.innerHTML =
+        `<div style="
+            margin-bottom:16px;
+            padding:12px;
+            border-radius:10px;
+            background:${color==="error"?"#ffe5e5":"#eef4ff"};
+            color:${color==="error"?"#c62828":"#35528e"};
+            border:1px solid ${color==="error"?"#ffb8b8":"#cbdcff"};
+        ">${text}</div>`;
+}
+
+function clearMsg(){
+    els.msgStatus.innerHTML = "";
+}
+
+function escapeHtml(t){
+    const div = document.createElement("div");
+    div.textContent = t;
+    return div.innerHTML;
+}
+
+/* ======================================================
+   REACTIONS
+====================================================== */
+
+function getReactionKey(index,type){
+    return `reaction_${index}_${type}`;
+}
+
+function getUserReactionKey(index,type,address){
+    return `reaction_user_${index}_${type}_${address}`;
+}
+
+function getReactionCount(index,type){
+    return Number(localStorage.getItem(getReactionKey(index,type)) || 0);
+}
+
+function reacted(index,type,address){
+    return localStorage.getItem(
+        getUserReactionKey(index,type,address)
+    ) === "1";
+}
+
+window.react = function(index,type){
+
+    if(!currentUser){
+        alert("Connect wallet first.");
+        return;
+    }
+
+    const active = reacted(index,type,currentUser);
+
+    const reactionKey = getReactionKey(index,type);
+    const userKey = getUserReactionKey(index,type,currentUser);
+
+    let count = getReactionCount(index,type);
+
+    if(active){
+
+        count = Math.max(0,count-1);
+
+        localStorage.removeItem(userKey);
+
+    }else{
+
+        count++;
+
+        localStorage.setItem(userKey,"1");
+    }
+
+    localStorage.setItem(reactionKey,count);
+
+    loadMessages();
+};
+
+/* ======================================================
+   CHARACTER COUNT
+====================================================== */
+
+els.messageInput.addEventListener("input",()=>{
+
+    if(els.messageInput.value.length > 280){
+        els.messageInput.value =
+            els.messageInput.value.substring(0,280);
+    }
+
+    els.charCount.textContent =
+        els.messageInput.value.length;
+});
+
+/* ======================================================
+   AUTO CONNECT
+====================================================== */
+
+window.addEventListener("DOMContentLoaded",async()=>{
+
+    if(!window.ethereum){
+
+        els.messagesList.innerHTML =
+            `<div style="padding:20px;">Install MetaMask.</div>`;
+
+        return;
+    }
+
+    provider = new ethers.BrowserProvider(window.ethereum);
+
+    contract = new ethers.Contract(
+        CONFIG.contractAddress,
+        ABI,
+        provider
+    );
+
+    // Start network info updates
+    startNetworkUpdates();
+
+    try{
+
+        const accounts =
+            await window.ethereum.request({
+                method:"eth_accounts"
+            });
+
+        if(accounts.length){
+
+            currentUser = accounts[0].toLowerCase();
+
+            signer = await provider.getSigner();
+
+            contract = new ethers.Contract(
+                CONFIG.contractAddress,
+                ABI,
+                signer
+            );
+
+            connectedUI(accounts[0]);
+
+            await checkNetwork();
+        }
+
+    }catch(err){
+        console.log(err);
+    }
+
+    await loadStats();
+    await loadMessages();
+    setTimeout(calculateMarketSentiment, 1000);
+});
+
+/* ======================================================
+   CONNECT
+====================================================== */
+
+els.connectBtn.addEventListener("click",async()=>{
+
+    try{
+
+        const accounts =
+            await window.ethereum.request({
+                method:"eth_requestAccounts"
+            });
+
+        currentUser = accounts[0].toLowerCase();
+
+        provider = new ethers.BrowserProvider(window.ethereum);
+
+        signer = await provider.getSigner();
+
+        contract = new ethers.Contract(
+            CONFIG.contractAddress,
+            ABI,
+            signer
+        );
+
+        connectedUI(accounts[0]);
+
+        await checkNetwork();
+
+    }catch(err){
+
+        alert(err.message);
+    }
+});
+
+/* ======================================================
+   DISCONNECT
+====================================================== */
+
+els.disconnectBtn.addEventListener("click",()=>{
+    // Clear current user
+    currentUser = null;
+    signer = null;
+    contract = null;
+    
+    // Reset UI to disconnected state
+    disconnectedUI();
+});
+
+function connectedUI(address){
+    const shortAddr = `${address.slice(0,6)}...${address.slice(-4)}`;
+    
+    els.walletStatus.innerHTML = `✅ ${shortAddr}`;
+    els.walletStatus.className = 'status';
+    
+    els.networkBadge.classList.remove("hidden");
+    els.balanceInline.classList.remove("hidden");
+    
+    els.connectBtn.classList.add("hidden");
+    els.disconnectBtn.classList.remove("hidden");
+    
+    els.messageInput.disabled = false;
+    els.tokenAmount.disabled = false;
+    els.postBtn.disabled = false;
+    
+    // Update wallet card & profile
+    updateWalletCard(address);
+    fetchBalance(address);
+    applyIdenticon(address);
+    
+    els.profileName.textContent = "LitVM User";
+    els.walletType.textContent = "Connected";
+    els.profileDesc.textContent = "Decentralized social identity connected directly to the blockchain. Share memories forever on-chain.";
+    
+    markUserActive(address);
+    registerEarlyAdopter(address);
+}
+
+function disconnectedUI(){
+    els.walletStatus.textContent = "Not Connected";
+    els.walletStatus.className = 'status';
+    
+    els.networkBadge.classList.add("hidden");
+    els.balanceInline.classList.add("hidden");
+    
+    els.connectBtn.classList.remove("hidden");
+    els.disconnectBtn.classList.add("hidden");
+    els.switchNetworkBtn.classList.add("hidden");
+    
+    els.messageInput.disabled = true;
+    els.tokenAmount.disabled = true;
+    els.postBtn.disabled = true;
+    
+    // Reset wallet card & profile
+    updateWalletCard(null);
+    applyIdenticon(null);
+    
+    els.profileName.textContent = "LitVM User";
+    els.walletType.textContent = "Wallet Not Connected";
+    els.profileDesc.textContent = "Decentralized social identity connected directly to the blockchain. Share memories forever on-chain.";
+}
+
+/* ======================================================
+   NETWORK
+====================================================== */
+
+async function checkNetwork(){
+
+    if(!provider) return;
+    
+    const net = await provider.getNetwork();
+
+    if(Number(net.chainId) !== CONFIG.chainId){
+
+        els.switchNetworkBtn.classList.remove("hidden");
+
+    }else{
+
+        els.switchNetworkBtn.classList.add("hidden");
+    }
+}
+
+els.switchNetworkBtn.addEventListener("click",async()=>{
+
+    try{
+
+        await window.ethereum.request({
+            method:'wallet_switchEthereumChain',
+            params:[{
+                chainId:ethers.toBeHex(CONFIG.chainId)
+            }]
+        });
+
+    }catch(e){
+
+        if(e.code === 4902){
+
+            await window.ethereum.request({
+
+                method:'wallet_addEthereumChain',
+
+                params:[{
+
+                    chainId:ethers.toBeHex(CONFIG.chainId),
+
+                    chainName:'LitVM LiteForge',
+
+                    nativeCurrency:{
+                        name:'zkLTC',
+                        symbol:'zkLTC',
+                        decimals:18
+                    },
+
+                    rpcUrls:[
+                        'https://liteforge.rpc.caldera.xyz/http'
+                    ],
+
+                    blockExplorerUrls:[
+                        'https://liteforge.explorer.caldera.xyz'
+                    ]
+
+                }]
+            });
+        }
+    }
+
+    setTimeout(checkNetwork,1000);
+});
+
+/* ======================================================
+   POST
+====================================================== */
+
+els.postBtn.addEventListener("click",async()=>{
+
+    const text = els.messageInput.value.trim();
+
+    if(!text){
+        return alert("Write something.");
+    }
+
+    if(text.length > 280){
+        return alert("Maximum 280 characters.");
+    }
+
+    try{
+
+        els.postBtn.disabled = true;
+
+        showMsg("Sending transaction...");
+
+        const amount =
+            els.tokenAmount.value.trim();
+
+        const value =
+            amount ? ethers.parseEther(amount) : 0n;
+
+        let tx;
+
+        if(value > 0n){
+
+            tx =
+                await contract.postMessageWithToken(
+                    text,
+                    { value }
+                );
+
+        }else{
+
+            tx =
+                await contract.postMessage(text);
+        }
+
+        showMsg("Confirming transaction...");
+
+        await tx.wait();
+
+        showMsg("✅ Message posted successfully!");
+
+        els.messageInput.value = "";
+        els.tokenAmount.value = "";
+        els.charCount.textContent = "0";
+
+        await loadStats();
+        await loadMessages();
+        setTimeout(calculateMarketSentiment, 500);
+
+        setTimeout(clearMsg,4000);
+
+    }catch(err){
+
+        showMsg(
+            "❌ " + (err.shortMessage || err.message),
+            "error"
+        );
+
+    }finally{
+
+        els.postBtn.disabled = false;
+    }
+});
+
+/* ======================================================
+   STATS
+====================================================== */
+
+async function loadStats(){
+
+    try{
+
+        const total =
+            await contract.totalMessages();
+
+        els.totalCount.textContent =
+            Number(total).toLocaleString();
+
+    }catch(err){
+        console.log(err);
+    }
+}
+
+/* ======================================================
+   LOAD MESSAGES
+====================================================== */
+
+async function loadMessages(){
+
+    try{
+
+        els.messagesList.innerHTML =
+            `<div style="padding:20px;">Loading...</div>`;
+
+        const total =
+            Number(await contract.getMessageCount());
+
+        if(total === 0){
+
+            els.messagesList.innerHTML =
+                `<div style="padding:20px;">
+                    No messages yet.
+                </div>`;
+
+            return;
+        }
+
+        const start =
+            Math.max(0,total-currentOffset-LIMIT);
+
+        const end =
+            total-currentOffset;
+
+        let messages = [];
+
+        for(let i=end-1;i>=start;i--){
+
+            const data =
+                await contract.getMessage(i);
+
+            messages.push({
+                index:i,
+                addr:data[0],
+                text:data[1],
+                timestamp:data[2],
+                amount:data[3]
+            });
+        }
+
+        let html = "";
+
+        let totalTokens = 0n;
+
+        for(const m of messages){
+
+            totalTokens += BigInt(m.amount || 0n);
+
+            const date =
+                new Date(
+                    Number(m.timestamp) * 1000
+                ).toLocaleString();
+
+            const shareText =
+                encodeURIComponent(
+                    `@LitecoinVM ${m.text}`
+                );
+
+            const shareUrl =
+                encodeURIComponent(location.href);
+
+            const twitter =
+                `https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`;
+
+            const initials =
+                m.addr.substring(2,4).toUpperCase();
+
+            const types = [
+                ["❤️","heart"],
+                ["😍","love"],
+                ["👍","like"],
+                ["🔥","power"]
+            ];
+
+            let reactions = "";
+
+            for(const [emoji,type] of types){
+
+                const count =
+                    getReactionCount(m.index,type);
+
+                const active =
+                    currentUser &&
+                    reacted(m.index,type,currentUser);
+
+                reactions += `
+                    <button
+                        class="react-btn ${active ? "active":""}"
+                        onclick="react(${m.index},'${type}')"
+                    >
+                        ${emoji} ${count}
+                    </button>
+                `;
+            }
+
+            html += `
+
+            <div class="feed-card">
+
+                <div class="feed-top">
+
+                    <div class="feed-user">
+
+                        <div class="feed-avatar">
+                            ${initials}
+                        </div>
+
+                        <div>
+
+                            <div class="feed-address">
+                                ${m.addr.slice(0,6)}...${m.addr.slice(-4)}
+                            </div>
+
+                            <div class="feed-time">
+                                ${date}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="feed-text">
+                    ${escapeHtml(m.text)}
+                </div>
+
+                ${
+                    Number(m.amount) > 0
+                    ?
+                    `<div class="amount">
+                        💎 ${ethers.formatEther(m.amount)} zkLTC
+                    </div>`
+                    :
+                    ""
+                }
+
+                <br>
+
+                <a
+                    class="share-x"
+                    href="${twitter}"
+                    target="_blank"
+                >
+                    Share on X
+                </a>
+
+                <div class="reactions">
+                    ${reactions}
+                </div>
+
+            </div>
+            `;
+        }
+
+        els.messagesList.innerHTML =
+            `<div class="feed">${html}</div>`;
+
+        els.totalTokens.textContent =
+            ethers.formatEther(totalTokens).substring(0,8);
+
+        els.currentPage.textContent =
+            Math.floor(currentOffset/LIMIT)+1;
+
+        els.pageInfo.textContent =
+            `Page ${Math.floor(currentOffset/LIMIT)+1}`;
+
+        els.pagination.classList.remove("hidden");
+
+        els.prevBtn.disabled =
+            currentOffset === 0;
+
+    }catch(err){
+
+        console.log(err);
+
+        els.messagesList.innerHTML =
+            `<div style="padding:20px;color:red;">
+                Error loading messages.
+            </div>`;
+    }
+}
+
+/* ======================================================
+   PAGINATION
+====================================================== */
+
+els.prevBtn.addEventListener("click",()=>{
+
+    if(currentOffset >= LIMIT){
+
+        currentOffset -= LIMIT;
+
+        loadMessages();
+    }
+});
+
+els.nextBtn.addEventListener("click",()=>{
+
+    currentOffset += LIMIT;
+
+    loadMessages();
+});
+
+/* ======================================================
+   EVENTS
+====================================================== */
+
+if(window.ethereum){
+
+    window.ethereum.on(
+        "accountsChanged",
+        (accounts)=>{
+            if(accounts.length === 0){
+                disconnectedUI();
+            }else{
+                location.reload();
+            }
+        }
+    );
+
+    window.ethereum.on(
+        "chainChanged",
+        ()=>location.reload()
+    );
+}
+
 </script>
 
 </body>
