@@ -7,7 +7,7 @@
 
 <style>
 /* =========================================================
-    🌐 ORKUT STYLE WEB3 SOCIAL UI — LITVM EDITION
+   🌐 ORKUT STYLE WEB3 SOCIAL UI — LITVM EDITION
 ========================================================= */
 
 :root{
@@ -21,6 +21,8 @@
     --muted:#6b7280;
     --hover:#5f7ec7;
     --shadow:0 2px 8px rgba(0,0,0,0.08);
+    --danger:#ef4444;
+    --danger-hover:#dc2626;
 }
 
 *{
@@ -37,7 +39,7 @@ body{
 }
 
 /* =========================================================
-    HEADER
+   HEADER
 ========================================================= */
 
 .top-header{
@@ -69,8 +71,8 @@ body{
 }
 
 .logo img{
-    width:124px; 
-    height:124px; 
+    width:62px;
+    height:62px;
     object-fit:contain;
 }
 
@@ -82,7 +84,7 @@ body{
 }
 
 /* =========================================================
-    TICKER
+   TICKER
 ========================================================= */
 
 .ticker-wrap{
@@ -105,28 +107,54 @@ body{
     font-size:15px;
 }
 
+.ticker:hover{
+    animation-play-state:paused;
+}
+
 .ticker span{
     display:inline-block;
     padding:0 40px;
 }
 
 @keyframes ticker{
-    from{transform:translateX(100%)}
+    from{transform:translateX(0)}
     to{transform:translateX(-100%)}
 }
 
 /* =========================================================
-    MAIN LAYOUT
+   MAIN LAYOUT
 ========================================================= */
 
 .main{
     max-width:1400px;
-    margin:180px auto 40px auto;
+    margin:140px auto 40px auto;
     padding:0 16px;
+
     display:grid;
     grid-template-columns:260px minmax(0,1fr) 260px;
     gap:20px;
+
+    width:100%;
 }
+
+/* IMPORTANT FIX */
+.main,
+.center-column,
+.card,
+.feed-card{
+    min-width:0;
+}
+
+.left-column,
+.right-column{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+/* =========================================================
+   CARDS
+========================================================= */
 
 .card{
     background:var(--card);
@@ -134,7 +162,6 @@ body{
     border-radius:16px;
     overflow:hidden;
     box-shadow:var(--shadow);
-    margin-bottom:20px;
 }
 
 .card-header{
@@ -150,146 +177,2189 @@ body{
 }
 
 /* =========================================================
-    INTERFACES
+   PROFILE & IDENTICON
+========================================================= */
+
+.profile{
+    text-align:center;
+}
+
+.avatar-container{
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:4px solid #dbe7ff;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+    background:linear-gradient(135deg,#6B8DD6,#8FA8E8);
+    transition:all 0.3s ease;
+}
+
+.avatar-container.has-identicon{
+    background:#f8fbff;
+    border-color:#c5d7ff;
+}
+
+#avatarSvgContainer{
+    width:85%;
+    height:85%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    z-index:1;
+    animation:identiconFade 0.4s ease-out;
+}
+
+@keyframes identiconFade{
+    from{opacity:0; transform:scale(0.9)}
+    to{opacity:1; transform:scale(1)}
+}
+
+#avatarSvgContainer svg{
+    width:100%;
+    height:100%;
+    filter:drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+.avatar-letter{
+    color:white;
+    font-size:42px;
+    font-weight:bold;
+    text-shadow:0 2px 4px rgba(0,0,0,0.2);
+    z-index:1;
+}
+
+.profile h2{
+    margin-top:16px;
+    font-size:22px;
+}
+
+.profile .wallet-type{
+    display:inline-block;
+    margin-top:8px;
+    padding:4px 12px;
+    background:#f0f4ff;
+    border-radius:20px;
+    font-size:12px;
+    color:#4767b0;
+    font-weight:bold;
+}
+
+.profile p{
+    margin-top:10px;
+    color:var(--muted);
+    line-height:1.5;
+    font-size:14px;
+}
+
+/* =========================================================
+   BUTTONS
 ========================================================= */
 
 button{
-    background:white;
-    color:var(--blue-main);
-    border:1px solid white;
-    padding:10px 20px;
-    border-radius:20px;
+    border:none;
+    background:linear-gradient(to bottom,#8FA8E8,#6B8DD6);
+    color:white;
     font-weight:bold;
+    border-radius:10px;
     cursor:pointer;
-    transition: 0.2s;
+    transition:.2s;
+    font-size:14px;
 }
 
 button:hover{
-    background:var(--blue-light);
+    background:linear-gradient(to bottom,#7e9be0,#5d7dcb);
 }
 
-.btn-post{
-    background:var(--blue-main);
-    color:white;
+button:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+}
+
+button.danger{
+    background:linear-gradient(to bottom,#f87171,#ef4444);
+}
+
+button.danger:hover{
+    background:linear-gradient(to bottom,#ef4444,#dc2626);
+}
+
+button.secondary{
+    background:linear-gradient(to bottom,#94a3b8,#64748b);
+}
+
+button.secondary:hover{
+    background:linear-gradient(to bottom,#64748b,#475569);
+}
+
+.full-btn{
     width:100%;
-    margin-top:10px;
 }
 
-.hidden { display: none; }
+/* =========================================================
+   FORMS
+========================================================= */
 
-#walletAddress {
-    font-size: 11px;
-    word-break: break-all;
-    background: #f0f4ff;
-    padding: 8px;
-    border-radius: 8px;
-    margin-top: 10px;
+textarea,
+input{
+    width:100%;
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:12px;
+    font-size:15px;
+    background:#fff;
+    color:var(--text);
 }
 
+textarea{
+    resize:vertical;
+    min-height:120px;
+}
+
+textarea:focus,
+input:focus{
+    outline:none;
+    border-color:var(--blue-main);
+}
+
+.form-group{
+    margin-bottom:16px;
+}
+
+.label{
+    font-weight:bold;
+    margin-bottom:8px;
+    display:block;
+}
+
+.char-info{
+    margin-top:8px;
+    font-size:13px;
+    color:var(--muted);
+    text-align:right;
+}
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.wallet-row{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    align-items:center;
+}
+
+.status{
+    background:#eef4ff;
+    color:#35528e;
+    border:1px solid #c5d7ff;
+    padding:10px 14px;
+    border-radius:10px;
+    font-size:14px;
+    font-weight:bold;
+}
+
+.network{
+    background:#d7f7df;
+    color:#137333;
+}
+
+.balance-display-inline{
+    background:#f0fdf4;
+    color:#166534;
+    border:1px solid #bbf7d0;
+    padding:10px 14px;
+    border-radius:10px;
+    font-size:14px;
+    font-weight:bold;
+}
+
+/* =========================================================
+   STATS
+========================================================= */
+
+.stats-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+    gap:16px;
+}
+
+.stat{
+    background:#f7faff;
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:16px;
+    text-align:center;
+}
+
+.stat-title{
+    font-size:13px;
+    color:var(--muted);
+}
+
+.stat-value{
+    font-size:26px;
+    font-weight:bold;
+    margin-top:8px;
+    color:#4767b0;
+}
+
+/* =========================================================
+   MESSAGES
+========================================================= */
+
+.feed{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+.feed-card{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:18px;
+    transition:.2s;
+    overflow-wrap:anywhere;
+    word-break:break-word;
+}
+
+.feed-card:hover{
+    transform:translateY(-2px);
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+
+.feed-top{
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-bottom:14px;
+}
+
+.feed-user{
+    display:flex;
+    gap:12px;
+    align-items:center;
+}
+
+.feed-avatar{
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#8FA8E8,#6B8DD6);
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+    font-size:18px;
+}
+
+.feed-address{
+    font-weight:bold;
+    color:#4d6cb5;
+}
+
+.feed-time{
+    color:var(--muted);
+    font-size:13px;
+}
+
+.feed-text{
+    line-height:1.7;
+    font-size:15px;
+    margin-bottom:16px;
+}
+
+.amount{
+    display:inline-block;
+    background:#eef4ff;
+    color:#3f5f9f;
+    border-radius:20px;
+    padding:8px 14px;
+    font-size:13px;
+    font-weight:bold;
+}
+
+/* =========================================================
+   REACTIONS
+========================================================= */
+
+.reactions{
+    margin-top:16px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.react-btn{
+    border:1px solid var(--border);
+    background:#f8fbff;
+    color:#4d5c7a;
+    border-radius:30px;
+    padding:8px 14px;
+    font-size:13px;
+    display:flex;
+    gap:6px;
+    align-items:center;
+}
+
+.react-btn.active{
+    background:#dce8ff;
+    border-color:#7ea0e7;
+}
+
+/* =========================================================
+   SHARE
+========================================================= */
+
+.share-x{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    margin-top:14px;
+    text-decoration:none;
+    color:#4668b3;
+    font-weight:bold;
+    font-size:14px;
+}
+
+/* =========================================================
+   COMMUNITY
+========================================================= */
+
+.community{
+    padding:10px 0;
+    border-bottom:1px solid #edf2ff;
+}
+
+.community:last-child{
+    border-bottom:none;
+}
+
+.community strong{
+    display:block;
+    margin-bottom:4px;
+}
+
+/* =========================================================
+   COMMUNITY LINKS CARD
+========================================================= */
+
+.community-links{
+    padding:12px 0;
+}
+
+.community-link-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px;
+    margin-bottom:10px;
+    background:linear-gradient(135deg,#f0f4ff,#e8efff);
+    border:1px solid #c5d7ff;
+    border-radius:12px;
+    text-decoration:none;
+    color:#374151;
+    transition:all 0.3s ease;
+}
+
+.community-link-item:hover{
+    background:linear-gradient(135deg,#e0e8ff,#d0dcff);
+    border-color:#8FA8E8;
+    transform:translateX(4px);
+    box-shadow:0 4px 12px rgba(107,141,214,0.2);
+}
+
+.community-link-icon{
+    font-size:24px;
+    width:32px;
+    text-align:center;
+}
+
+.community-link-content{
+    flex:1;
+}
+
+.community-link-title{
+    font-weight:bold;
+    color:#4767b0;
+    font-size:14px;
+    margin-bottom:2px;
+}
+
+.community-link-url{
+    font-size:11px;
+    color:#6b7280;
+    word-break:break-all;
+}
+
+.community-info-text{
+    font-size:13px;
+    color:#6b7280;
+    line-height:1.6;
+    margin-bottom:16px;
+    padding:0 4px;
+}
+
+/* =========================================================
+   NETWORK INFO CARD STYLES
+========================================================= */
+
+.network-info-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px;
+    margin-bottom:10px;
+    background:linear-gradient(135deg,#f8fbff,#f0f4ff);
+    border:1px solid #dce8ff;
+    border-radius:10px;
+}
+
+.network-info-label{
+    font-size:12px;
+    color:#6b7280;
+    font-weight:bold;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.network-info-value{
+    font-size:13px;
+    font-weight:bold;
+    color:#4767b0;
+    font-family:monospace;
+}
+
+.network-status-online{
+    color:#10b981;
+}
+
+.network-status-offline{
+    color:#ef4444;
+}
+
+.network-refresh-btn{
+    width:100%;
+    margin-top:8px;
+    padding:8px;
+    font-size:12px;
+}
+
+/* =========================================================
+   LITVM TESTNET CARD STYLES
+========================================================= */
+
+.testnet-card-content{
+    text-align:center;
+    padding:10px 0;
+}
+
+.testnet-emoji{
+    font-size:48px;
+    margin-bottom:12px;
+    display:block;
+}
+
+.testnet-title{
+    color:#4767b0;
+    margin-bottom:10px;
+    font-size:16px;
+}
+
+.testnet-text{
+    color:#6b7280;
+    font-size:13px;
+    line-height:1.6;
+    margin-bottom:12px;
+}
+
+.testnet-tip-box{
+    background:linear-gradient(135deg,#e0f2fe,#dbeafe);
+    padding:12px;
+    border-radius:10px;
+    border:1px solid #bae6fd;
+}
+
+.testnet-tip-label{
+    font-size:12px;
+    color:#0369a1;
+    font-weight:bold;
+    margin-bottom:4px;
+}
+
+.testnet-tip-text{
+    font-size:11px;
+    color:#075985;
+    line-height:1.5;
+}
+
+/* =========================================================
+   WALLET CARD STYLES
+========================================================= */
+
+.wallet-info-section{
+    margin-bottom:16px;
+}
+
+.wallet-label{
+    font-size:12px;
+    color:#6b7280;
+    margin-bottom:6px;
+    font-weight:bold;
+}
+
+.address-box{
+    display:flex;
+    gap:8px;
+    align-items:center;
+}
+
+.address-display{
+    flex:1;
+    background:#f0f4ff;
+    padding:10px;
+    border-radius:8px;
+    font-family:monospace;
+    font-size:13px;
+    color:#4767b0;
+    word-break:break-all;
+}
+
+.btn-small{
+    padding:8px 12px;
+    white-space:nowrap;
+    font-size:13px;
+}
+
+.balance-card{
+    padding:14px;
+    background:linear-gradient(135deg,#f0f4ff,#e0e8ff);
+    border-radius:12px;
+    border:1px solid #c5d7ff;
+}
+
+.balance-amount{
+    font-size:28px;
+    font-weight:bold;
+    color:#4767b0;
+    margin-bottom:12px;
+}
+
+/* =========================================================
+   MARKET SENTIMENT STYLES
+========================================================= */
+
+.sentiment-card{
+    padding:14px;
+    background:linear-gradient(135deg,#fff8f0,#fff3e0);
+    border-radius:12px;
+    border:1px solid #ffe0b2;
+}
+
+.sentiment-title{
+    font-size:13px;
+    color:#6b7280;
+    margin-bottom:12px;
+    font-weight:bold;
+}
+
+.sentiment-main{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:14px;
+    padding:12px;
+    background:white;
+    border-radius:10px;
+}
+
+.sentiment-emoji{
+    font-size:42px;
+}
+
+.sentiment-info{
+    text-align:right;
+}
+
+.sentiment-label{
+    font-size:12px;
+    color:#6b7280;
+    margin-bottom:4px;
+}
+
+.sentiment-value{
+    font-size:24px;
+    font-weight:bold;
+    color:#f57c00;
+}
+
+.sentiment-bar{
+    height:8px;
+    background:#ffe0b2;
+    border-radius:4px;
+    overflow:hidden;
+    margin-bottom:12px;
+}
+
+.sentiment-fill{
+    height:100%;
+    background:linear-gradient(to right,#ff9800,#ffc107);
+    border-radius:4px;
+    transition:width 0.5s ease;
+}
+
+.sentiment-stats{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:8px;
+    margin-top:12px;
+}
+
+.sentiment-stat{
+    text-align:center;
+    padding:8px;
+    background:white;
+    border-radius:8px;
+}
+
+.sentiment-stat-value{
+    font-size:16px;
+    font-weight:bold;
+    margin-bottom:4px;
+}
+
+.sentiment-stat.bullish .sentiment-stat-value{
+    color:#4caf50;
+}
+
+.sentiment-stat.neutral .sentiment-stat-value{
+    color:#ff9800;
+}
+
+.sentiment-stat.bearish .sentiment-stat-value{
+    color:#f44336;
+}
+
+.sentiment-stat-label{
+    font-size:10px;
+    color:#6b7280;
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.footer{
+    margin-top:40px;
+    text-align:center;
+    color:#6b7280;
+    font-size:14px;
+    padding:20px;
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:1100px){
+
+    .main{
+        grid-template-columns:1fr;
+    }
+
+    .left-column,
+    .right-column{
+        order:2;
+    }
+
+    .center-column{
+        order:1;
+    }
+
+}
+
+@media(max-width:700px){
+
+    .header-inner{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .logo h1{
+        font-size:24px;
+    }
+
+    .main{
+        margin-top:180px;
+    }
+
+    .ticker-wrap{
+        width:100%;
+    }
+
+}
 </style>
 </head>
+
 <body>
+
+<!-- ======================================================
+     HEADER
+====================================================== -->
 
 <header class="top-header">
     <div class="header-inner">
+
         <div class="logo">
             <img src="./LITVM 2.png" alt="LitVM Logo">
             <h1>Guestbook LitVM</h1>
         </div>
+
         <div class="ticker-wrap">
             <div class="ticker">
                 <span>🚀 Live on LitVM blockchain</span>
                 <span>⚡ zkLTC social interactions powered by decentralized infrastructure</span>
                 <span>💬 Share permanent memories directly on-chain forever</span>
+                <span>🔗 Fast Layer2 blockchain experience</span>
+                <span>🌐 Decentralized social guestbook powered by Web3</span>
             </div>
         </div>
-        <button id="connectBtn">Connect Wallet</button>
+
     </div>
 </header>
 
+<!-- ======================================================
+     MAIN
+====================================================== -->
+
 <div class="main">
+
     <!-- LEFT -->
-    <aside>
+    <aside class="left-column">
+
         <div class="card">
             <div class="card-header">👤 Profile</div>
-            <div class="card-body" style="text-align:center;">
-                <div style="width:80px; height:80px; background:#dfe9ff; border-radius:50%; margin:0 auto 10px; display:flex; align-items:center; justify-content:center; font-size:30px;">👤</div>
-                <div id="walletAddress">Disconnected</div>
+            <div class="card-body profile">
+
+                <!-- AVATAR CONTAINER -->
+                <div id="profileAvatar" class="avatar-container">
+                    <div class="avatar-letter" id="avatarLetter">L</div>
+                    <div id="avatarSvgContainer"></div>
+                </div>
+
+                <h2 id="profileName">LitVM User</h2>
+                <div class="wallet-type" id="walletType">Wallet Not Connected</div>
+
+                <p id="profileDesc">
+                    Decentralized social identity connected directly to the blockchain.
+                    Share memories forever on-chain.
+                </p>
+
             </div>
         </div>
+
+        <!-- NETWORK INFO CARD -->
+        <div class="card">
+            <div class="card-header">⛽ Network Info</div>
+            <div class="card-body">
+                
+                <div class="network-info-item">
+                    <div class="network-info-label">
+                        <span>🟢</span> Network Status
+                    </div>
+                    <div id="networkStatus" class="network-info-value network-status-offline">
+                        Offline
+                    </div>
+                </div>
+
+                <div class="network-info-item">
+                    <div class="network-info-label">
+                        <span>🔢</span> Block Number
+                    </div>
+                    <div id="blockNumber" class="network-info-value">
+                        -
+                    </div>
+                </div>
+
+                <div class="network-info-item">
+                    <div class="network-info-label">
+                        <span>⚡</span> Gas Price
+                    </div>
+                    <div id="gasPrice" class="network-info-value">
+                        -
+                    </div>
+                </div>
+
+                <div class="network-info-item">
+                    <div class="network-info-label">
+                        <span>⏱️</span> Block Time
+                    </div>
+                    <div id="blockTime" class="network-info-value">
+                        ~2s
+                    </div>
+                </div>
+
+                <button id="refreshNetworkBtn" class="network-refresh-btn" onclick="refreshNetworkInfo()">
+                    🔄 Refresh
+                </button>
+
+            </div>
+        </div>
+
+        <!-- LITVM TESTNET CARD -->
+        <div class="card">
+            <div class="card-header">🚀 LitVM Testnet</div>
+            <div class="card-body">
+                
+                <div class="testnet-card-content">
+                    <span class="testnet-emoji">🌟</span>
+                    <h3 class="testnet-title">Testnet Active!</h3>
+                    <p class="testnet-text">
+                        Experience Layer2 speed with zkLTC. 
+                        Fast, cheap and decentralized!
+                    </p>
+                    <div class="testnet-tip-box">
+                        <div class="testnet-tip-label">💡 Tip</div>
+                        <div class="testnet-tip-text">
+                            Join the Web3 revolution and leave your permanent message on the blockchain!
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- WALLET INFO CARD -->
+        <div class="card">
+            <div class="card-header">💼 Wallet Info</div>
+            <div class="card-body">
+                
+                <!-- Wallet Address -->
+                <div class="wallet-info-section">
+                    <div class="wallet-label">📍 Wallet Address</div>
+                    <div class="address-box">
+                        <div id="walletAddress" class="address-display">
+                            Not connected
+                        </div>
+                        <button id="copyBtn" onclick="copyAddress()" class="btn-small" disabled title="Copy Address">
+                            📋 Copy
+                        </button>
+                        <a id="explorerBtn" href="#" target="_blank" class="btn-small" title="View on Explorer" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;">
+                            🔍
+                        </a>
+                    </div>
+                </div>
+
+                <!-- zkLTC Balance -->
+                <div class="wallet-info-section">
+                    <div class="wallet-label">💰 zkLTC Balance</div>
+                    <div class="balance-card">
+                        <div id="balanceDisplay" class="balance-amount">
+                            0.00
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
     </aside>
 
     <!-- CENTER -->
-    <main>
+    <main class="center-column">
+
+        <!-- WALLET -->
         <div class="card">
-            <div class="card-header">💬 Post a Message</div>
+            <div class="card-header">🔗 Wallet Connection</div>
+
             <div class="card-body">
-                <textarea id="messageInput" style="width:100%; height:100px; border:1px solid var(--border); border-radius:12px; padding:10px; resize:none;" placeholder="Write something on the blockchain..."></textarea>
-                <button id="postBtn" class="btn-post">Post Message</button>
+
+                <div class="wallet-row">
+
+                    <div id="walletStatus" class="status">
+                        Not Connected
+                    </div>
+
+                    <div id="balanceInline" class="balance-display-inline hidden">
+                        💰 0.00 zkLTC
+                    </div>
+
+                    <div id="networkBadge" class="status network hidden">
+                        LitVM • Chain 4441
+                    </div>
+
+                    <button id="connectBtn">
+                        Connect Wallet
+                    </button>
+
+                    <button id="disconnectBtn" class="danger hidden">
+                        🔌 Disconnect
+                    </button>
+
+                    <button id="switchNetworkBtn" class="secondary hidden">
+                        Switch to LitVM
+                    </button>
+
+                </div>
+
             </div>
         </div>
 
-        <div id="feedArea">
-            <div class="card">
-                <div class="card-body" style="text-align:center; color:var(--muted);">
-                    Connect your wallet to see the messages.
+        <!-- SHARE -->
+        <div class="card">
+            <div class="card-header">💬 Share Something</div>
+
+            <div class="card-body">
+
+                <div style="margin-bottom:14px;color:#6b7280;font-size:14px;">
+                    All messages are permanent on-chain and limited to a maximum of 280 characters.
                 </div>
+
+                <div id="msgStatus"></div>
+
+                <div class="form-group">
+                    <label class="label">
+                        Your Message
+                    </label>
+
+                    <textarea
+                        id="messageInput"
+                        maxlength="280"
+                        placeholder="Write something permanent on-chain..."
+                        disabled
+                    ></textarea>
+
+                    <div class="char-info">
+                        <span id="charCount">0</span>/280
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="label">
+                        Optional zkLTC Amount
+                    </label>
+
+                    <input
+                        type="number"
+                        id="tokenAmount"
+                        placeholder="0.00"
+                        step="0.000000000000000001"
+                        min="0"
+                        disabled
+                    />
+                </div>
+
+                <button id="postBtn" disabled>
+                    🚀 Post Message
+                </button>
+
             </div>
         </div>
+
+        <!-- STATS -->
+        <div class="card">
+            <div class="card-header">📊 Guestbook Stats</div>
+
+            <div class="card-body">
+
+                <div class="stats-grid">
+
+                    <div class="stat">
+                        <div class="stat-title">Total Messages</div>
+                        <div class="stat-value" id="totalCount">0</div>
+                    </div>
+
+                    <div class="stat">
+                        <div class="stat-title">Tokens Sent</div>
+                        <div class="stat-value" id="totalTokens">0</div>
+                    </div>
+
+                    <div class="stat">
+                        <div class="stat-title">Current Page</div>
+                        <div class="stat-value" id="currentPage">1</div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- FEED -->
+        <div class="card">
+            <div class="card-header">📜 Recent Messages</div>
+
+            <div class="card-body">
+
+                <div id="messagesList">
+                    Loading messages...
+                </div>
+
+                <div
+                    id="pagination"
+                    class="hidden"
+                    style="margin-top:20px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap;"
+                >
+
+                    <button id="prevBtn">
+                        ⬅ Previous
+                    </button>
+
+                    <div
+                        id="pageInfo"
+                        style="display:flex;align-items:center;font-weight:bold;"
+                    >
+                        Page 1
+                    </div>
+
+                    <button id="nextBtn">
+                        Next ➡
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="footer">
+            Built exclusively for LitVM • Web3 Social Guestbook
+        </div>
+
     </main>
 
     <!-- RIGHT -->
-    <aside>
+    <aside class="right-column">
+
         <div class="card">
-            <div class="card-header">📊 Stats</div>
+            <div class="card-header">🌐 Communities</div>
+
             <div class="card-body">
-                <p style="font-size:13px;">Network: LitVM</p>
-                <p style="font-size:13px;">Status: Online</p>
+
+                <div class="community">
+                    <strong>LitVM Builders</strong>
+                    Web3 developers building decentralized applications.
+                </div>
+
+                <div class="community">
+                    <strong>zkLTC Community</strong>
+                    Blockchain users exploring Layer2 Litecoin ecosystems.
+                </div>
+
+                <div class="community">
+                    <strong>Blockchain Memories</strong>
+                    Permanent messages and decentralized social history.
+                </div>
+
             </div>
         </div>
+
+        <div class="card">
+            <div class="card-header">ℹ About Project</div>
+
+            <div class="card-body">
+
+                <p style="line-height:1.7;font-size:14px;color:#6b7280;">
+                    Guestbook LitVM is a decentralized social guestbook built on LitVM.
+                    Messages are stored permanently on-chain using zkLTC infrastructure.
+                </p>
+
+            </div>
+        </div>
+
+        <!-- COMMUNITY LINKS CARD -->
+        <div class="card">
+            <div class="card-header">🔗 Stay Connected</div>
+            <div class="card-body">
+                
+                <div class="community-info-text">
+                    To stay informed, also visit our communities:
+                </div>
+
+                <div class="community-links">
+                    
+                    <a href="https://www.litvm.com/" target="_blank" class="community-link-item">
+                        <div class="community-link-icon">🌐</div>
+                        <div class="community-link-content">
+                            <div class="community-link-title">Website</div>
+                            <div class="community-link-url">www.litvm.com</div>
+                        </div>
+                    </a>
+
+                    <a href="https://x.com/LitecoinVM" target="_blank" class="community-link-item">
+                        <div class="community-link-icon">🐦</div>
+                        <div class="community-link-content">
+                            <div class="community-link-title">X (Twitter)</div>
+                            <div class="community-link-url">@LitecoinVM</div>
+                        </div>
+                    </a>
+
+                    <a href="https://t.me/litecoinvm" target="_blank" class="community-link-item">
+                        <div class="community-link-icon">✈️</div>
+                        <div class="community-link-content">
+                            <div class="community-link-title">Telegram</div>
+                            <div class="community-link-url">t.me/litecoinvm</div>
+                        </div>
+                    </a>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- MARKET SENTIMENT CARD -->
+        <div class="card">
+            <div class="card-header">📊 Market Sentiment</div>
+            <div class="card-body">
+                
+                <div class="sentiment-card">
+                    <div class="sentiment-title">⚡ LitVM Community Sentiment</div>
+                    
+                    <div class="sentiment-main">
+                        <div class="sentiment-emoji" id="sentimentEmoji">😊</div>
+                        <div class="sentiment-info">
+                            <div class="sentiment-label">Overall Mood</div>
+                            <div class="sentiment-value" id="sentimentValue">65%</div>
+                        </div>
+                    </div>
+
+                    <div class="sentiment-bar">
+                        <div class="sentiment-fill" id="sentimentFill" style="width:65%"></div>
+                    </div>
+
+                    <div class="sentiment-stats">
+                        <div class="sentiment-stat bullish">
+                            <div class="sentiment-stat-value" id="bullishCount">58%</div>
+                            <div class="sentiment-stat-label">🚀 Bullish</div>
+                        </div>
+                        <div class="sentiment-stat neutral">
+                            <div class="sentiment-stat-value" id="neutralCount">27%</div>
+                            <div class="sentiment-stat-label">😐 Neutral</div>
+                        </div>
+                        <div class="sentiment-stat bearish">
+                            <div class="sentiment-stat-value" id="bearishCount">15%</div>
+                            <div class="sentiment-stat-label">📉 Bearish</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
     </aside>
+
 </div>
 
-<!-- CORREÇÃO DA CONEXÃO DA CARTEIRA -->
+<!-- ======================================================
+     SCRIPT
+====================================================== -->
+
 <script type="module">
-    // Importando a versão estável da ethers.js via CDN (ESM)
-    import { ethers } from "https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.min.js";
 
-    const connectBtn = document.getElementById('connectBtn');
-    const walletAddress = document.getElementById('walletAddress');
+import { ethers } from "https://esm.run/ethers@6.13.0";
 
-    async function connectWallet() {
-        if (window.ethereum) {
-            try {
-                const provider = new ethers.BrowserProvider(window.ethereum);
-                const accounts = await provider.send("eth_requestAccounts", []);
-                const address = accounts[0];
-                
-                walletAddress.innerText = address;
-                connectBtn.innerText = "Connected";
-                console.log("Connected to:", address);
-            } catch (error) {
-                console.error("User denied account access", error);
-                alert("Connection failed!");
+/* ======================================================
+   CONTRACT CONFIG
+====================================================== */
+
+const CONFIG = {
+    contractAddress:"0x472e230DfFA8c896b05A9a46c84BFb391756918e",
+    chainId:4441
+};
+
+const ABI = [
+    "function postMessage(string) external payable",
+    "function postMessageWithToken(string) external payable",
+    "function getMessageCount() view returns (uint256)",
+    "function getMessage(uint256) view returns (address,string,uint256,uint256)",
+    "function totalMessages() view returns (uint256)"
+];
+
+/* ======================================================
+   VARIABLES
+====================================================== */
+
+let provider;
+let signer;
+let contract;
+let currentUser = null;
+
+let currentOffset = 0;
+const LIMIT = 10;
+
+let networkUpdateInterval;
+
+/* ======================================================
+   DOM
+====================================================== */
+
+const els = {
+
+    walletStatus:document.getElementById("walletStatus"),
+    balanceInline:document.getElementById("balanceInline"),
+    networkBadge:document.getElementById("networkBadge"),
+
+    connectBtn:document.getElementById("connectBtn"),
+    disconnectBtn:document.getElementById("disconnectBtn"),
+    switchNetworkBtn:document.getElementById("switchNetworkBtn"),
+
+    messageInput:document.getElementById("messageInput"),
+    tokenAmount:document.getElementById("tokenAmount"),
+    postBtn:document.getElementById("postBtn"),
+
+    totalCount:document.getElementById("totalCount"),
+    totalTokens:document.getElementById("totalTokens"),
+    currentPage:document.getElementById("currentPage"),
+
+    messagesList:document.getElementById("messagesList"),
+
+    prevBtn:document.getElementById("prevBtn"),
+    nextBtn:document.getElementById("nextBtn"),
+    pageInfo:document.getElementById("pageInfo"),
+    pagination:document.getElementById("pagination"),
+
+    charCount:document.getElementById("charCount"),
+    msgStatus:document.getElementById("msgStatus"),
+    
+    // Wallet Card Elements
+    walletAddress:document.getElementById("walletAddress"),
+    copyBtn:document.getElementById("copyBtn"),
+    explorerBtn:document.getElementById("explorerBtn"),
+    balanceDisplay:document.getElementById("balanceDisplay"),
+    
+    // Profile Elements
+    profileAvatar:document.getElementById("profileAvatar"),
+    avatarLetter:document.getElementById("avatarLetter"),
+    avatarSvgContainer:document.getElementById("avatarSvgContainer"),
+    profileName:document.getElementById("profileName"),
+    walletType:document.getElementById("walletType"),
+    profileDesc:document.getElementById("profileDesc"),
+
+    // Network Info Elements
+    networkStatus:document.getElementById("networkStatus"),
+    blockNumber:document.getElementById("blockNumber"),
+    gasPrice:document.getElementById("gasPrice"),
+    blockTime:document.getElementById("blockTime")
+};
+
+/* ======================================================
+   NETWORK INFO FUNCTIONS
+====================================================== */
+
+window.refreshNetworkInfo = async function(){
+    await updateNetworkInfo();
+}
+
+async function updateNetworkInfo(){
+    if(!provider){
+        els.networkStatus.textContent = "Offline";
+        els.networkStatus.className = "network-info-value network-status-offline";
+        els.blockNumber.textContent = "-";
+        els.gasPrice.textContent = "-";
+        return;
+    }
+
+    try{
+        // Update network status
+        els.networkStatus.textContent = "Online";
+        els.networkStatus.className = "network-info-value network-status-online";
+
+        // Get block number
+        const blockNum = await provider.getBlockNumber();
+        els.blockNumber.textContent = "#" + blockNum.toLocaleString();
+
+        // Get gas price
+        const feeData = await provider.getFeeData();
+        const gasGwei = ethers.formatUnits(feeData.gasPrice || 0n, "gwei");
+        els.gasPrice.textContent = parseFloat(gasGwei).toFixed(2) + " Gwei";
+
+    }catch(err){
+        console.log("Error updating network info:", err);
+        els.networkStatus.textContent = "Error";
+        els.networkStatus.className = "network-info-value network-status-offline";
+    }
+}
+
+function startNetworkUpdates(){
+    // Update immediately
+    updateNetworkInfo();
+    
+    // Update every 5 seconds
+    networkUpdateInterval = setInterval(updateNetworkInfo, 5000);
+}
+
+function stopNetworkUpdates(){
+    if(networkUpdateInterval){
+        clearInterval(networkUpdateInterval);
+    }
+}
+
+/* ======================================================
+   IDENTICON GENERATOR (GitHub Style)
+====================================================== */
+
+function generateIdenticon(address){
+    const seed = address.toLowerCase().replace("0x","");
+    
+    // Deterministic foreground color from first 6 hex chars
+    const r = (parseInt(seed.substring(0,2),16) % 180) + 60;
+    const g = (parseInt(seed.substring(2,4),16) % 180) + 60;
+    const b = (parseInt(seed.substring(4,6),16) % 180) + 60;
+    const fgColor = `rgb(${r},${g},${b})`;
+    const bgColor = `rgba(${r},${g},${b},0.08)`;
+
+    // 5x5 grid, symmetrical
+    const grid = [];
+    for(let y=0; y<5; y++){
+        grid[y] = [];
+        for(let x=0; x<3; x++){
+            const idx = (y*3 + x) % seed.length;
+            const val = seed.charCodeAt(idx);
+            grid[y][x] = val % 2;
+        }
+        grid[y][3] = grid[y][1]; // mirror
+        grid[y][4] = grid[y][0]; // mirror
+    }
+
+    let svg = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">`;
+    svg += `<rect width="100" height="100" fill="${bgColor}" rx="12"/>`;
+    
+    const cellSize = 16;
+    const padding = 12;
+    
+    for(let y=0; y<5; y++){
+        for(let x=0; x<5; x++){
+            if(grid[y][x]){
+                svg += `<rect x="${padding + x*cellSize}" y="${padding + y*cellSize}" 
+                        width="${cellSize}" height="${cellSize}" 
+                        fill="${fgColor}" rx="3"/>`;
             }
-        } else {
-            alert("Please install MetaMask!");
+        }
+    }
+    svg += `</svg>`;
+    return svg;
+}
+
+function applyIdenticon(address){
+    if(!address || address === "Not connected"){
+        els.profileAvatar.classList.remove("has-identicon");
+        els.avatarSvgContainer.innerHTML = "";
+        els.avatarLetter.style.display = "block";
+        return;
+    }
+    
+    els.profileAvatar.classList.add("has-identicon");
+    els.avatarLetter.style.display = "none";
+    els.avatarSvgContainer.innerHTML = generateIdenticon(address);
+}
+
+/* ======================================================
+   WALLET CARD FUNCTIONS
+====================================================== */
+
+window.copyAddress = function(){
+    const address = els.walletAddress.title;
+    if(address && address !== 'Not connected'){
+        navigator.clipboard.writeText(address).then(()=>{
+            const original = els.copyBtn.textContent;
+            els.copyBtn.textContent = '✅ Copied!';
+            setTimeout(()=>{
+                els.copyBtn.textContent = original;
+            }, 2000);
+        });
+    }
+}
+
+function updateWalletCard(address, balance = "0.00"){
+    if(address){
+        const shortAddr = `${address.slice(0,6)}...${address.slice(-4)}`;
+        els.walletAddress.textContent = shortAddr;
+        els.walletAddress.title = address;
+        
+        els.balanceDisplay.textContent = balance;
+        els.balanceInline.textContent = `💰 ${balance} zkLTC`;
+        
+        els.copyBtn.disabled = false;
+        
+        els.explorerBtn.href = 
+            `https://liteforge.explorer.caldera.xyz/address/${address}`;
+    }else{
+        els.walletAddress.textContent = 'Not connected';
+        els.walletAddress.title = '';
+        els.balanceDisplay.textContent = '0.00';
+        els.balanceInline.textContent = '💰 0.00 zkLTC';
+        
+        els.copyBtn.disabled = true;
+        
+        els.explorerBtn.href = '#';
+    }
+}
+
+async function fetchBalance(address){
+    try{
+        if(provider){
+            const balance = await provider.getBalance(address);
+            const formatted = ethers.formatEther(balance);
+            const display = parseFloat(formatted).toFixed(4);
+            els.balanceDisplay.textContent = display;
+            els.balanceInline.textContent = `💰 ${display} zkLTC`;
+            return display;
+        }
+    }catch(err){
+        console.log('Error fetching balance:', err);
+        els.balanceDisplay.textContent = '0.00';
+        els.balanceInline.textContent = '💰 0.00 zkLTC';
+        return "0.00";
+    }
+}
+
+function markUserActive(address){
+    localStorage.setItem(`user_${address}_last_active`, Date.now().toString());
+}
+
+function registerEarlyAdopter(address){
+    const key = 'early_adopters';
+    const adopters = JSON.parse(localStorage.getItem(key) || '[]');
+    if(!adopters.includes(address) && adopters.length < 100){
+        adopters.push(address);
+        localStorage.setItem(key, JSON.stringify(adopters));
+    }
+}
+
+/* ======================================================
+   MARKET SENTIMENT FUNCTIONS
+====================================================== */
+
+function calculateMarketSentiment(){
+    const bullishWords = ['bullish', 'moon', 'rocket', 'pump', 'gain', 'up', 'great', 'awesome', 'amazing', 'love'];
+    const bearishWords = ['bearish', 'dump', 'crash', 'down', 'bad', 'terrible', 'hate', 'sell'];
+    
+    let bullish = 0;
+    let bearish = 0;
+    let neutral = 0;
+    
+    const messages = document.querySelectorAll('.feed-text');
+    
+    messages.forEach(msg => {
+        const text = msg.textContent.toLowerCase();
+        let found = false;
+        
+        bullishWords.forEach(word => {
+            if(text.includes(word)){
+                bullish++;
+                found = true;
+            }
+        });
+        
+        if(!found){
+            bearishWords.forEach(word => {
+                if(text.includes(word)){
+                    bearish++;
+                    found = true;
+                }
+            });
+        }
+        
+        if(!found) neutral++;
+    });
+    
+    if(bullish === 0 && bearish === 0 && neutral === 0){
+        bullish = 58;
+        neutral = 27;
+        bearish = 15;
+    }
+    
+    const total = bullish + bearish + neutral;
+    const bullishPct = Math.round((bullish / total) * 100);
+    const neutralPct = Math.round((neutral / total) * 100);
+    const bearishPct = Math.round((bearish / total) * 100);
+    
+    document.getElementById('bullishCount').textContent = bullishPct + '%';
+    document.getElementById('neutralCount').textContent = neutralPct + '%';
+    document.getElementById('bearishCount').textContent = bearishPct + '%';
+    
+    const overallSentiment = bullishPct - bearishPct;
+    const sentimentValue = 50 + (overallSentiment / 2);
+    
+    document.getElementById('sentimentValue').textContent = Math.round(sentimentValue) + '%';
+    document.getElementById('sentimentFill').style.width = sentimentValue + '%';
+    
+    let emoji = '😐';
+    if(sentimentValue >= 70) emoji = '🚀';
+    else if(sentimentValue >= 60) emoji = '😊';
+    else if(sentimentValue >= 50) emoji = '🙂';
+    else if(sentimentValue >= 40) emoji = '😟';
+    else if(sentimentValue >= 30) emoji = '😰';
+    else emoji = '📉';
+    
+    document.getElementById('sentimentEmoji').textContent = emoji;
+    
+    const fill = document.getElementById('sentimentFill');
+    if(sentimentValue >= 60){
+        fill.style.background = 'linear-gradient(to right,#4caf50,#8bc34a)';
+    }else if(sentimentValue >= 40){
+        fill.style.background = 'linear-gradient(to right,#ff9800,#ffc107)';
+    }else{
+        fill.style.background = 'linear-gradient(to right,#f44336,#ff5722)';
+    }
+}
+
+/* ======================================================
+   HELPERS
+====================================================== */
+
+function showMsg(text,color=""){
+    els.msgStatus.innerHTML =
+        `<div style="
+            margin-bottom:16px;
+            padding:12px;
+            border-radius:10px;
+            background:${color==="error"?"#ffe5e5":"#eef4ff"};
+            color:${color==="error"?"#c62828":"#35528e"};
+            border:1px solid ${color==="error"?"#ffb8b8":"#cbdcff"};
+        ">${text}</div>`;
+}
+
+function clearMsg(){
+    els.msgStatus.innerHTML = "";
+}
+
+function escapeHtml(t){
+    const div = document.createElement("div");
+    div.textContent = t;
+    return div.innerHTML;
+}
+
+/* ======================================================
+   REACTIONS
+====================================================== */
+
+function getReactionKey(index,type){
+    return `reaction_${index}_${type}`;
+}
+
+function getUserReactionKey(index,type,address){
+    return `reaction_user_${index}_${type}_${address}`;
+}
+
+function getReactionCount(index,type){
+    return Number(localStorage.getItem(getReactionKey(index,type)) || 0);
+}
+
+function reacted(index,type,address){
+    return localStorage.getItem(
+        getUserReactionKey(index,type,address)
+    ) === "1";
+}
+
+window.react = function(index,type){
+
+    if(!currentUser){
+        alert("Connect wallet first.");
+        return;
+    }
+
+    const active = reacted(index,type,currentUser);
+
+    const reactionKey = getReactionKey(index,type);
+    const userKey = getUserReactionKey(index,type,currentUser);
+
+    let count = getReactionCount(index,type);
+
+    if(active){
+
+        count = Math.max(0,count-1);
+
+        localStorage.removeItem(userKey);
+
+    }else{
+
+        count++;
+
+        localStorage.setItem(userKey,"1");
+    }
+
+    localStorage.setItem(reactionKey,count);
+
+    loadMessages();
+};
+
+/* ======================================================
+   CHARACTER COUNT
+====================================================== */
+
+els.messageInput.addEventListener("input",()=>{
+
+    if(els.messageInput.value.length > 280){
+        els.messageInput.value =
+            els.messageInput.value.substring(0,280);
+    }
+
+    els.charCount.textContent =
+        els.messageInput.value.length;
+});
+
+/* ======================================================
+   AUTO CONNECT
+====================================================== */
+
+window.addEventListener("DOMContentLoaded",async()=>{
+
+    if(!window.ethereum){
+
+        els.messagesList.innerHTML =
+            `<div style="padding:20px;">Install MetaMask.</div>`;
+
+        return;
+    }
+
+    provider = new ethers.BrowserProvider(window.ethereum);
+
+    contract = new ethers.Contract(
+        CONFIG.contractAddress,
+        ABI,
+        provider
+    );
+
+    // Start network info updates
+    startNetworkUpdates();
+
+    try{
+
+        const accounts =
+            await window.ethereum.request({
+                method:"eth_accounts"
+            });
+
+        if(accounts.length){
+
+            currentUser = accounts[0].toLowerCase();
+
+            signer = await provider.getSigner();
+
+            contract = new ethers.Contract(
+                CONFIG.contractAddress,
+                ABI,
+                signer
+            );
+
+            connectedUI(accounts[0]);
+
+            await checkNetwork();
+        }
+
+    }catch(err){
+        console.log(err);
+    }
+
+    await loadStats();
+    await loadMessages();
+    setTimeout(calculateMarketSentiment, 1000);
+});
+
+/* ======================================================
+   CONNECT
+====================================================== */
+
+els.connectBtn.addEventListener("click",async()=>{
+
+    try{
+
+        const accounts =
+            await window.ethereum.request({
+                method:"eth_requestAccounts"
+            });
+
+        currentUser = accounts[0].toLowerCase();
+
+        provider = new ethers.BrowserProvider(window.ethereum);
+
+        signer = await provider.getSigner();
+
+        contract = new ethers.Contract(
+            CONFIG.contractAddress,
+            ABI,
+            signer
+        );
+
+        connectedUI(accounts[0]);
+
+        await checkNetwork();
+
+    }catch(err){
+
+        alert(err.message);
+    }
+});
+
+/* ======================================================
+   DISCONNECT
+====================================================== */
+
+els.disconnectBtn.addEventListener("click",()=>{
+    // Clear current user
+    currentUser = null;
+    signer = null;
+    contract = null;
+    
+    // Reset UI to disconnected state
+    disconnectedUI();
+});
+
+function connectedUI(address){
+    const shortAddr = `${address.slice(0,6)}...${address.slice(-4)}`;
+    
+    els.walletStatus.innerHTML = `✅ ${shortAddr}`;
+    els.walletStatus.className = 'status';
+    
+    els.networkBadge.classList.remove("hidden");
+    els.balanceInline.classList.remove("hidden");
+    
+    els.connectBtn.classList.add("hidden");
+    els.disconnectBtn.classList.remove("hidden");
+    
+    els.messageInput.disabled = false;
+    els.tokenAmount.disabled = false;
+    els.postBtn.disabled = false;
+    
+    // Update wallet card & profile
+    updateWalletCard(address);
+    fetchBalance(address);
+    applyIdenticon(address);
+    
+    els.profileName.textContent = "LitVM User";
+    els.walletType.textContent = "Connected";
+    els.profileDesc.textContent = "Decentralized social identity connected directly to the blockchain. Share memories forever on-chain.";
+    
+    markUserActive(address);
+    registerEarlyAdopter(address);
+}
+
+function disconnectedUI(){
+    els.walletStatus.textContent = "Not Connected";
+    els.walletStatus.className = 'status';
+    
+    els.networkBadge.classList.add("hidden");
+    els.balanceInline.classList.add("hidden");
+    
+    els.connectBtn.classList.remove("hidden");
+    els.disconnectBtn.classList.add("hidden");
+    els.switchNetworkBtn.classList.add("hidden");
+    
+    els.messageInput.disabled = true;
+    els.tokenAmount.disabled = true;
+    els.postBtn.disabled = true;
+    
+    // Reset wallet card & profile
+    updateWalletCard(null);
+    applyIdenticon(null);
+    
+    els.profileName.textContent = "LitVM User";
+    els.walletType.textContent = "Wallet Not Connected";
+    els.profileDesc.textContent = "Decentralized social identity connected directly to the blockchain. Share memories forever on-chain.";
+}
+
+/* ======================================================
+   NETWORK
+====================================================== */
+
+async function checkNetwork(){
+
+    if(!provider) return;
+    
+    const net = await provider.getNetwork();
+
+    if(Number(net.chainId) !== CONFIG.chainId){
+
+        els.switchNetworkBtn.classList.remove("hidden");
+
+    }else{
+
+        els.switchNetworkBtn.classList.add("hidden");
+    }
+}
+
+els.switchNetworkBtn.addEventListener("click",async()=>{
+
+    try{
+
+        await window.ethereum.request({
+            method:'wallet_switchEthereumChain',
+            params:[{
+                chainId:ethers.toBeHex(CONFIG.chainId)
+            }]
+        });
+
+    }catch(e){
+
+        if(e.code === 4902){
+
+            await window.ethereum.request({
+
+                method:'wallet_addEthereumChain',
+
+                params:[{
+
+                    chainId:ethers.toBeHex(CONFIG.chainId),
+
+                    chainName:'LitVM LiteForge',
+
+                    nativeCurrency:{
+                        name:'zkLTC',
+                        symbol:'zkLTC',
+                        decimals:18
+                    },
+
+                    rpcUrls:[
+                        'https://liteforge.rpc.caldera.xyz/http'
+                    ],
+
+                    blockExplorerUrls:[
+                        'https://liteforge.explorer.caldera.xyz'
+                    ]
+
+                }]
+            });
         }
     }
 
-    connectBtn.addEventListener('click', connectWallet);
+    setTimeout(checkNetwork,1000);
+});
 
-    // Listener para troca de conta
-    if (window.ethereum) {
-        window.ethereum.on('accountsChanged', (accounts) => {
-            if (accounts.length > 0) {
-                walletAddress.innerText = accounts[0];
-            } else {
-                walletAddress.innerText = "Disconnected";
-                connectBtn.innerText = "Connect Wallet";
-            }
-        });
+/* ======================================================
+   POST
+====================================================== */
+
+els.postBtn.addEventListener("click",async()=>{
+
+    const text = els.messageInput.value.trim();
+
+    if(!text){
+        return alert("Write something.");
     }
+
+    if(text.length > 280){
+        return alert("Maximum 280 characters.");
+    }
+
+    try{
+
+        els.postBtn.disabled = true;
+
+        showMsg("Sending transaction...");
+
+        const amount =
+            els.tokenAmount.value.trim();
+
+        const value =
+            amount ? ethers.parseEther(amount) : 0n;
+
+        let tx;
+
+        if(value > 0n){
+
+            tx =
+                await contract.postMessageWithToken(
+                    text,
+                    { value }
+                );
+
+        }else{
+
+            tx =
+                await contract.postMessage(text);
+        }
+
+        showMsg("Confirming transaction...");
+
+        await tx.wait();
+
+        showMsg("✅ Message posted successfully!");
+
+        els.messageInput.value = "";
+        els.tokenAmount.value = "";
+        els.charCount.textContent = "0";
+
+        await loadStats();
+        await loadMessages();
+        setTimeout(calculateMarketSentiment, 500);
+
+        setTimeout(clearMsg,4000);
+
+    }catch(err){
+
+        showMsg(
+            "❌ " + (err.shortMessage || err.message),
+            "error"
+        );
+
+    }finally{
+
+        els.postBtn.disabled = false;
+    }
+});
+
+/* ======================================================
+   STATS
+====================================================== */
+
+async function loadStats(){
+
+    try{
+
+        const total =
+            await contract.totalMessages();
+
+        els.totalCount.textContent =
+            Number(total).toLocaleString();
+
+    }catch(err){
+        console.log(err);
+    }
+}
+
+/* ======================================================
+   LOAD MESSAGES
+====================================================== */
+
+async function loadMessages(){
+
+    try{
+
+        els.messagesList.innerHTML =
+            `<div style="padding:20px;">Loading...</div>`;
+
+        const total =
+            Number(await contract.getMessageCount());
+
+        if(total === 0){
+
+            els.messagesList.innerHTML =
+                `<div style="padding:20px;">
+                    No messages yet.
+                </div>`;
+
+            return;
+        }
+
+        const start =
+            Math.max(0,total-currentOffset-LIMIT);
+
+        const end =
+            total-currentOffset;
+
+        let messages = [];
+
+        for(let i=end-1;i>=start;i--){
+
+            const data =
+                await contract.getMessage(i);
+
+            messages.push({
+                index:i,
+                addr:data[0],
+                text:data[1],
+                timestamp:data[2],
+                amount:data[3]
+            });
+        }
+
+        let html = "";
+
+        let totalTokens = 0n;
+
+        for(const m of messages){
+
+            totalTokens += BigInt(m.amount || 0n);
+
+            const date =
+                new Date(
+                    Number(m.timestamp) * 1000
+                ).toLocaleString();
+
+            const shareText =
+                encodeURIComponent(
+                    `@LitecoinVM ${m.text}`
+                );
+
+            const shareUrl =
+                encodeURIComponent(location.href);
+
+            const twitter =
+                `https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`;
+
+            const initials =
+                m.addr.substring(2,4).toUpperCase();
+
+            const types = [
+                ["❤️","heart"],
+                ["😍","love"],
+                ["👍","like"],
+                ["🔥","power"]
+            ];
+
+            let reactions = "";
+
+            for(const [emoji,type] of types){
+
+                const count =
+                    getReactionCount(m.index,type);
+
+                const active =
+                    currentUser &&
+                    reacted(m.index,type,currentUser);
+
+                reactions += `
+                    <button
+                        class="react-btn ${active ? "active":""}"
+                        onclick="react(${m.index},'${type}')"
+                    >
+                        ${emoji} ${count}
+                    </button>
+                `;
+            }
+
+            html += `
+
+            <div class="feed-card">
+
+                <div class="feed-top">
+
+                    <div class="feed-user">
+
+                        <div class="feed-avatar">
+                            ${initials}
+                        </div>
+
+                        <div>
+
+                            <div class="feed-address">
+                                ${m.addr.slice(0,6)}...${m.addr.slice(-4)}
+                            </div>
+
+                            <div class="feed-time">
+                                ${date}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="feed-text">
+                    ${escapeHtml(m.text)}
+                </div>
+
+                ${
+                    Number(m.amount) > 0
+                    ?
+                    `<div class="amount">
+                        💎 ${ethers.formatEther(m.amount)} zkLTC
+                    </div>`
+                    :
+                    ""
+                }
+
+                <br>
+
+                <a
+                    class="share-x"
+                    href="${twitter}"
+                    target="_blank"
+                >
+                    Share on X
+                </a>
+
+                <div class="reactions">
+                    ${reactions}
+                </div>
+
+            </div>
+            `;
+        }
+
+        els.messagesList.innerHTML =
+            `<div class="feed">${html}</div>`;
+
+        els.totalTokens.textContent =
+            ethers.formatEther(totalTokens).substring(0,8);
+
+        els.currentPage.textContent =
+            Math.floor(currentOffset/LIMIT)+1;
+
+        els.pageInfo.textContent =
+            `Page ${Math.floor(currentOffset/LIMIT)+1}`;
+
+        els.pagination.classList.remove("hidden");
+
+        els.prevBtn.disabled =
+            currentOffset === 0;
+
+    }catch(err){
+
+        console.log(err);
+
+        els.messagesList.innerHTML =
+            `<div style="padding:20px;color:red;">
+                Error loading messages.
+            </div>`;
+    }
+}
+
+/* ======================================================
+   PAGINATION
+====================================================== */
+
+els.prevBtn.addEventListener("click",()=>{
+
+    if(currentOffset >= LIMIT){
+
+        currentOffset -= LIMIT;
+
+        loadMessages();
+    }
+});
+
+els.nextBtn.addEventListener("click",()=>{
+
+    currentOffset += LIMIT;
+
+    loadMessages();
+});
+
+/* ======================================================
+   EVENTS
+====================================================== */
+
+if(window.ethereum){
+
+    window.ethereum.on(
+        "accountsChanged",
+        (accounts)=>{
+            if(accounts.length === 0){
+                disconnectedUI();
+            }else{
+                location.reload();
+            }
+        }
+    );
+
+    window.ethereum.on(
+        "chainChanged",
+        ()=>location.reload()
+    );
+}
+
 </script>
 
 </body>
