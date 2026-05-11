@@ -153,7 +153,7 @@ body{
 }
 
 /* =========================================================
-   CARDS
+   CARDS - SIDEBAR UNIFORM HEIGHT
 ========================================================= */
 
 .card{
@@ -162,6 +162,20 @@ body{
     border-radius:16px;
     overflow:hidden;
     box-shadow:var(--shadow);
+}
+
+/* ✅ Uniform height for sidebar cards - symmetry */
+.sidebar-card-uniform {
+    height: 340px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-card-uniform .card-body {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .card-header{
@@ -556,6 +570,8 @@ input:focus{
 
 .community-links{
     padding:12px 0;
+    flex: 1;
+    overflow-y: auto;
 }
 
 .community-link-item{
@@ -948,7 +964,7 @@ input:focus{
     <!-- LEFT -->
     <aside class="left-column">
 
-        <div class="card">
+        <div class="card sidebar-card-uniform">
             <div class="card-header">👤 Profile</div>
             <div class="card-body profile">
 
@@ -970,7 +986,7 @@ input:focus{
         </div>
 
         <!-- NETWORK INFO CARD -->
-        <div class="card">
+        <div class="card sidebar-card-uniform">
             <div class="card-header">⛽ Network Info</div>
             <div class="card-body">
                 
@@ -1017,8 +1033,27 @@ input:focus{
             </div>
         </div>
 
+        <!-- ✅ NEW: EXPLORER CARD - LEFT SIDE -->
+        <div class="card sidebar-card-uniform">
+            <div class="card-header">🔍 Block Explorer</div>
+            <div class="card-body">
+                <div class="community-links">
+                    <a href="https://liteforge.explorer.caldera.xyz/" target="_blank" class="community-link-item">
+                        <div class="community-link-icon">🔍</div>
+                        <div class="community-link-content">
+                            <div class="community-link-title">LiteForge Explorer</div>
+                            <div class="community-link-url">liteforge.explorer.caldera.xyz</div>
+                        </div>
+                    </a>
+                    <div class="community-info-text" style="margin-top:12px;">
+                        Explore transactions, blocks, and contracts directly on the LitVM blockchain.
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- LITVM TESTNET CARD -->
-        <div class="card">
+        <div class="card sidebar-card-uniform">
             <div class="card-header">🚀 LitVM Testnet</div>
             <div class="card-body">
                 
@@ -1041,7 +1076,7 @@ input:focus{
         </div>
 
         <!-- WALLET INFO CARD -->
-        <div class="card">
+        <div class="card sidebar-card-uniform">
             <div class="card-header">💼 Wallet Info</div>
             <div class="card-body">
                 
@@ -1240,7 +1275,7 @@ input:focus{
     <!-- RIGHT -->
     <aside class="right-column">
 
-        <div class="card">
+        <div class="card sidebar-card-uniform">
             <div class="card-header">🌐 Communities</div>
 
             <div class="card-body">
@@ -1263,7 +1298,7 @@ input:focus{
             </div>
         </div>
 
-        <div class="card">
+        <div class="card sidebar-card-uniform">
             <div class="card-header">ℹ About Project</div>
 
             <div class="card-body">
@@ -1276,8 +1311,27 @@ input:focus{
             </div>
         </div>
 
+        <!-- ✅ NEW: HUB CARD - RIGHT SIDE -->
+        <div class="card sidebar-card-uniform">
+            <div class="card-header">🎯 Community Hub</div>
+            <div class="card-body">
+                <div class="community-links">
+                    <a href="https://liteforge.hub.caldera.xyz/" target="_blank" class="community-link-item">
+                        <div class="community-link-icon">🎯</div>
+                        <div class="community-link-content">
+                            <div class="community-link-title">LiteForge Hub</div>
+                            <div class="community-link-url">liteforge.hub.caldera.xyz</div>
+                        </div>
+                    </a>
+                    <div class="community-info-text" style="margin-top:12px;">
+                        Centralize your Web3 experience: tools, docs, and community in one place.
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- COMMUNITY LINKS CARD -->
-        <div class="card">
+        <div class="card sidebar-card-uniform">
             <div class="card-header">🔗 Stay Connected</div>
             <div class="card-body">
                 
@@ -1317,7 +1371,7 @@ input:focus{
         </div>
 
         <!-- MARKET SENTIMENT CARD -->
-        <div class="card">
+        <div class="card sidebar-card-uniform">
             <div class="card-header">📊 Market Sentiment</div>
             <div class="card-body">
                 
