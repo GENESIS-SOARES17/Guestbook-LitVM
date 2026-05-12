@@ -26,6 +26,71 @@
     --gold:#FFD700;
 }
 
+/* =========================================================
+   🌙 DARK MODE VARIABLES
+========================================================= */
+body.dark-mode {
+    --bg: #111827;
+    --card: #1f2937;
+    --text: #f3f4f6;
+    --muted: #9ca3af;
+    --blue-main: #4b6cb7;
+    --blue-soft: #374151;
+    --border: #374151;
+}
+
+body.dark-mode .feed-card, 
+body.dark-mode .sentiment-stat,
+body.dark-mode .sentiment-main,
+body.dark-mode textarea,
+body.dark-mode input {
+    background: #374151;
+    color: white;
+}
+
+body.dark-mode .status,
+body.dark-mode .balance-display-inline,
+body.dark-mode .amount {
+    background: #1f2937;
+    color: #8FA8E8;
+}
+
+body.dark-mode .community-link-item {
+    background: linear-gradient(135deg, #374151, #1f2937);
+}
+
+body.dark-mode .network-info-item {
+    background: linear-gradient(135deg, #374151, #1f2937);
+}
+
+body.dark-mode .stat {
+    background: #374151;
+}
+
+/* Dark Mode Toggle Button */
+.dark-mode-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--gold);
+    border: 2px solid white;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+
+.dark-mode-toggle:hover {
+    transform: scale(1.1);
+}
+
 *{
     margin:0;
     padding:0;
@@ -37,6 +102,7 @@ body{
     font-family:Arial, Verdana, sans-serif;
     color:var(--text);
     overflow-x:hidden;
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
 /* =========================================================
@@ -955,9 +1021,7 @@ input:focus{
 
 <body>
 
-<!-- ======================================================
-     HEADER
-====================================================== -->
+<button class="dark-mode-toggle" id="darkModeBtn" title="Toggle Dark Mode">🌓</button>
 
 <header class="top-header">
     <div class="header-inner">
@@ -980,20 +1044,14 @@ input:focus{
     </div>
 </header>
 
-<!-- ======================================================
-     MAIN
-====================================================== -->
-
 <div class="main">
 
-    <!-- LEFT -->
     <aside class="left-column">
 
         <div class="card sidebar-card-uniform">
             <div class="card-header">👤 Profile</div>
             <div class="card-body profile">
 
-                <!-- AVATAR CONTAINER -->
                 <div id="profileAvatar" class="avatar-container">
                     <div class="avatar-letter" id="avatarLetter">L</div>
                     <div id="avatarSvgContainer"></div>
@@ -1010,7 +1068,6 @@ input:focus{
             </div>
         </div>
 
-        <!-- NETWORK INFO CARD -->
         <div class="card sidebar-card-uniform">
             <div class="card-header">⛽ Network Info</div>
             <div class="card-body">
@@ -1058,7 +1115,6 @@ input:focus{
             </div>
         </div>
 
-        <!-- ✅ NEW: EXPLORER CARD - LEFT SIDE -->
         <div class="card sidebar-card-uniform">
             <div class="card-header">🔍 Block Explorer</div>
             <div class="card-body">
@@ -1077,7 +1133,6 @@ input:focus{
             </div>
         </div>
 
-        <!-- LITVM TESTNET CARD -->
         <div class="card sidebar-card-uniform">
             <div class="card-header">🚀 LitVM Testnet</div>
             <div class="card-body">
@@ -1100,12 +1155,10 @@ input:focus{
             </div>
         </div>
 
-        <!-- WALLET INFO CARD -->
         <div class="card sidebar-card-uniform">
             <div class="card-header">💼 Wallet Info</div>
             <div class="card-body">
                 
-                <!-- Wallet Address -->
                 <div class="wallet-info-section">
                     <div class="wallet-label">📍 Wallet Address</div>
                     <div class="address-box">
@@ -1121,7 +1174,6 @@ input:focus{
                     </div>
                 </div>
 
-                <!-- zkLTC Balance -->
                 <div class="wallet-info-section">
                     <div class="wallet-label">💰 zkLTC Balance</div>
                     <div class="balance-card">
@@ -1136,10 +1188,8 @@ input:focus{
 
     </aside>
 
-    <!-- CENTER -->
     <main class="center-column">
 
-        <!-- WALLET -->
         <div class="card">
             <div class="card-header">🔗 Wallet Connection</div>
 
@@ -1176,7 +1226,6 @@ input:focus{
             </div>
         </div>
 
-        <!-- SHARE -->
         <div class="card">
             <div class="card-header">💬 Share Something</div>
 
@@ -1227,7 +1276,6 @@ input:focus{
             </div>
         </div>
 
-        <!-- STATS -->
         <div class="card">
             <div class="card-header">📊 Guestbook Stats</div>
 
@@ -1255,7 +1303,6 @@ input:focus{
             </div>
         </div>
 
-        <!-- FEED -->
         <div class="card">
             <div class="card-header">📜 Recent Messages</div>
 
@@ -1297,7 +1344,6 @@ input:focus{
 
     </main>
 
-    <!-- RIGHT -->
     <aside class="right-column">
 
         <div class="card sidebar-card-uniform">
@@ -1336,7 +1382,6 @@ input:focus{
             </div>
         </div>
 
-        <!-- ✅ NEW: HUB CARD - RIGHT SIDE -->
         <div class="card sidebar-card-uniform">
             <div class="card-header">🎯 Community Hub</div>
             <div class="card-body">
@@ -1355,7 +1400,6 @@ input:focus{
             </div>
         </div>
 
-        <!-- COMMUNITY LINKS CARD -->
         <div class="card sidebar-card-uniform">
             <div class="card-header">🔗 Stay Connected</div>
             <div class="card-body">
@@ -1395,7 +1439,6 @@ input:focus{
             </div>
         </div>
 
-        <!-- MARKET SENTIMENT CARD -->
         <div class="card sidebar-card-uniform">
             <div class="card-header">📊 Market Sentiment</div>
             <div class="card-body">
@@ -1438,13 +1481,24 @@ input:focus{
 
 </div>
 
-<!-- ======================================================
-     SCRIPT
-====================================================== -->
-
 <script type="module">
 
 import { ethers } from "https://esm.run/ethers@6.13.0";
+
+/* ======================================================
+   DARK MODE TOGGLE LOGIC
+====================================================== */
+const darkModeBtn = document.getElementById('darkModeBtn');
+darkModeBtn.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    const isDark = document.body.classList.contains('dark-mode');
+    localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+});
+
+// Load Preference
+if (localStorage.getItem('darkMode') === 'enabled') {
+    document.body.classList.add('dark-mode');
+}
 
 /* ======================================================
    CONTRACT CONFIG
