@@ -85,7 +85,6 @@ body{
     border-radius:12px; overflow:hidden; box-shadow: var(--shadow);
 }
 
-/* Banners Fill Height */
 .banner-card { flex: 1; min-height: 90px; display: flex; flex-direction: column; }
 
 .card-header{
@@ -104,12 +103,29 @@ body{
 
 .banner-title { font-weight: bold; color: var(--blue-main); font-size: 13px; }
 
+/* AVATARS */
+.avatar-container {
+    width: 35px; height: 35px; border-radius: 50%; overflow: hidden;
+    border: 2px solid var(--gold); margin-right: 10px; display: inline-block;
+    vertical-align: middle; background: #eee;
+}
+
+.avatar-container img, .profile-avatar img {
+    width: 100%; height: 100%; object-fit: cover;
+}
+
+.profile-avatar {
+    width: 60px; height: 60px; border-radius: 50%; overflow: hidden;
+    border: 3px solid var(--gold); margin: 0 auto 10px auto;
+    background: var(--blue-main); display: flex; align-items: center; justify-content: center;
+}
+
 /* FEED */
 .feed-card{
     background:var(--card); border:3px solid var(--gold);
     border-radius:16px; padding:18px; margin-bottom:15px;
 }
-.feed-address { font-weight: bold; color: var(--blue-main); font-size: 14px; }
+.feed-address { font-weight: bold; color: var(--blue-main); font-size: 14px; display: flex; align-items: center; }
 .feed-text { margin: 12px 0; line-height: 1.4; font-size: 15px; }
 .feed-time { font-size: 11px; color: var(--muted); }
 
@@ -174,8 +190,10 @@ textarea { width:100%; border:2px solid var(--gold); border-radius:10px; padding
         <div class="card" style="height: 180px;">
             <div class="card-header">👤 Profile</div>
             <div class="card-body" style="text-align:center;">
-                <div style="width:60px; height:60px; border-radius:50%; background:var(--blue-main); margin:auto; border:3px solid var(--gold);"></div>
-                <div id="walletAddressDisplay" style="font-size:10px; margin-top:10px; word-break:break-all;">Not Connected</div>
+                <div id="profileAvatar" class="profile-avatar">
+                   <div style="width:100%; height:100%; background:var(--blue-main);"></div>
+                </div>
+                <div id="walletAddressDisplay" style="font-size:10px; word-break:break-all;">Not Connected</div>
             </div>
         </div>
         <div class="banner-card"><div class="card-header">📊 CMC</div><div class="card-body"><a href="https://coinmarketcap.com/" target="_blank" class="banner-link"><div class="banner-icon">📊</div><div class="banner-title">MarketCap</div></a></div></div>
@@ -266,6 +284,19 @@ let provider, signer, contract, currentUser = null;
 let currentPage = 0;
 const LIMIT = 5;
 
+// FUNÇÃO PARA GERAR BOTTT AVATAR (DiceBear)
+function getBotttAvatar(address) {
+    if(!address) return "";
+    return `https://api.dicebear.com/7.x/bottts/svg?seed=${address}`;
+}
+
+function updateAvatarElement(address, elementId) {
+    const el = document.getElementById(elementId);
+    if(el) {
+        el.innerHTML = `<img src="${getBotttAvatar(address)}" alt="Avatar">`;
+    }
+}
+
 // REAÇÕES
 window.react = (i, emoji) => {
     let key = `react_${i}_${emoji}`;
@@ -291,6 +322,8 @@ async function connect() {
     document.getElementById("walletAddressDisplay").textContent = currentUser;
     document.getElementById("connectBtn").classList.add("hidden");
     
+    updateAvatarElement(currentUser, "profileAvatar");
+    
     const bal = await provider.getBalance(currentUser);
     document.getElementById("balanceDisplay").textContent = parseFloat(ethers.formatEther(bal)).toFixed(4);
     
@@ -298,13 +331,11 @@ async function connect() {
 }
 
 async function loadMessages() {
-    if(!contract) {
-        const p = new ethers.JsonRpcProvider("https://liteforge.rpc.caldera.xyz/");
-        contract = new ethers.Contract(CONFIG.contractAddress, ABI, p);
-    }
+    const rpcProvider = new ethers.JsonRpcProvider("https://liteforge.rpc.caldera.xyz/");
+    const readContract = new ethers.Contract(CONFIG.contractAddress, ABI, rpcProvider);
     
     try {
-        const total = Number(await contract.totalMessages());
+        const total = Number(await readContract.totalMessages());
         document.getElementById("totalMsgCount").textContent = total;
         
         let userPosts = 0;
@@ -314,18 +345,28 @@ async function loadMessages() {
         const start = total - 1 - (currentPage * LIMIT);
         const end = Math.max(0, start - LIMIT + 1);
 
-        for(let i = start; i >= end; i--) {
-            const m = await contract.getMessage(i);
-            if(currentUser && m[0].toLowerCase() === currentUser.toLowerCase()) userPosts++;
+        if(total === 0) {
+            list.innerHTML = "<p style='text-align:center;'>No messages found.</p>";
+            return;
+        }
 
-            // Tag @LitecoinVM no início do compartilhamento
+        for(let i = start; i >= end; i--) {
+            const m = await readContract.getMessage(i);
+            const author = m[0].toLowerCase();
+            if(currentUser && author === currentUser.toLowerCase()) userPosts++;
+
             const shareText = encodeURIComponent(`@LitecoinVM "${m[1]}"`);
             const twitterUrl = `https://twitter.com/intent/tweet?text=${shareText}`;
             
             const div = document.createElement("div");
             div.className = "feed-card";
             div.innerHTML = `
-                <div class="feed-address">${m[0].slice(0,6)}...${m[0].slice(-4)}</div>
+                <div class="feed-address">
+                    <div class="avatar-container">
+                        <img src="${getBotttAvatar(author)}" alt="Avatar">
+                    </div>
+                    ${m[0].slice(0,6)}...${m[0].slice(-4)}
+                </div>
                 <div class="feed-text">${m[1]}</div>
                 ${m[3] > 0 ? `<div class="amount">💎 ${ethers.formatEther(m[3])} zkLTC</div>` : ''}
                 <div class="feed-time">${new Date(Number(m[2])*1000).toLocaleString()}</div>
@@ -344,7 +385,9 @@ async function loadMessages() {
         document.getElementById("prevBtn").disabled = (currentPage === 0);
         document.getElementById("nextBtn").disabled = (end <= 0);
         
-    } catch(e) { console.error(e); }
+    } catch(e) { 
+        console.error("Error loading messages:", e);
+    }
 }
 
 document.getElementById("nextBtn").addEventListener("click", () => { currentPage++; loadMessages(); });
@@ -355,12 +398,12 @@ document.getElementById("darkModeBtn").addEventListener("click", () => document.
 document.getElementById("postBtn").addEventListener("click", async () => {
     const txt = document.getElementById("messageInput").value;
     const val = document.getElementById("tokenAmount").value;
-    if(!txt || !contract) return alert("Connect wallet!");
+    if(!txt || !contract) return alert("Connect wallet first!");
     try {
         const tx = val ? await contract.postMessageWithToken(txt, {value: ethers.parseEther(val)}) : await contract.postMessage(txt);
         await tx.wait();
         location.reload();
-    } catch(e) { alert("Transaction Error"); }
+    } catch(e) { alert("Transaction Error."); }
 });
 
 window.addEventListener("load", loadMessages);
