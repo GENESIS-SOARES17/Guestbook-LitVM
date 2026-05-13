@@ -40,7 +40,36 @@ body{
     font-family:Arial, Verdana, sans-serif;
     color:var(--text);
     transition: background 0.3s;
+    overflow-x: hidden;
+    position: relative;
 }
+
+/* ANIMATED BACKGROUND MESH */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at 20% 30%, rgba(107,141,214,0.12) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(255,215,0,0.1) 0%, transparent 45%);
+    animation: bgShift 15s ease-in-out infinite alternate;
+    z-index: -2;
+    pointer-events: none;
+}
+@keyframes bgShift { 0% { transform: scale(1) rotate(0deg); } 100% { transform: scale(1.05) rotate(2deg); } }
+
+/* FLOATING ORBS */
+.orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(40px);
+    opacity: 0.15;
+    animation: floatOrb 20s linear infinite;
+    z-index: -1;
+    pointer-events: none;
+}
+.orb-1 { width: 300px; height: 300px; background: var(--blue-main); top: 10%; left: 5%; animation-duration: 25s; }
+.orb-2 { width: 200px; height: 200px; background: var(--gold); top: 60%; right: 8%; animation-duration: 18s; animation-direction: reverse; }
+@keyframes floatOrb { 0% { transform: translateY(0) translateX(0); } 50% { transform: translateY(-30px) translateX(20px); } 100% { transform: translateY(0) translateX(0); } }
 
 /* HEADER */
 .top-header{
@@ -71,9 +100,25 @@ body{
 
 @keyframes ticker{ from{transform:translateX(100%)} to{transform:translateX(-100%)} }
 
+/* LIVE ACTIVITY TICKER */
+.live-ticker {
+    position: fixed; top: 132px; left: 0; right: 0; z-index: 997;
+    background: rgba(255,255,255,0.95); border-bottom: 2px solid var(--gold);
+    padding: 8px 0; overflow: hidden; backdrop-filter: blur(8px);
+}
+body.dark-mode .live-ticker { background: rgba(31,41,55,0.95); }
+.live-track {
+    display: flex; gap: 40px; animation: scrollLive 35s linear infinite;
+    white-space: nowrap; color: var(--text); font-size: 12px; font-weight: bold;
+}
+.live-item { display: flex; align-items: center; gap: 6px; }
+.live-dot { width: 8px; height: 8px; background: #10b981; border-radius: 50%; animation: pulse 1.5s infinite; }
+@keyframes scrollLive { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.3); } }
+
 /* NETWORK BANNER */
 #networkBanner{
-    position:fixed; top:98px; left:0; right:0; z-index:998;
+    position:fixed; top:166px; left:0; right:0; z-index:998;
     background:#fef3c7; color:#92400e; text-align:center; padding:10px;
     font-weight:bold; font-size:13px; border-bottom:2px solid var(--gold);
     display:none; align-items:center; justify-content:center; gap:10px;
@@ -86,7 +131,7 @@ body.dark-mode #networkBanner { background:#451a03; color:#fde68a; }
 
 /* TOAST NOTIFICATIONS */
 .toast-container {
-    position:fixed; top:145px; right:20px; z-index:10000;
+    position:fixed; top:185px; right:20px; z-index:10000;
     display:flex; flex-direction:column; gap:10px; pointer-events:none;
 }
 .toast {
@@ -105,7 +150,6 @@ body.dark-mode .toast { color:#f3f4f6; }
 
 /* LOADING SKELETONS */
 .skeleton {
-    background: #e0e0e0;
     background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
     background-size: 200% 100%;
     animation: 1.5s shine linear infinite;
@@ -114,9 +158,7 @@ body.dark-mode .toast { color:#f3f4f6; }
     height: 150px;
     margin-bottom: 15px;
 }
-@keyframes shine {
-    to { background-position-x: -200%; }
-}
+@keyframes shine { to { background-position-x: -200%; } }
 
 /* SORT SELECTOR */
 .sort-bar {
@@ -146,7 +188,7 @@ body.dark-mode .toast { color:#f3f4f6; }
 
 /* LAYOUT */
 .main{
-    max-width:1600px; margin:140px auto 40px auto;
+    max-width:1600px; margin:200px auto 40px auto;
     display:grid; grid-template-columns:280px 1fr 280px; gap:20px;
     padding:0 20px; min-height: 100vh;
 }
@@ -156,6 +198,11 @@ body.dark-mode .toast { color:#f3f4f6; }
 .card, .banner-card{
     background:var(--card); border:3px solid var(--gold);
     border-radius:12px; overflow:hidden; box-shadow: var(--shadow);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.card:hover, .banner-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255,215,0,0.25);
 }
 
 .banner-card { flex: 1; min-height: 90px; display: flex; flex-direction: column; }
@@ -172,7 +219,9 @@ body.dark-mode .toast { color:#f3f4f6; }
     font-size: 24px; min-width: 40px; height: 40px; 
     background: var(--blue-light); border-radius: 8px;
     display: flex; align-items: center; justify-content: center; border: 2px solid var(--gold);
+    transition: 0.2s;
 }
+.banner-link:hover .banner-icon { transform: scale(1.1); background: #eef4ff; }
 
 .banner-title { font-weight: bold; color: var(--blue-main); font-size: 13px; }
 
@@ -191,13 +240,29 @@ body.dark-mode .toast { color:#f3f4f6; }
     width: 60px; height: 60px; border-radius: 50%; overflow: hidden;
     border: 3px solid var(--gold); margin: 0 auto 10px auto;
     background: var(--blue-main); display: flex; align-items: center; justify-content: center;
+    animation: floatOrb 6s ease-in-out infinite alternate;
 }
 
 /* FEED */
 .feed-card{
     background:var(--card); border:3px solid var(--gold);
     border-radius:16px; padding:18px; margin-bottom:15px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
+.feed-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; width: 100%; height: 4px;
+    background: linear-gradient(90deg, var(--blue-main), var(--gold), var(--blue-soft));
+    background-size: 200% 100%;
+    animation: gradientMove 3s linear infinite;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+.feed-card:hover::before { opacity: 1; }
+@keyframes gradientMove { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+
 .feed-address { font-weight: bold; color: var(--blue-main); font-size: 14px; display: flex; align-items: center; }
 .feed-text { margin: 12px 0; line-height: 1.4; font-size: 15px; word-break: break-word; }
 .feed-time { font-size: 11px; color: var(--muted); }
@@ -217,14 +282,18 @@ body.dark-mode .toast { color:#f3f4f6; }
 .react-btn {
     background: #f8fbff; border: 2px solid var(--gold);
     padding: 5px 10px; border-radius: 20px; cursor: pointer; font-size: 12px;
+    transition: 0.2s;
 }
+.react-btn:hover { transform: scale(1.1); background: #fffbe6; }
 
 /* PAGINATION */
 .pagination { display: flex; justify-content: center; gap: 15px; margin-top: 20px; align-items: center; padding-bottom: 40px; }
 .page-btn {
     background: var(--blue-main); color: white; border: 2px solid var(--gold);
     padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: bold;
+    transition: 0.2s;
 }
+.page-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(107,141,214,0.4); }
 .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* UI */
@@ -234,30 +303,33 @@ body.dark-mode .stat { background: #374151; }
 
 .char-counter { font-size: 11px; text-align: right; color: var(--muted); margin-top: 4px; }
 
-.dark-mode-toggle { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: var(--gold); cursor: pointer; font-size: 24px; border: 2px solid #fff; z-index: 1001; }
+.dark-mode-toggle { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: var(--gold); cursor: pointer; font-size: 24px; border: 2px solid #fff; z-index: 1001; transition: 0.3s; }
+.dark-mode-toggle:hover { transform: rotate(180deg) scale(1.1); }
 .hidden { display: none !important; }
 
 textarea { width:100%; border:2px solid var(--gold); border-radius:10px; padding:12px; min-height: 80px; resize: none; }
 
+/* GLOW BUTTONS */
+.glow-pulse { animation: glowPulse 2s infinite alternate; }
+@keyframes glowPulse { 0% { box-shadow: 0 0 8px rgba(107,141,214,0.4); } 100% { box-shadow: 0 0 16px rgba(107,141,214,0.8), 0 0 4px var(--gold); } }
+
+/* CONFETTI */
+.confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; }
+.confetti { position: absolute; width: 8px; height: 8px; border-radius: 2px; animation: fall linear forwards; }
+@keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+
 /* RESPONSIVE MOBILE */
 @media (max-width: 1024px) {
-    .main {
-        grid-template-columns: 1fr;
-        max-width: 800px;
-    }
+    .main { grid-template-columns: 1fr; max-width: 800px; margin-top: 240px; }
     .center-column { order: -1; margin-bottom: 20px; }
     .left-column { order: 0; flex-direction: row; flex-wrap: wrap; gap: 15px; }
     .right-column { order: 1; flex-direction: row; flex-wrap: wrap; gap: 15px; }
-    
-    .card, .banner-card {
-        flex: 1 1 140px;
-        min-height: 100px;
-    }
-    
+    .card, .banner-card { flex: 1 1 140px; min-height: 100px; }
     .logo { min-width: 180px; }
     .logo img { width: 70px; height: 70px; }
     .logo h1 { font-size: 20px; }
-    .ticker-wrap { display: none; } /* Hide ticker on very small screens to save space */
+    .ticker-wrap { display: none; }
+    .live-ticker { top: 105px; }
 }
 </style>
 </head>
@@ -267,6 +339,9 @@ textarea { width:100%; border:2px solid var(--gold); border-radius:10px; padding
 <button class="dark-mode-toggle" id="darkModeBtn">🌓</button>
 <div id="networkBanner">⚠️ Please switch to LitVM Network to interact with the guestbook. <button id="switchFromBanner">Switch Now</button></div>
 <div id="toastContainer" class="toast-container"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div id="confettiContainer" class="confetti-container"></div>
 
 <header class="top-header">
     <div class="header-inner">
@@ -279,6 +354,17 @@ textarea { width:100%; border:2px solid var(--gold); border-radius:10px; padding
         </div>
     </div>
 </header>
+
+<div class="live-ticker">
+    <div class="live-track" id="liveTrack">
+        <div class="live-item"><div class="live-dot"></div> 📝 New message posted • 0x7a3...f91</div>
+        <div class="live-item"><div class="live-dot"></div> 💎 0.05 zkLTC tip received • 0x8b2...c44</div>
+        <div class="live-item"><div class="live-dot"></div> ❤️ 12 reactions on latest post</div>
+        <div class="live-item"><div class="live-dot"></div> 🌍 342 total permanent messages on-chain</div>
+        <div class="live-item"><div class="live-dot"></div> 📝 New message posted • 0x1c9...a22</div>
+        <div class="live-item"><div class="live-dot"></div> 💎 0.12 zkLTC tip received • 0x5f8...d10</div>
+    </div>
+</div>
 
 <div class="main">
 
@@ -311,8 +397,8 @@ textarea { width:100%; border:2px solid var(--gold); border-radius:10px; padding
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 10px;">
                     <div id="walletStatus" style="font-weight:bold; font-size:13px;">Status: Locked</div>
                     <div style="display:flex; gap:10px; flex-wrap: wrap;">
-                        <button id="switchChainBtn" style="background:var(--blue-soft); color:white; border:2px solid var(--gold); padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold;">🔗 Switch to LitVM</button>
-                        <button id="connectBtn" style="background:var(--blue-main); color:white; border:2px solid var(--gold); padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold;">Connect MetaMask</button>
+                        <button id="switchChainBtn" class="glow-pulse" style="background:var(--blue-soft); color:white; border:2px solid var(--gold); padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold;">🔗 Switch to LitVM</button>
+                        <button id="connectBtn" class="glow-pulse" style="background:var(--blue-main); color:white; border:2px solid var(--gold); padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold;">Connect MetaMask</button>
                     </div>
                 </div>
             </div>
@@ -325,7 +411,7 @@ textarea { width:100%; border:2px solid var(--gold); border-radius:10px; padding
                 <div class="char-counter"><span id="charCount">0</span>/270</div>
                 <div style="margin-top:10px; display:flex; gap:10px;">
                     <input type="number" id="tokenAmount" placeholder="Tip zkLTC" style="flex:1; border:2px solid var(--gold); border-radius:8px; padding:8px;"/>
-                    <button id="postBtn" style="background:var(--blue-main); color:white; border:2px solid var(--gold); width:120px; font-weight:bold; border-radius:8px; cursor:pointer;">🚀 Post</button>
+                    <button id="postBtn" class="glow-pulse" style="background:var(--blue-main); color:white; border:2px solid var(--gold); width:120px; font-weight:bold; border-radius:8px; cursor:pointer;">🚀 Post</button>
                 </div>
             </div>
         </div>
@@ -333,8 +419,8 @@ textarea { width:100%; border:2px solid var(--gold); border-radius:10px; padding
         <div class="card" style="margin-top:20px;">
             <div class="card-header">📊 Statistics</div>
             <div class="card-body stats-grid">
-                <div class="stat"><div>Global Total</div><b id="totalMsgCount">0</b></div>
-                <div class="stat"><div>Your Posts (Visible)</div><b id="userPostsCount">0</b></div>
+                <div class="stat"><div>Global Total</div><b id="totalMsgCount" class="animated-counter">0</b></div>
+                <div class="stat"><div>Your Posts (Visible)</div><b id="userPostsCount" class="animated-counter">0</b></div>
             </div>
         </div>
 
@@ -384,9 +470,9 @@ const CONFIG = {
     rpcUrl: "https://liteforge.rpc.caldera.xyz/"
 };
 
-// 🔧 ATUALIZE O CHAIN ID COM O VALOR EXATO DA LITVM (HEXADECIMAL)
+// ✅ CORRECTED CHAIN ID: 4441 = 0x1159 (not 0x1994)
 const LITVM_NETWORK = {
-    chainId: "0x1994", 
+    chainId: "0x1159",  // 4441 in hexadecimal
     chainName: "LitVM Network",
     nativeCurrency: { name: "zkLTC", symbol: "zkLTC", decimals: 18 },
     rpcUrls: ["https://liteforge.rpc.caldera.xyz/"],
@@ -405,6 +491,35 @@ let provider, signer, contract, currentUser = null;
 let currentPage = 0;
 let currentSort = 'newest';
 const LIMIT = 5;
+
+// ANIMATED COUNTERS
+function animateCounter(elementId, target) {
+    const el = document.getElementById(elementId);
+    if(!el) return;
+    let current = 0;
+    const duration = 1200;
+    const step = target / (duration / 16);
+    const timer = setInterval(() => {
+        current += step;
+        if (current >= target) { current = target; clearInterval(timer); }
+        el.textContent = Math.floor(current).toLocaleString();
+    }, 16);
+}
+
+// CONFETTI BURST
+function triggerConfetti() {
+    const container = document.getElementById('confettiContainer');
+    const colors = ['#FFD700', '#6B8DD6', '#8FA8E8', '#10b981', '#ef4444'];
+    for(let i=0; i<40; i++) {
+        const conf = document.createElement('div');
+        conf.className = 'confetti';
+        conf.style.left = Math.random() * 100 + '%';
+        conf.style.background = colors[Math.floor(Math.random() * colors.length)];
+        conf.style.animationDuration = (Math.random() * 1 + 1.5) + 's';
+        container.appendChild(conf);
+        setTimeout(() => conf.remove(), 2500);
+    }
+}
 
 // TOAST NOTIFICATION SYSTEM
 function showToast(message, type = 'info') {
@@ -563,7 +678,7 @@ async function loadMessages() {
         const readContract = new ethers.Contract(CONFIG.contractAddress, ABI, readProvider);
         
         const total = Number(await readContract.totalMessages());
-        document.getElementById("totalMsgCount").textContent = total;
+        animateCounter("totalMsgCount", total);
         
         let userPosts = 0;
         
@@ -576,7 +691,6 @@ async function loadMessages() {
         const start = total - 1 - (currentPage * LIMIT);
         const end = Math.max(0, start - LIMIT + 1);
 
-        // FETCH BATCH
         const batch = [];
         for(let i = start; i >= end; i--) {
             try {
@@ -586,7 +700,6 @@ async function loadMessages() {
                 
                 if(currentUser && author === currentUser.toLowerCase()) userPosts++;
                 
-                // Collect reactions for sorting
                 const reactions = (parseInt(localStorage.getItem(`react_${i}_❤️`) || 0) + 
                                    parseInt(localStorage.getItem(`react_${i}_🔥`) || 0) + 
                                    parseInt(localStorage.getItem(`react_${i}_👍`) || 0));
@@ -605,26 +718,23 @@ async function loadMessages() {
             }
         }
 
-        // SORT BATCH
         let sortedBatch = [...batch];
         if (currentSort === 'tips') {
-            // Most Tipped: Sort by amount descending
             sortedBatch.sort((a, b) => Number(b.amount) - Number(a.amount));
         } else if (currentSort === 'reacted') {
-            // Top Reacted: Sort by reaction count descending
             sortedBatch.sort((a, b) => b.reactions - a.reactions);
         }
-        // 'newest' is default (batch order is already newest to oldest due to loop)
 
-        // RENDER
         list.innerHTML = "";
-        sortedBatch.forEach(item => {
+        sortedBatch.forEach((item, idx) => {
             const explorerUrl = `https://liteforge.explorer.caldera.xyz/address/${item.author}`;
             const shareText = encodeURIComponent(`@LitecoinVM "${item.rawMessage}"`);
             const twitterUrl = `https://twitter.com/intent/tweet?text=${shareText}`;
             
             const div = document.createElement("div");
             div.className = "feed-card";
+            if(idx === 0) div.style.borderTop = "4px solid var(--blue-main)"; // Spotlight first item
+            
             div.innerHTML = `
                 <div class="feed-address">
                     <div class="avatar-container">
@@ -641,14 +751,14 @@ async function loadMessages() {
                 <a href="${twitterUrl}" target="_blank" class="share-x">🐦 Share @LitecoinVM</a>
                 <div class="reactions">
                     <button class="react-btn" onclick="react(${item.index}, '❤️')">❤️ ${localStorage.getItem(`react_${item.index}_❤️`) || 0}</button>
-                    <button class="react-btn" onclick="react(${item.index}, '🔥')">🔥 ${localStorage.getItem(`react_${item.index}_🔥`) || 0}</button>
-                    <button class="react-btn" onclick="react(${item.index}, '👍')">👍 ${localStorage.getItem(`react_${item.index}_👍`) || 0}</button>
+                    <button class="react-btn" onclick="react(${item.index}, '🔥')"> ${localStorage.getItem(`react_${item.index}_🔥`) || 0}</button>
+                    <button class="react-btn" onclick="react(${item.index}, '👍')"> ${localStorage.getItem(`react_${item.index}_👍`) || 0}</button>
                 </div>
             `;
             list.appendChild(div);
         });
 
-        document.getElementById("userPostsCount").textContent = userPosts;
+        animateCounter("userPostsCount", userPosts);
         document.getElementById("pageInfo").textContent = `Page ${currentPage + 1} of ${Math.ceil(total / LIMIT)}`;
         document.getElementById("prevBtn").disabled = (currentPage === 0);
         document.getElementById("nextBtn").disabled = (end <= 0 || start >= total - 1);
@@ -731,6 +841,8 @@ document.getElementById("postBtn").addEventListener("click", async () => {
         
         showToast("Transaction confirmed. Syncing...", "info");
         await refreshAfterPost();
+        
+        triggerConfetti();
         showToast("✅ Message posted successfully!", "success");
         
     } catch(e) {
