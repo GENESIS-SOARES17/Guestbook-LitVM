@@ -212,9 +212,12 @@ textarea { width:100%; border:2px solid var(--gold); border-radius:10px; padding
         <div class="card">
             <div class="card-header">🔗 Wallet Connection</div>
             <div class="card-body">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 10px;">
                     <div id="walletStatus" style="font-weight:bold; font-size:13px;">Status: Locked</div>
-                    <button id="connectBtn" style="background:var(--blue-main); color:white; border:2px solid var(--gold); padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold;">Connect MetaMask</button>
+                    <div style="display:flex; gap:10px; flex-wrap: wrap;">
+                        <button id="switchChainBtn" style="background:var(--blue-soft); color:white; border:2px solid var(--gold); padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold;">🔗 Switch to LitVM</button>
+                        <button id="connectBtn" style="background:var(--blue-main); color:white; border:2px solid var(--gold); padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold;">Connect MetaMask</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -272,22 +275,36 @@ textarea { width:100%; border:2px solid var(--gold); border-radius:10px; padding
 <script type="module">
 import { ethers } from "https://esm.run/ethers@6.13.0";
 
-const CONFIG = { contractAddress:"0x472e230DfFA8c896b05A9a46c84BFb391756918e" };
+const CONFIG = { 
+    contractAddress: "0x472e230DfFA8c896b05A9a46c84BFb391756918e",
+    rpcUrl: "https://liteforge.rpc.caldera.xyz/"
+};
+
+// 🔧 IMPORTANTE: ATUALIZE O CHAIN ID COM O VALOR EXATO DA LITVM
+const LITVM_NETWORK = {
+    chainId: "0x1994", // Substitua pelo Chain ID real (hexadecimal)
+    chainName: "LitVM Network",
+    nativeCurrency: { name: "zkLTC", symbol: "zkLTC", decimals: 18 },
+    rpcUrls: ["https://liteforge.rpc.caldera.xyz/"],
+    blockExplorerUrls: ["https://liteforge.explorer.caldera.xyz/"]
+};
+
 const ABI = [
     "function postMessage(string) external payable",
     "function postMessageWithToken(string) external payable",
     "function totalMessages() view returns (uint256)",
-    "function getMessage(uint256) view returns (address,string,uint256,uint256)"
+    "function getMessage(uint256) view returns (address,string,uint256,uint256)",
+    "event MessagePosted(address indexed author, string message, uint256 timestamp, uint256 amount)"
 ];
 
 let provider, signer, contract, currentUser = null;
 let currentPage = 0;
 const LIMIT = 5;
 
-// FUNÇÃO PARA GERAR BOTTT AVATAR (DiceBear)
+// DICEBEAR AVATAR GENERATOR
 function getBotttAvatar(address) {
     if(!address) return "";
-    return `https://api.dicebear.com/7.x/bottts/svg?seed=${address}`;
+    return `https://api.dicebear.com/7.x/bottts/svg?seed=${address.toLowerCase()}`;
 }
 
 function updateAvatarElement(address, elementId) {
@@ -297,7 +314,7 @@ function updateAvatarElement(address, elementId) {
     }
 }
 
-// REAÇÕES
+// LOCAL STORAGE REACTIONS
 window.react = (i, emoji) => {
     let key = `react_${i}_${emoji}`;
     let val = parseInt(localStorage.getItem(key) || 0);
@@ -305,36 +322,80 @@ window.react = (i, emoji) => {
     loadMessages();
 };
 
-// CONTADOR CARACTERES
+// CHARACTER COUNTER
 document.getElementById("messageInput").addEventListener("input", function() {
     document.getElementById("charCount").textContent = this.value.length;
 });
 
-async function connect() {
-    if(!window.ethereum) return alert("Install MetaMask!");
-    provider = new ethers.BrowserProvider(window.ethereum);
-    const accounts = await provider.send("eth_requestAccounts", []);
-    currentUser = accounts[0];
-    signer = await provider.getSigner();
-    contract = new ethers.Contract(CONFIG.contractAddress, ABI, signer);
-    
-    document.getElementById("walletStatus").textContent = "Status: Online";
-    document.getElementById("walletAddressDisplay").textContent = currentUser;
-    document.getElementById("connectBtn").classList.add("hidden");
-    
-    updateAvatarElement(currentUser, "profileAvatar");
-    
-    const bal = await provider.getBalance(currentUser);
-    document.getElementById("balanceDisplay").textContent = parseFloat(ethers.formatEther(bal)).toFixed(4);
-    
-    loadMessages();
+// UNIFIED PROVIDER HANDLER
+function getProvider() {
+    if (window.ethereum) {
+        return new ethers.BrowserProvider(window.ethereum);
+    }
+    return new ethers.JsonRpcProvider(CONFIG.rpcUrl);
 }
 
-async function loadMessages() {
-    const rpcProvider = new ethers.JsonRpcProvider("https://liteforge.rpc.caldera.xyz/");
-    const readContract = new ethers.Contract(CONFIG.contractAddress, ABI, rpcProvider);
+// SWITCH NETWORK FUNCTION
+async function switchToLitVM() {
+    if (!window.ethereum) return alert("Install MetaMask first!");
+    try {
+        await window.ethereum.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: LITVM_NETWORK.chainId }]
+        });
+        document.getElementById("walletStatus").textContent = "Status: Online (LitVM)";
+    } catch (switchError) {
+        if (switchError.code === 4902) {
+            try {
+                await window.ethereum.request({
+                    method: "wallet_addEthereumChain",
+                    params: [LITVM_NETWORK]
+                });
+                document.getElementById("walletStatus").textContent = "Status: Online (LitVM)";
+            } catch (addError) {
+                console.error("Add chain error:", addError);
+                alert("Failed to add LitVM network to MetaMask.");
+            }
+        } else {
+            console.error("Switch chain error:", switchError);
+            alert("Failed to switch network. User rejected or error occurred.");
+        }
+    }
+}
+
+async function connect() {
+    if(!window.ethereum) return alert("Install MetaMask first!");
     
     try {
+        await window.ethereum.request({ method: "eth_requestAccounts" });
+        provider = getProvider();
+        signer = await provider.getSigner();
+        contract = new ethers.Contract(CONFIG.contractAddress, ABI, signer);
+        currentUser = await signer.getAddress();
+        
+        document.getElementById("walletStatus").textContent = "Status: Online";
+        document.getElementById("walletAddressDisplay").textContent = currentUser;
+        document.getElementById("connectBtn").classList.add("hidden");
+        
+        updateAvatarElement(currentUser, "profileAvatar");
+        
+        const bal = await provider.getBalance(currentUser);
+        document.getElementById("balanceDisplay").textContent = parseFloat(ethers.formatEther(bal)).toFixed(4);
+        
+        currentPage = 0;
+        await loadMessages();
+    } catch(e) {
+        console.error("Connection error:", e);
+        alert("Failed to connect wallet.");
+    }
+}
+
+// LOAD MESSAGES WITH BUG-FIXED SYNC
+async function loadMessages() {
+    try {
+        const readProvider = getProvider();
+        const readContract = new ethers.Contract(CONFIG.contractAddress, ABI, readProvider);
+        
         const total = Number(await readContract.totalMessages());
         document.getElementById("totalMsgCount").textContent = total;
         
@@ -342,71 +403,175 @@ async function loadMessages() {
         const list = document.getElementById("messagesList");
         list.innerHTML = "";
         
-        const start = total - 1 - (currentPage * LIMIT);
-        const end = Math.max(0, start - LIMIT + 1);
-
         if(total === 0) {
-            list.innerHTML = "<p style='text-align:center;'>No messages found.</p>";
+            list.innerHTML = "<p style='text-align:center; padding: 20px;'>No messages found. Be the first to post! 🚀</p>";
+            document.getElementById("userPostsCount").textContent = 0;
             return;
         }
 
-        for(let i = start; i >= end; i--) {
-            const m = await readContract.getMessage(i);
-            const author = m[0].toLowerCase();
-            if(currentUser && author === currentUser.toLowerCase()) userPosts++;
+        const start = total - 1 - (currentPage * LIMIT);
+        const end = Math.max(0, start - LIMIT + 1);
 
-            const shareText = encodeURIComponent(`@LitecoinVM "${m[1]}"`);
-            const twitterUrl = `https://twitter.com/intent/tweet?text=${shareText}`;
-            
-            const div = document.createElement("div");
-            div.className = "feed-card";
-            div.innerHTML = `
-                <div class="feed-address">
-                    <div class="avatar-container">
-                        <img src="${getBotttAvatar(author)}" alt="Avatar">
+        for(let i = start; i >= end; i--) {
+            try {
+                const m = await readContract.getMessage(i);
+                const author = m[0].toLowerCase();
+                if(currentUser && author === currentUser.toLowerCase()) userPosts++;
+
+                const shareText = encodeURIComponent(`@LitecoinVM "${m[1]}"`);
+                const twitterUrl = `https://twitter.com/intent/tweet?text=${shareText}`;
+                
+                const div = document.createElement("div");
+                div.className = "feed-card";
+                div.innerHTML = `
+                    <div class="feed-address">
+                        <div class="avatar-container">
+                            <img src="${getBotttAvatar(author)}" alt="Avatar">
+                        </div>
+                        ${author.slice(0,6)}...${author.slice(-4)}
                     </div>
-                    ${m[0].slice(0,6)}...${m[0].slice(-4)}
-                </div>
-                <div class="feed-text">${m[1]}</div>
-                ${m[3] > 0 ? `<div class="amount">💎 ${ethers.formatEther(m[3])} zkLTC</div>` : ''}
-                <div class="feed-time">${new Date(Number(m[2])*1000).toLocaleString()}</div>
-                <a href="${twitterUrl}" target="_blank" class="share-x">🐦 Share @LitecoinVM</a>
-                <div class="reactions">
-                    <button class="react-btn" onclick="react(${i}, '❤️')">❤️ ${localStorage.getItem(`react_${i}_❤️`) || 0}</button>
-                    <button class="react-btn" onclick="react(${i}, '🔥')">🔥 ${localStorage.getItem(`react_${i}_🔥`) || 0}</button>
-                    <button class="react-btn" onclick="react(${i}, '👍')">👍 ${localStorage.getItem(`react_${i}_👍`) || 0}</button>
-                </div>
-            `;
-            list.appendChild(div);
+                    <div class="feed-text">${m[1]}</div>
+                    ${m[3] > 0n ? `<div class="amount">💎 ${ethers.formatEther(m[3])} zkLTC</div>` : ''}
+                    <div class="feed-time">${new Date(Number(m[2]) * 1000).toLocaleString()}</div>
+                    <a href="${twitterUrl}" target="_blank" class="share-x">🐦 Share @LitecoinVM</a>
+                    <div class="reactions">
+                        <button class="react-btn" onclick="react(${i}, '❤️')">❤️ ${localStorage.getItem(`react_${i}_❤️`) || 0}</button>
+                        <button class="react-btn" onclick="react(${i}, '🔥')">🔥 ${localStorage.getItem(`react_${i}_🔥`) || 0}</button>
+                        <button class="react-btn" onclick="react(${i}, '👍')">👍 ${localStorage.getItem(`react_${i}_👍`) || 0}</button>
+                    </div>
+                `;
+                list.appendChild(div);
+            } catch(err) {
+                console.warn(`Failed to load message #${i}:`, err);
+            }
         }
 
         document.getElementById("userPostsCount").textContent = userPosts;
-        document.getElementById("pageInfo").textContent = `Page ${currentPage + 1}`;
+        document.getElementById("pageInfo").textContent = `Page ${currentPage + 1} of ${Math.ceil(total / LIMIT)}`;
         document.getElementById("prevBtn").disabled = (currentPage === 0);
-        document.getElementById("nextBtn").disabled = (end <= 0);
+        document.getElementById("nextBtn").disabled = (end <= 0 || start >= total - 1);
         
     } catch(e) { 
         console.error("Error loading messages:", e);
+        document.getElementById("messagesList").innerHTML = "<p style='text-align:center; color: var(--muted);'>Failed to load messages. Refresh or check connection.</p>";
     }
 }
 
-document.getElementById("nextBtn").addEventListener("click", () => { currentPage++; loadMessages(); });
-document.getElementById("prevBtn").addEventListener("click", () => { currentPage--; loadMessages(); });
-document.getElementById("connectBtn").addEventListener("click", connect);
-document.getElementById("darkModeBtn").addEventListener("click", () => document.body.classList.toggle("dark-mode"));
+// POST-TRANSACTION SYNC FIX (POLLING + RESET)
+async function refreshAfterPost() {
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    const maxAttempts = 5;
+    for(let attempt = 0; attempt < maxAttempts; attempt++) {
+        try {
+            const readProvider = getProvider();
+            const readContract = new ethers.Contract(CONFIG.contractAddress, ABI, readProvider);
+            const total = Number(await readContract.totalMessages());
+            if(total > 0) {
+                currentPage = 0;
+                await loadMessages();
+                return;
+            }
+        } catch(e) {
+            console.warn(`Refresh attempt ${attempt + 1} failed:`, e);
+        }
+        await new Promise(resolve => setTimeout(resolve, 2000));
+    }
+    location.reload();
+}
 
-document.getElementById("postBtn").addEventListener("click", async () => {
-    const txt = document.getElementById("messageInput").value;
-    const val = document.getElementById("tokenAmount").value;
-    if(!txt || !contract) return alert("Connect wallet first!");
-    try {
-        const tx = val ? await contract.postMessageWithToken(txt, {value: ethers.parseEther(val)}) : await contract.postMessage(txt);
-        await tx.wait();
-        location.reload();
-    } catch(e) { alert("Transaction Error."); }
+// EVENT LISTENERS
+document.getElementById("nextBtn").addEventListener("click", () => { 
+    currentPage++; 
+    loadMessages(); 
 });
 
-window.addEventListener("load", loadMessages);
+document.getElementById("prevBtn").addEventListener("click", () => { 
+    if(currentPage > 0) {
+        currentPage--; 
+        loadMessages(); 
+    }
+});
+
+document.getElementById("connectBtn").addEventListener("click", connect);
+document.getElementById("switchChainBtn").addEventListener("click", switchToLitVM);
+
+document.getElementById("darkModeBtn").addEventListener("click", () => {
+    document.body.classList.toggle("dark-mode");
+    const isDark = document.body.classList.contains("dark-mode");
+    localStorage.setItem("guestbook_darkmode", isDark ? "1" : "0");
+});
+
+// POST MESSAGE HANDLER
+document.getElementById("postBtn").addEventListener("click", async () => {
+    const txt = document.getElementById("messageInput").value.trim();
+    const val = document.getElementById("tokenAmount").value;
+    
+    if(!txt) return alert("Please write a message first!");
+    if(!contract || !currentUser) return alert("Please connect your wallet first!");
+    
+    const postBtn = document.getElementById("postBtn");
+    const originalText = postBtn.innerHTML;
+    
+    try {
+        postBtn.disabled = true;
+        postBtn.innerHTML = "⏳ Sending...";
+        
+        const tx = (val && parseFloat(val) > 0) 
+            ? await contract.postMessageWithToken(txt, { value: ethers.parseEther(val) })
+            : await contract.postMessage(txt);
+            
+        await tx.wait(1);
+        
+        document.getElementById("messageInput").value = "";
+        document.getElementById("tokenAmount").value = "";
+        document.getElementById("charCount").textContent = "0";
+        
+        await refreshAfterPost();
+        alert("✅ Message posted successfully!");
+        
+    } catch(e) {
+        console.error("Post error:", e);
+        let errorMsg = "Transaction failed. ";
+        if(e.reason) errorMsg += `Reason: ${e.reason}`;
+        else if(e.message) errorMsg += e.message;
+        alert(errorMsg);
+    } finally {
+        postBtn.disabled = false;
+        postBtn.innerHTML = originalText;
+    }
+});
+
+// RESTORE DARK MODE & INITIAL LOAD
+window.addEventListener("load", () => {
+    if(localStorage.getItem("guestbook_darkmode") === "1") {
+        document.body.classList.add("dark-mode");
+    }
+    loadMessages();
+});
+
+// REAL-TIME EVENT LISTENER
+async function listenForNewMessages() {
+    if(!contract || !currentUser) return;
+    try {
+        const readProvider = getProvider();
+        const readContract = new ethers.Contract(CONFIG.contractAddress, ABI, readProvider);
+        readContract.on("MessagePosted", () => {
+            setTimeout(() => {
+                currentPage = 0;
+                loadMessages();
+            }, 1500);
+        });
+        console.log("✅ Listening for MessagePosted events");
+    } catch(e) {
+        console.warn("Could not set up event listener:", e);
+    }
+}
+
+const originalConnect = connect;
+connect = async function() {
+    await originalConnect();
+    if(contract) listenForNewMessages();
+};
 </script>
 </body>
 </html>
