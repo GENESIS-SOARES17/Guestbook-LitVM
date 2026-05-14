@@ -765,8 +765,8 @@ async function loadMessages() {
                 <a href="${twitterUrl}" target="_blank" class="share-x">🐦 Share @LitecoinVM</a>
                 <div class="reactions">
                     <button class="react-btn" onclick="react(${item.index}, '❤️')">❤️ ${localStorage.getItem(`react_${item.index}_❤️`) || 0}</button>
-                    <button class="react-btn" onclick="react(${item.index}, '🔥')"> ${localStorage.getItem(`react_${item.index}_🔥`) || 0}</button>
-                    <button class="react-btn" onclick="react(${item.index}, '👍')"> ${localStorage.getItem(`react_${item.index}_👍`) || 0}</button>
+                    <button class="react-btn" onclick="react(${item.index}, '🔥')">🔥 ${localStorage.getItem(`react_${item.index}_🔥`) || 0}</button>
+                    <button class="react-btn" onclick="react(${item.index}, '👍')">👍 ${localStorage.getItem(`react_${item.index}_👍`) || 0}</button>
                 </div>
             `;
             list.appendChild(div);
