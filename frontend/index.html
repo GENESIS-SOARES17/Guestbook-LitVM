@@ -87,7 +87,7 @@ body::before {
 .logo img{ width:100px; height:100px; object-fit:contain; }
 .logo h1{ color:white; font-size:26px; }
 
-/* ========== TRÊS CORAÇÕES PULSANTES ========== */
+/* ========== TRÊS CORAÇÕES PULSANTES + BOTÃO DE SOM ========== */
 .heart-group {
     display: inline-flex;
     gap: 8px;
@@ -126,11 +126,39 @@ body::before {
 body.dark-mode .heart-red { color: #ff6b8f; text-shadow: 0 0 3px #ff6b8f; }
 body.dark-mode .heart-blue { color: #60a5fa; text-shadow: 0 0 3px #60a5fa; }
 body.dark-mode .heart-gold { color: #fbbf24; text-shadow: 0 0 3px #fbbf24; }
+
+/* Botão de som do coração */
+.heart-sound-btn {
+    background: rgba(255,255,255,0.25);
+    border: 2px solid var(--gold);
+    border-radius: 40px;
+    padding: 4px 12px;
+    margin-left: 8px;
+    font-size: 13px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    backdrop-filter: blur(4px);
+}
+.heart-sound-btn:hover {
+    background: rgba(255,255,255,0.5);
+    transform: scale(1.02);
+}
+.heart-sound-btn.active {
+    background: var(--gold);
+    color: #1f2937;
+    border-color: white;
+}
 /* Responsivo */
 @media (max-width: 640px) {
     .pulse-heart { font-size: 24px; }
     .heart-group { gap: 5px; margin-left: 6px; }
     .logo h1 { font-size: 20px; }
+    .heart-sound-btn { font-size: 10px; padding: 2px 8px; }
 }
 /* =============================================== */
 
@@ -380,7 +408,6 @@ textarea { width:100%; border:2px solid var(--gold); border-radius:10px; padding
 }
 </style>
 </head>
-
 <body>
 
 <button class="dark-mode-toggle" id="darkModeBtn">🌓</button>
@@ -395,11 +422,12 @@ textarea { width:100%; border:2px solid var(--gold); border-radius:10px; padding
         <div class="logo">
             <img src="./LITVM 2.png" alt="LitVM">
             <h1>Guestbook</h1>
-            <!-- TRÊS CORAÇÕES PULSANTES: VERMELHO, AZUL E DOURADO -->
+            <!-- TRÊS CORAÇÕES PULSANTES + BOTÃO DE SOM -->
             <div class="heart-group">
                 <span class="pulse-heart heart-red" aria-label="Red pulsing heart">❤️</span>
                 <span class="pulse-heart heart-blue" aria-label="Blue pulsing heart">💙</span>
                 <span class="pulse-heart heart-gold" aria-label="Gold pulsing heart">💛</span>
+                <button id="heartSoundToggle" class="heart-sound-btn" title="Ativar som de batida do coração">🔇 Som</button>
             </div>
         </div>
         <div class="ticker-wrap">
@@ -420,23 +448,13 @@ textarea { width:100%; border:2px solid var(--gold); border-radius:10px; padding
 </div>
 
 <div class="main">
-
+    <!-- mesma estrutura lateral e central da versão anterior, sem alterações para preservar funcionalidades -->
     <aside class="left-column">
-        <div class="card" style="height: 180px;">
-            <div class="card-header">👤 Profile</div>
-            <div class="card-body" style="text-align:center;">
-                <div id="profileAvatar" class="profile-avatar">
-                   <div style="width:100%; height:100%; background:var(--blue-main);"></div>
-                </div>
-                <div id="walletAddressDisplay" style="font-size:10px; word-break:break-all;">Not Connected</div>
-            </div>
-        </div>
-        <!-- MARKET DATA -->
+        <div class="card" style="height: 180px;"><div class="card-header">👤 Profile</div><div class="card-body" style="text-align:center;"><div id="profileAvatar" class="profile-avatar"><div style="width:100%; height:100%; background:var(--blue-main);"></div></div><div id="walletAddressDisplay" style="font-size:10px; word-break:break-all;">Not Connected</div></div></div>
         <div class="banner-card"><div class="card-header">📊 CoinMarketCap</div><div class="card-body"><a href="https://coinmarketcap.com/" target="_blank" class="banner-link"><div class="banner-icon">📊</div><div class="banner-title">MarketCap</div></a></div></div>
         <div class="banner-card"><div class="card-header">🫧 CryptoBubbles</div><div class="card-body"><a href="https://cryptobubbles.net/" target="_blank" class="banner-link"><div class="banner-icon">🫧</div><div class="banner-title">Bubbles</div></a></div></div>
         <div class="banner-card"><div class="card-header">🦎 CoinGecko</div><div class="card-body"><a href="https://www.coingecko.com/" target="_blank" class="banner-link"><div class="banner-icon">🦎</div><div class="banner-title">Gecko</div></a></div></div>
         <div class="banner-card"><div class="card-header">📰 CoinDesk</div><div class="card-body"><a href="https://www.coindesk.com/" target="_blank" class="banner-link"><div class="banner-icon">📰</div><div class="banner-title">News</div></a></div></div>
-        <!-- EXCHANGES -->
         <div class="banner-card"><div class="card-header">🔶 Binance</div><div class="card-body"><a href="https://www.binance.com/" target="_blank" class="banner-link"><div class="banner-icon">🔶</div><div class="banner-title">Binance</div></a></div></div>
         <div class="banner-card"><div class="card-header">🔵 Coinbase</div><div class="card-body"><a href="https://www.coinbase.com/" target="_blank" class="banner-link"><div class="banner-icon">🔵</div><div class="banner-title">Coinbase</div></a></div></div>
         <div class="banner-card"><div class="card-header">⚫ OKX</div><div class="card-body"><a href="https://www.okx.com/" target="_blank" class="banner-link"><div class="banner-icon">⚫</div><div class="banner-title">OKX</div></a></div></div>
@@ -446,85 +464,25 @@ textarea { width:100%; border:2px solid var(--gold); border-radius:10px; padding
     </aside>
 
     <main class="center-column">
-        <div class="card">
-            <div class="card-header">🔗 Wallet Connection</div>
-            <div class="card-body">
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 10px;">
-                    <div id="walletStatus" style="font-weight:bold; font-size:13px;">Status: Locked</div>
-                    <div style="display:flex; gap:10px; flex-wrap: wrap;">
-                        <button id="switchChainBtn" class="glow-pulse" style="background:var(--blue-soft); color:white; border:2px solid var(--gold); padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold;">🔗 Switch to LitVM</button>
-                        <button id="connectBtn" class="glow-pulse" style="background:var(--blue-main); color:white; border:2px solid var(--gold); padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold;">Connect MetaMask</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card" style="margin-top:20px;">
-            <div class="card-header">💬 Write Message (Max 270 chars)</div>
-            <div class="card-body">
-                <textarea id="messageInput" maxlength="270" placeholder="Type your permanent message..."></textarea>
-                <div class="char-counter"><span id="charCount">0</span>/270</div>
-                <div style="margin-top:10px; display:flex; gap:10px;">
-                    <input type="number" id="tokenAmount" placeholder="Tip zkLTC" style="flex:1; border:2px solid var(--gold); border-radius:8px; padding:8px;"/>
-                    <button id="postBtn" class="glow-pulse" style="background:var(--blue-main); color:white; border:2px solid var(--gold); width:120px; font-weight:bold; border-radius:8px; cursor:pointer;">🚀 Post</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="card" style="margin-top:20px;">
-            <div class="card-header">📊 Statistics</div>
-            <div class="card-body stats-grid">
-                <div class="stat"><div>Global Total</div><b id="totalMsgCount" class="animated-counter">0</b></div>
-                <div class="stat"><div>Your Posts (Visible)</div><b id="userPostsCount" class="animated-counter">0</b></div>
-            </div>
-        </div>
-
-        <!-- SORT BAR -->
-        <div class="sort-bar">
-            <span style="font-size:11px; font-weight:bold;">Sort by:</span>
-            <button class="sort-btn active" onclick="window.setSort('newest')" id="btn-newest">📅 Newest</button>
-            <button class="sort-btn" onclick="window.setSort('tips')" id="btn-tips">💎 Most Tipped</button>
-            <button class="sort-btn" onclick="window.setSort('reacted')" id="btn-reacted">❤️ Top Reacted</button>
-        </div>
-
+        <div class="card"><div class="card-header">🔗 Wallet Connection</div><div class="card-body"><div style="display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 10px;"><div id="walletStatus" style="font-weight:bold; font-size:13px;">Status: Locked</div><div style="display:flex; gap:10px; flex-wrap: wrap;"><button id="switchChainBtn" class="glow-pulse" style="background:var(--blue-soft); color:white; border:2px solid var(--gold); padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold;">🔗 Switch to LitVM</button><button id="connectBtn" class="glow-pulse" style="background:var(--blue-main); color:white; border:2px solid var(--gold); padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold;">Connect MetaMask</button></div></div></div></div>
+        <div class="card" style="margin-top:20px;"><div class="card-header">💬 Write Message (Max 270 chars)</div><div class="card-body"><textarea id="messageInput" maxlength="270" placeholder="Type your permanent message..."></textarea><div class="char-counter"><span id="charCount">0</span>/270</div><div style="margin-top:10px; display:flex; gap:10px;"><input type="number" id="tokenAmount" placeholder="Tip zkLTC" style="flex:1; border:2px solid var(--gold); border-radius:8px; padding:8px;"/><button id="postBtn" class="glow-pulse" style="background:var(--blue-main); color:white; border:2px solid var(--gold); width:120px; font-weight:bold; border-radius:8px; cursor:pointer;">🚀 Post</button></div></div></div>
+        <div class="card" style="margin-top:20px;"><div class="card-header">📊 Statistics</div><div class="card-body stats-grid"><div class="stat"><div>Global Total</div><b id="totalMsgCount" class="animated-counter">0</b></div><div class="stat"><div>Your Posts (Visible)</div><b id="userPostsCount" class="animated-counter">0</b></div></div></div>
+        <div class="sort-bar"><span style="font-size:11px; font-weight:bold;">Sort by:</span><button class="sort-btn active" onclick="window.setSort('newest')" id="btn-newest">📅 Newest</button><button class="sort-btn" onclick="window.setSort('tips')" id="btn-tips">💎 Most Tipped</button><button class="sort-btn" onclick="window.setSort('reacted')" id="btn-reacted">❤️ Top Reacted</button></div>
         <div id="messagesList" style="margin-top:10px;"></div>
-
-        <div class="pagination">
-            <button id="prevBtn" class="page-btn">← Previous</button>
-            <span id="pageInfo" style="font-weight:bold;">Page 1</span>
-            <button id="nextBtn" class="page-btn">Next →</button>
-        </div>
+        <div class="pagination"><button id="prevBtn" class="page-btn">← Previous</button><span id="pageInfo" style="font-weight:bold;">Page 1</span><button id="nextBtn" class="page-btn">Next →</button></div>
     </main>
 
     <aside class="right-column">
-        <div class="card" style="height: 180px;">
-            <div class="card-header">💰 Wallet Balance</div>
-            <div class="card-body" style="text-align:center;">
-                <div style="font-size:24px; font-weight:bold; color:var(--blue-main);" id="balanceDisplay">0.00</div>
-                <div style="font-size:12px; color:var(--muted);">zkLTC Available</div>
-            </div>
-        </div>
-        <!-- LITVM ECOSYSTEM -->
+        <div class="card" style="height: 180px;"><div class="card-header">💰 Wallet Balance</div><div class="card-body" style="text-align:center;"><div style="font-size:24px; font-weight:bold; color:var(--blue-main);" id="balanceDisplay">0.00</div><div style="font-size:12px; color:var(--muted);">zkLTC Available</div></div></div>
         <div class="banner-card"><div class="card-header">🌐 Official Site</div><div class="card-body"><a href="https://www.litvm.com/" target="_blank" class="banner-link"><div class="banner-icon">🌐</div><div class="banner-title">LitVM.com</div></a></div></div>
         <div class="banner-card"><div class="card-header">📚 Documentation</div><div class="card-body"><a href="https://docs.litvm.com/" target="_blank" class="banner-link"><div class="banner-icon">📚</div><div class="banner-title">Docs</div></a></div></div>
         <div class="banner-card"><div class="card-header">🔍 Block Explorer</div><div class="card-body"><a href="https://liteforge.explorer.caldera.xyz/" target="_blank" class="banner-link"><div class="banner-icon">🔍</div><div class="banner-title">Explorer</div></a></div></div>
         <div class="banner-card"><div class="card-header">🎯 LiteHub</div><div class="card-body"><a href="https://liteforge.hub.caldera.xyz/" target="_blank" class="banner-link"><div class="banner-icon">🎯</div><div class="banner-title">Hub</div></a></div></div>
         <div class="banner-card"><div class="card-header">🟢 System Status</div><div class="card-body"><a href="https://liteforge.betteruptime.com/" target="_blank" class="banner-link"><div class="banner-icon">🟢</div><div class="banner-title">Uptime</div></a></div></div>
-        <!-- COMMUNITY -->
         <div class="banner-card"><div class="card-header">🐦 Twitter / X</div><div class="card-body"><a href="https://x.com/LitecoinVM" target="_blank" class="banner-link"><div class="banner-icon">🐦</div><div class="banner-title">@LitecoinVM</div></a></div></div>
         <div class="banner-card"><div class="card-header">✈️ Telegram</div><div class="card-body"><a href="https://t.me/litecoinvm" target="_blank" class="banner-link"><div class="banner-icon">✈️</div><div class="banner-title">Community</div></a></div></div>
-        <!-- LITECOIN NETWORK -->
         <div class="banner-card"><div class="card-header">₿ Litecoin Official</div><div class="card-body"><a href="https://litecoin.com/" target="_blank" class="banner-link"><div class="banner-icon">₿</div><div class="banner-title">Litecoin.com</div></a></div></div>
-        <!-- TESTNET - CORRIGIDO -->
-        <div class="banner-card">
-            <div class="card-header">⚡ LitVM Testnet</div>
-            <div class="card-body">
-                <a href="https://testnet.litvm.com/" target="_blank" class="banner-link">
-                    <div class="banner-icon">⚡</div>
-                    <div class="banner-title">Testnet</div>
-                </a>
-            </div>
-        </div>
+        <div class="banner-card"><div class="card-header">⚡ LitVM Testnet</div><div class="card-body"><a href="https://testnet.litvm.com/" target="_blank" class="banner-link"><div class="banner-icon">⚡</div><div class="banner-title">Testnet</div></a></div></div>
     </aside>
 </div>
 
@@ -536,7 +494,6 @@ const CONFIG = {
     rpcUrl: "https://liteforge.rpc.caldera.xyz/"
 };
 
-// CORRECT CHAIN ID: 4441 = 0x1159
 const LITVM_NETWORK = {
     chainId: "0x1159",
     chainName: "LitVM Network",
@@ -558,442 +515,122 @@ let currentPage = 0;
 let currentSort = 'newest';
 const LIMIT = 5;
 
-// ANIMATED COUNTERS
-function animateCounter(elementId, target) {
-    const el = document.getElementById(elementId);
-    if(!el) return;
-    let current = 0;
-    const duration = 1200;
-    const step = target / (duration / 16);
-    const timer = setInterval(() => {
-        current += step;
-        if (current >= target) { current = target; clearInterval(timer); }
-        el.textContent = Math.floor(current).toLocaleString();
-    }, 16);
-}
+// --- HEART SOUND SYSTEM (Web Audio) ---
+let audioCtx = null;
+let heartbeatInterval = null;
+let isHeartSoundActive = false;
 
-// CONFETTI BURST
-function triggerConfetti() {
-    const container = document.getElementById('confettiContainer');
-    const colors = ['#FFD700', '#6B8DD6', '#8FA8E8', '#10b981', '#ef4444'];
-    for(let i=0; i<40; i++) {
-        const conf = document.createElement('div');
-        conf.className = 'confetti';
-        conf.style.left = Math.random() * 100 + '%';
-        conf.style.background = colors[Math.floor(Math.random() * colors.length)];
-        conf.style.animationDuration = (Math.random() * 1 + 1.5) + 's';
-        container.appendChild(conf);
-        setTimeout(() => conf.remove(), 2500);
-    }
-}
-
-// TOAST NOTIFICATION SYSTEM
-function showToast(message, type = 'info') {
-    const container = document.getElementById('toastContainer');
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-    const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
-    toast.innerHTML = `<span>${icon}</span> ${message}`;
-    container.appendChild(toast);
-    setTimeout(() => {
-        toast.style.animation = 'fadeOut 0.3s ease forwards';
-        setTimeout(() => toast.remove(), 300);
-    }, 3500);
-}
-
-// ANTI-XSS SANITIZER
-function sanitizeHTML(str) {
-    if (!str) return '';
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-}
-
-// COPY TO CLIPBOARD
-window.copyAddress = (addr) => {
-    navigator.clipboard.writeText(addr).then(() => showToast("Address copied to clipboard!", "success"));
-};
-
-// SORT FUNCTION
-window.setSort = (type) => {
-    currentSort = type;
-    document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(`btn-${type}`).classList.add('active');
-    loadMessages();
-};
-
-// DICEBEAR AVATAR GENERATOR
-function getBotttAvatar(address) {
-    if(!address) return "";
-    return `https://api.dicebear.com/7.x/bottts/svg?seed=${address.toLowerCase()}`;
-}
-
-function updateAvatarElement(address, elementId) {
-    const el = document.getElementById(elementId);
-    if(el) {
-        el.innerHTML = `<img src="${getBotttAvatar(address)}" alt="Avatar">`;
-    }
-}
-
-// LOCAL STORAGE REACTIONS
-window.react = (i, emoji) => {
-    let key = `react_${i}_${emoji}`;
-    let val = parseInt(localStorage.getItem(key) || 0);
-    localStorage.setItem(key, val + 1);
-    loadMessages();
-};
-
-// CHARACTER COUNTER
-document.getElementById("messageInput").addEventListener("input", function() {
-    document.getElementById("charCount").textContent = this.value.length;
-});
-
-// UNIFIED PROVIDER HANDLER
-function getProvider() {
-    if (window.ethereum) {
-        return new ethers.BrowserProvider(window.ethereum);
-    }
-    return new ethers.JsonRpcProvider(CONFIG.rpcUrl);
-}
-
-// NETWORK DETECTION & BANNER
-async function checkNetwork() {
-    if (!window.ethereum) return false;
+function playThump() {
+    if (!audioCtx || !isHeartSoundActive) return;
     try {
-        const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
-        const isCorrect = currentChainId.toLowerCase() === LITVM_NETWORK.chainId.toLowerCase();
-        const banner = document.getElementById('networkBanner');
-        banner.style.display = isCorrect ? 'none' : 'flex';
-        return isCorrect;
-    } catch (e) { 
-        console.warn('Network check error:', e); 
-        return false; 
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = 85; // batida grave
+        gain.gain.value = 0.28;  // volume suave
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.35);
+        osc.stop(now + 0.35);
+    } catch(e) { console.warn("Audio error:", e); }
+}
+
+function startHeartbeat() {
+    if (heartbeatInterval) clearInterval(heartbeatInterval);
+    heartbeatInterval = setInterval(() => {
+        if (isHeartSoundActive && audioCtx) {
+            playThump();
+        }
+    }, 1200); // sincronizado com a animação (1.2s)
+}
+
+function stopHeartbeat() {
+    if (heartbeatInterval) {
+        clearInterval(heartbeatInterval);
+        heartbeatInterval = null;
     }
 }
 
-async function switchToLitVM() {
-    if (!window.ethereum) return showToast("Install MetaMask first!", "error");
-    try {
-        await window.ethereum.request({
-            method: "wallet_switchEthereumChain",
-            params: [{ chainId: LITVM_NETWORK.chainId }]
-        });
-        showToast("Switched to LitVM Network!", "success");
-        checkNetwork();
-    } catch (switchError) {
-        if (switchError.code === 4902) {
-            try {
-                await window.ethereum.request({
-                    method: "wallet_addEthereumChain",
-                    params: [LITVM_NETWORK]
+async function initAudio() {
+    if (audioCtx) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    // Precisamos de um gesture do usuário para ativar o áudio. O botão fará o resume.
+}
+
+function toggleHeartSound() {
+    const btn = document.getElementById('heartSoundToggle');
+    if (!isHeartSoundActive) {
+        // Ativar som
+        if (!audioCtx) {
+            initAudio().then(() => {
+                audioCtx.resume().then(() => {
+                    isHeartSoundActive = true;
+                    btn.innerHTML = '🔊 Som';
+                    btn.classList.add('active');
+                    startHeartbeat();
+                    showToast("❤️ Som de batida cardíaca ativado!", "success");
                 });
-                showToast("LitVM Network added successfully!", "success");
-                checkNetwork();
-            } catch (addError) {
-                console.error("Add chain error:", addError);
-                showToast("Failed to add LitVM network.", "error");
-            }
+            }).catch(e => console.warn(e));
         } else {
-            console.error("Switch chain error:", switchError);
-            showToast("Network switch failed.", "error");
+            audioCtx.resume().then(() => {
+                isHeartSoundActive = true;
+                btn.innerHTML = '🔊 Som';
+                btn.classList.add('active');
+                startHeartbeat();
+                showToast("❤️ Som de batida cardíaca ativado!", "success");
+            });
         }
+    } else {
+        // Desativar
+        isHeartSoundActive = false;
+        btn.innerHTML = '🔇 Som';
+        btn.classList.remove('active');
+        stopHeartbeat();
+        if (audioCtx) audioCtx.suspend();
+        showToast("🔇 Som do coração desativado.", "info");
     }
 }
 
-async function connect() {
-    if(!window.ethereum) return showToast("Install MetaMask first!", "error");
-    
-    try {
-        await window.ethereum.request({ method: "eth_requestAccounts" });
-        provider = getProvider();
-        signer = await provider.getSigner();
-        contract = new ethers.Contract(CONFIG.contractAddress, ABI, signer);
-        currentUser = await signer.getAddress();
-        
-        document.getElementById("walletStatus").textContent = "Status: Online";
-        document.getElementById("walletAddressDisplay").textContent = currentUser;
-        document.getElementById("connectBtn").classList.add("hidden");
-        
-        updateAvatarElement(currentUser, "profileAvatar");
-        
-        const bal = await provider.getBalance(currentUser);
-        document.getElementById("balanceDisplay").textContent = parseFloat(ethers.formatEther(bal)).toFixed(4);
-        
-        currentPage = 0;
-        await loadMessages();
-        showToast("Wallet connected successfully!", "success");
-    } catch(e) {
-        console.error("Connection error:", e);
-        showToast("Failed to connect wallet.", "error");
-    }
+// Carregar estado do som no localStorage
+const storedSound = localStorage.getItem("heartSoundEnabled");
+if (storedSound === "true") {
+    // Será ativado após interação, mas vamos deixar o botão visual como ativo só quando realmente iniciado
+    // Apenas preparar, mas o áudio precisa de clique. O usuário terá que clicar no botão.
 }
+window.toggleHeartSound = toggleHeartSound;
 
-// LOAD MESSAGES WITH SKELETONS & SORTING
-async function loadMessages() {
-    const list = document.getElementById("messagesList");
-    
-    // SHOW SKELETONS
-    list.innerHTML = `
-        <div class="skeleton"></div>
-        <div class="skeleton"></div>
-        <div class="skeleton"></div>
-    `;
-
-    try {
-        const readProvider = getProvider();
-        const readContract = new ethers.Contract(CONFIG.contractAddress, ABI, readProvider);
-        
-        const total = Number(await readContract.totalMessages());
-        animateCounter("totalMsgCount", total);
-        
-        let userPosts = 0;
-        
-        if(total === 0) {
-            list.innerHTML = "<p style='text-align:center; padding: 20px;'>No messages found. Be the first to post! 🚀</p>";
-            document.getElementById("userPostsCount").textContent = 0;
-            updatePagination(0, 0);
-            return;
-        }
-
-        const start = total - 1 - (currentPage * LIMIT);
-        const end = Math.max(0, start - LIMIT + 1);
-
-        const batch = [];
-        for(let i = start; i >= end; i--) {
-            try {
-                const m = await readContract.getMessage(i);
-                const author = m[0].toLowerCase();
-                const safeMessage = sanitizeHTML(m[1]);
-                
-                if(currentUser && author === currentUser.toLowerCase()) userPosts++;
-                
-                const reactions = (parseInt(localStorage.getItem(`react_${i}_❤️`) || 0) + 
-                                   parseInt(localStorage.getItem(`react_${i}_🔥`) || 0) + 
-                                   parseInt(localStorage.getItem(`react_${i}_👍`) || 0));
-
-                batch.push({
-                    index: i,
-                    author: author,
-                    message: safeMessage,
-                    rawMessage: m[1],
-                    timestamp: Number(m[2]),
-                    amount: m[3],
-                    reactions: reactions
-                });
-            } catch(err) {
-                console.warn(`Failed to load message #${i}:`, err);
-            }
-        }
-
-        let sortedBatch = [...batch];
-        if (currentSort === 'tips') {
-            sortedBatch.sort((a, b) => Number(b.amount) - Number(a.amount));
-        } else if (currentSort === 'reacted') {
-            sortedBatch.sort((a, b) => b.reactions - a.reactions);
-        }
-
-        list.innerHTML = "";
-        sortedBatch.forEach((item, idx) => {
-            const explorerUrl = `https://liteforge.explorer.caldera.xyz/address/${item.author}`;
-            const shareText = encodeURIComponent(`@LitecoinVM "${item.rawMessage}"`);
-            const twitterUrl = `https://twitter.com/intent/tweet?text=${shareText}`;
-            
-            const div = document.createElement("div");
-            div.className = "feed-card";
-            if(idx === 0) div.style.borderTop = "4px solid var(--blue-main)";
-            
-            div.innerHTML = `
-                <div class="feed-address">
-                    <div class="avatar-container">
-                        <img src="${getBotttAvatar(item.author)}" alt="Avatar">
-                    </div>
-                    <a href="${explorerUrl}" target="_blank" class="address-link" title="View on Explorer">
-                        ${item.author.slice(0,6)}...${item.author.slice(-4)}
-                    </a>
-                    <button class="copy-btn" onclick="window.copyAddress('${item.author}')" title="Copy Address">📋</button>
-                </div>
-                <div class="feed-text">${item.message}</div>
-                ${item.amount > 0n ? `<div class="amount">💎 ${ethers.formatEther(item.amount)} zkLTC</div>` : ''}
-                <div class="feed-time">${new Date(item.timestamp * 1000).toLocaleString()}</div>
-                <a href="${twitterUrl}" target="_blank" class="share-x">🐦 Share @LitecoinVM</a>
-                <div class="reactions">
-                    <button class="react-btn" onclick="react(${item.index}, '❤️')">❤️ ${localStorage.getItem(`react_${item.index}_❤️`) || 0}</button>
-                    <button class="react-btn" onclick="react(${item.index}, '🔥')">🔥 ${localStorage.getItem(`react_${item.index}_🔥`) || 0}</button>
-                    <button class="react-btn" onclick="react(${item.index}, '👍')">👍 ${localStorage.getItem(`react_${item.index}_👍`) || 0}</button>
-                </div>
-            `;
-            list.appendChild(div);
-        });
-
-        animateCounter("userPostsCount", userPosts);
-        updatePagination(total, start);
-        
-    } catch(e) { 
-        console.error("Error loading messages:", e);
-        list.innerHTML = "<p style='text-align:center; color: var(--muted);'>Failed to load messages. Refresh or check connection.</p>";
-    }
-}
-
-// UPDATE PAGINATION
-function updatePagination(total, currentIndex) {
-    const totalPages = Math.max(1, Math.ceil(total / LIMIT));
-    const currentPageNum = currentPage + 1;
-    document.getElementById("pageInfo").textContent = `Page ${currentPageNum} of ${totalPages}`;
-    const prevBtn = document.getElementById("prevBtn");
-    const nextBtn = document.getElementById("nextBtn");
-    prevBtn.disabled = (currentPage === 0);
-    nextBtn.disabled = (currentPage >= totalPages - 1);
-}
-
-async function refreshAfterPost() {
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    const maxAttempts = 5;
-    for(let attempt = 0; attempt < maxAttempts; attempt++) {
-        try {
-            const readProvider = getProvider();
-            const readContract = new ethers.Contract(CONFIG.contractAddress, ABI, readProvider);
-            const total = Number(await readContract.totalMessages());
-            if(total > 0) {
-                currentPage = 0;
-                await loadMessages();
-                return;
-            }
-        } catch(e) {
-            console.warn(`Refresh attempt ${attempt + 1} failed:`, e);
-        }
-        await new Promise(resolve => setTimeout(resolve, 2000));
-    }
-    location.reload();
-}
-
-// EVENT LISTENERS
-document.getElementById("nextBtn").addEventListener("click", () => { 
-    const totalPages = Math.ceil(Number(document.getElementById("totalMsgCount").textContent) / LIMIT);
-    if(currentPage < totalPages - 1) {
-        currentPage++; 
-        loadMessages();
-    }
-});
-
-document.getElementById("prevBtn").addEventListener("click", () => { 
-    if(currentPage > 0) {
-        currentPage--; 
-        loadMessages(); 
-    }
-});
-
+// --- FUNÇÕES DO GUESTBOOK (mesmo código original, preservado) ---
+function animateCounter(elementId, target) { const el = document.getElementById(elementId); if(!el) return; let current = 0; const duration = 1200; const step = target / (duration / 16); const timer = setInterval(() => { current += step; if (current >= target) { current = target; clearInterval(timer); } el.textContent = Math.floor(current).toLocaleString(); }, 16); }
+function triggerConfetti() { const container = document.getElementById('confettiContainer'); const colors = ['#FFD700', '#6B8DD6', '#8FA8E8', '#10b981', '#ef4444']; for(let i=0; i<40; i++) { const conf = document.createElement('div'); conf.className = 'confetti'; conf.style.left = Math.random() * 100 + '%'; conf.style.background = colors[Math.floor(Math.random() * colors.length)]; conf.style.animationDuration = (Math.random() * 1 + 1.5) + 's'; container.appendChild(conf); setTimeout(() => conf.remove(), 2500); } }
+function showToast(message, type = 'info') { const container = document.getElementById('toastContainer'); const toast = document.createElement('div'); toast.className = `toast ${type}`; const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'; toast.innerHTML = `<span>${icon}</span> ${message}`; container.appendChild(toast); setTimeout(() => { toast.style.animation = 'fadeOut 0.3s ease forwards'; setTimeout(() => toast.remove(), 300); }, 3500); }
+function sanitizeHTML(str) { if (!str) return ''; const div = document.createElement('div'); div.textContent = str; return div.innerHTML; }
+window.copyAddress = (addr) => { navigator.clipboard.writeText(addr).then(() => showToast("Address copied to clipboard!", "success")); };
+window.setSort = (type) => { currentSort = type; document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active')); document.getElementById(`btn-${type}`).classList.add('active'); loadMessages(); };
+function getBotttAvatar(address) { if(!address) return ""; return `https://api.dicebear.com/7.x/bottts/svg?seed=${address.toLowerCase()}`; }
+function updateAvatarElement(address, elementId) { const el = document.getElementById(elementId); if(el) { el.innerHTML = `<img src="${getBotttAvatar(address)}" alt="Avatar">`; } }
+window.react = (i, emoji) => { let key = `react_${i}_${emoji}`; let val = parseInt(localStorage.getItem(key) || 0); localStorage.setItem(key, val + 1); loadMessages(); };
+document.getElementById("messageInput").addEventListener("input", function() { document.getElementById("charCount").textContent = this.value.length; });
+function getProvider() { if (window.ethereum) { return new ethers.BrowserProvider(window.ethereum); } return new ethers.JsonRpcProvider(CONFIG.rpcUrl); }
+async function checkNetwork() { if (!window.ethereum) return false; try { const currentChainId = await window.ethereum.request({ method: 'eth_chainId' }); const isCorrect = currentChainId.toLowerCase() === LITVM_NETWORK.chainId.toLowerCase(); const banner = document.getElementById('networkBanner'); banner.style.display = isCorrect ? 'none' : 'flex'; return isCorrect; } catch (e) { console.warn('Network check error:', e); return false; } }
+async function switchToLitVM() { if (!window.ethereum) return showToast("Install MetaMask first!", "error"); try { await window.ethereum.request({ method: "wallet_switchEthereumChain", params: [{ chainId: LITVM_NETWORK.chainId }] }); showToast("Switched to LitVM Network!", "success"); checkNetwork(); } catch (switchError) { if (switchError.code === 4902) { try { await window.ethereum.request({ method: "wallet_addEthereumChain", params: [LITVM_NETWORK] }); showToast("LitVM Network added successfully!", "success"); checkNetwork(); } catch (addError) { console.error("Add chain error:", addError); showToast("Failed to add LitVM network.", "error"); } } else { console.error("Switch chain error:", switchError); showToast("Network switch failed.", "error"); } } }
+async function connect() { if(!window.ethereum) return showToast("Install MetaMask first!", "error"); try { await window.ethereum.request({ method: "eth_requestAccounts" }); provider = getProvider(); signer = await provider.getSigner(); contract = new ethers.Contract(CONFIG.contractAddress, ABI, signer); currentUser = await signer.getAddress(); document.getElementById("walletStatus").textContent = "Status: Online"; document.getElementById("walletAddressDisplay").textContent = currentUser; document.getElementById("connectBtn").classList.add("hidden"); updateAvatarElement(currentUser, "profileAvatar"); const bal = await provider.getBalance(currentUser); document.getElementById("balanceDisplay").textContent = parseFloat(ethers.formatEther(bal)).toFixed(4); currentPage = 0; await loadMessages(); showToast("Wallet connected successfully!", "success"); } catch(e) { console.error("Connection error:", e); showToast("Failed to connect wallet.", "error"); } }
+async function loadMessages() { const list = document.getElementById("messagesList"); list.innerHTML = `<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>`; try { const readProvider = getProvider(); const readContract = new ethers.Contract(CONFIG.contractAddress, ABI, readProvider); const total = Number(await readContract.totalMessages()); animateCounter("totalMsgCount", total); let userPosts = 0; if(total === 0) { list.innerHTML = "<p style='text-align:center; padding: 20px;'>No messages found. Be the first to post! 🚀</p>"; document.getElementById("userPostsCount").textContent = 0; updatePagination(0, 0); return; } const start = total - 1 - (currentPage * LIMIT); const end = Math.max(0, start - LIMIT + 1); const batch = []; for(let i = start; i >= end; i--) { try { const m = await readContract.getMessage(i); const author = m[0].toLowerCase(); const safeMessage = sanitizeHTML(m[1]); if(currentUser && author === currentUser.toLowerCase()) userPosts++; const reactions = (parseInt(localStorage.getItem(`react_${i}_❤️`) || 0) + parseInt(localStorage.getItem(`react_${i}_🔥`) || 0) + parseInt(localStorage.getItem(`react_${i}_👍`) || 0)); batch.push({ index: i, author: author, message: safeMessage, rawMessage: m[1], timestamp: Number(m[2]), amount: m[3], reactions: reactions }); } catch(err) { console.warn(`Failed to load message #${i}:`, err); } } let sortedBatch = [...batch]; if (currentSort === 'tips') { sortedBatch.sort((a, b) => Number(b.amount) - Number(a.amount)); } else if (currentSort === 'reacted') { sortedBatch.sort((a, b) => b.reactions - a.reactions); } list.innerHTML = ""; sortedBatch.forEach((item, idx) => { const explorerUrl = `https://liteforge.explorer.caldera.xyz/address/${item.author}`; const shareText = encodeURIComponent(`@LitecoinVM "${item.rawMessage}"`); const twitterUrl = `https://twitter.com/intent/tweet?text=${shareText}`; const div = document.createElement("div"); div.className = "feed-card"; if(idx === 0) div.style.borderTop = "4px solid var(--blue-main)"; div.innerHTML = `<div class="feed-address"><div class="avatar-container"><img src="${getBotttAvatar(item.author)}" alt="Avatar"></div><a href="${explorerUrl}" target="_blank" class="address-link">${item.author.slice(0,6)}...${item.author.slice(-4)}</a><button class="copy-btn" onclick="window.copyAddress('${item.author}')">📋</button></div><div class="feed-text">${item.message}</div>${item.amount > 0n ? `<div class="amount">💎 ${ethers.formatEther(item.amount)} zkLTC</div>` : ''}<div class="feed-time">${new Date(item.timestamp * 1000).toLocaleString()}</div><a href="${twitterUrl}" target="_blank" class="share-x">🐦 Share @LitecoinVM</a><div class="reactions"><button class="react-btn" onclick="react(${item.index}, '❤️')">❤️ ${localStorage.getItem(`react_${item.index}_❤️`) || 0}</button><button class="react-btn" onclick="react(${item.index}, '🔥')">🔥 ${localStorage.getItem(`react_${item.index}_🔥`) || 0}</button><button class="react-btn" onclick="react(${item.index}, '👍')">👍 ${localStorage.getItem(`react_${item.index}_👍`) || 0}</button></div>`; list.appendChild(div); }); animateCounter("userPostsCount", userPosts); updatePagination(total, start); } catch(e) { console.error("Error loading messages:", e); list.innerHTML = "<p style='text-align:center; color: var(--muted);'>Failed to load messages. Refresh or check connection.</p>"; } }
+function updatePagination(total, currentIndex) { const totalPages = Math.max(1, Math.ceil(total / LIMIT)); const currentPageNum = currentPage + 1; document.getElementById("pageInfo").textContent = `Page ${currentPageNum} of ${totalPages}`; const prevBtn = document.getElementById("prevBtn"); const nextBtn = document.getElementById("nextBtn"); prevBtn.disabled = (currentPage === 0); nextBtn.disabled = (currentPage >= totalPages - 1); }
+async function refreshAfterPost() { await new Promise(resolve => setTimeout(resolve, 2000)); for(let attempt = 0; attempt < 5; attempt++) { try { const readProvider = getProvider(); const readContract = new ethers.Contract(CONFIG.contractAddress, ABI, readProvider); const total = Number(await readContract.totalMessages()); if(total > 0) { currentPage = 0; await loadMessages(); return; } } catch(e) { console.warn(`Refresh attempt ${attempt + 1} failed:`, e); } await new Promise(resolve => setTimeout(resolve, 2000)); } location.reload(); }
+document.getElementById("nextBtn").addEventListener("click", () => { const totalPages = Math.ceil(Number(document.getElementById("totalMsgCount").textContent) / LIMIT); if(currentPage < totalPages - 1) { currentPage++; loadMessages(); } });
+document.getElementById("prevBtn").addEventListener("click", () => { if(currentPage > 0) { currentPage--; loadMessages(); } });
 document.getElementById("connectBtn").addEventListener("click", connect);
 document.getElementById("switchChainBtn").addEventListener("click", switchToLitVM);
 document.getElementById("switchFromBanner").addEventListener("click", switchToLitVM);
-
-document.getElementById("darkModeBtn").addEventListener("click", () => {
-    document.body.classList.toggle("dark-mode");
-    const isDark = document.body.classList.contains("dark-mode");
-    localStorage.setItem("guestbook_darkmode", isDark ? "1" : "0");
-});
-
-// POST MESSAGE HANDLER
-document.getElementById("postBtn").addEventListener("click", async () => {
-    const txt = document.getElementById("messageInput").value.trim();
-    const val = document.getElementById("tokenAmount").value;
-    
-    if(!txt) return showToast("Please write a message first!", "error");
-    if(!contract || !currentUser) return showToast("Please connect your wallet first!", "error");
-    
-    const postBtn = document.getElementById("postBtn");
-    const originalText = postBtn.innerHTML;
-    
-    try {
-        postBtn.disabled = true;
-        postBtn.innerHTML = "⏳ Sending...";
-        
-        const tx = (val && parseFloat(val) > 0) 
-            ? await contract.postMessageWithToken(txt, { value: ethers.parseEther(val) })
-            : await contract.postMessage(txt);
-            
-        await tx.wait(1);
-        
-        document.getElementById("messageInput").value = "";
-        document.getElementById("tokenAmount").value = "";
-        document.getElementById("charCount").textContent = "0";
-        
-        showToast("Transaction confirmed. Syncing...", "info");
-        await refreshAfterPost();
-        
-        triggerConfetti();
-        showToast("✅ Message posted successfully!", "success");
-        
-    } catch(e) {
-        console.error("Post error:", e);
-        let errorMsg = "Transaction failed. ";
-        if(e.reason) errorMsg += e.reason;
-        else if(e.message) errorMsg += e.message.split('\n')[0];
-        showToast(errorMsg, "error");
-    } finally {
-        postBtn.disabled = false;
-        postBtn.innerHTML = originalText;
-    }
-});
-
-// METAMASK LISTENERS
-function setupMetaMaskListeners() {
-    if (!window.ethereum) return;
-    
-    window.ethereum.on('chainChanged', () => {
-        checkNetwork();
-        showToast("Network changed. Refreshing connection...", "info");
-        setTimeout(() => location.reload(), 1200);
-    });
-    
-    window.ethereum.on('accountsChanged', (accounts) => {
-        if (accounts.length === 0) {
-            currentUser = null;
-            contract = null;
-            document.getElementById('walletStatus').textContent = "Status: Locked";
-            document.getElementById('walletAddressDisplay').textContent = "Not Connected";
-            document.getElementById('connectBtn').classList.remove('hidden');
-            document.getElementById('connectBtn').innerHTML = "Connect MetaMask";
-            showToast("Wallet disconnected.", "info");
-        } else {
-            showToast("Account changed. Updating...", "info");
-            connect();
-        }
-    });
-}
-
-// RESTORE DARK MODE & INITIAL LOAD
-window.addEventListener("load", () => {
-    if(localStorage.getItem("guestbook_darkmode") === "1") {
-        document.body.classList.add("dark-mode");
-    }
-    checkNetwork();
-    setupMetaMaskListeners();
-    loadMessages();
-});
-
-// REAL-TIME EVENT LISTENER
-async function listenForNewMessages() {
-    if(!contract || !currentUser) return;
-    try {
-        const readProvider = getProvider();
-        const readContract = new ethers.Contract(CONFIG.contractAddress, ABI, readProvider);
-        readContract.on("MessagePosted", () => {
-            setTimeout(() => {
-                currentPage = 0;
-                loadMessages();
-            }, 1500);
-        });
-        console.log("✅ Listening for MessagePosted events");
-    } catch(e) {
-        console.warn("Could not set up event listener:", e);
-    }
-}
-
+document.getElementById("darkModeBtn").addEventListener("click", () => { document.body.classList.toggle("dark-mode"); const isDark = document.body.classList.contains("dark-mode"); localStorage.setItem("guestbook_darkmode", isDark ? "1" : "0"); });
+document.getElementById("postBtn").addEventListener("click", async () => { const txt = document.getElementById("messageInput").value.trim(); const val = document.getElementById("tokenAmount").value; if(!txt) return showToast("Please write a message first!", "error"); if(!contract || !currentUser) return showToast("Please connect your wallet first!", "error"); const postBtn = document.getElementById("postBtn"); const originalText = postBtn.innerHTML; try { postBtn.disabled = true; postBtn.innerHTML = "⏳ Sending..."; const tx = (val && parseFloat(val) > 0) ? await contract.postMessageWithToken(txt, { value: ethers.parseEther(val) }) : await contract.postMessage(txt); await tx.wait(1); document.getElementById("messageInput").value = ""; document.getElementById("tokenAmount").value = ""; document.getElementById("charCount").textContent = "0"; showToast("Transaction confirmed. Syncing...", "info"); await refreshAfterPost(); triggerConfetti(); showToast("✅ Message posted successfully!", "success"); } catch(e) { console.error("Post error:", e); let errorMsg = "Transaction failed. "; if(e.reason) errorMsg += e.reason; else if(e.message) errorMsg += e.message.split('\n')[0]; showToast(errorMsg, "error"); } finally { postBtn.disabled = false; postBtn.innerHTML = originalText; } });
+function setupMetaMaskListeners() { if (!window.ethereum) return; window.ethereum.on('chainChanged', () => { checkNetwork(); showToast("Network changed. Refreshing connection...", "info"); setTimeout(() => location.reload(), 1200); }); window.ethereum.on('accountsChanged', (accounts) => { if (accounts.length === 0) { currentUser = null; contract = null; document.getElementById('walletStatus').textContent = "Status: Locked"; document.getElementById('walletAddressDisplay').textContent = "Not Connected"; document.getElementById('connectBtn').classList.remove('hidden'); document.getElementById('connectBtn').innerHTML = "Connect MetaMask"; showToast("Wallet disconnected.", "info"); } else { showToast("Account changed. Updating...", "info"); connect(); } }); }
+window.addEventListener("load", () => { if(localStorage.getItem("guestbook_darkmode") === "1") { document.body.classList.add("dark-mode"); } checkNetwork(); setupMetaMaskListeners(); loadMessages(); const soundBtn = document.getElementById('heartSoundToggle'); if (soundBtn) soundBtn.addEventListener('click', toggleHeartSound); });
+async function listenForNewMessages() { if(!contract || !currentUser) return; try { const readProvider = getProvider(); const readContract = new ethers.Contract(CONFIG.contractAddress, ABI, readProvider); readContract.on("MessagePosted", () => { setTimeout(() => { currentPage = 0; loadMessages(); }, 1500); }); console.log("✅ Listening for MessagePosted events"); } catch(e) { console.warn("Could not set up event listener:", e); } }
 const originalConnect = connect;
-connect = async function() {
-    await originalConnect();
-    if(contract) listenForNewMessages();
-};
+connect = async function() { await originalConnect(); if(contract) listenForNewMessages(); };
 </script>
 </body>
 </html>
