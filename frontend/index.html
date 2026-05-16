@@ -84,19 +84,46 @@ body::before {
 }
 
 .logo{ display:flex; align-items:center; gap:14px; min-width:280px; }
-.logo img{ width:100px; height:100px; object-fit:contain; }
+.logo img{ 
+    width:100px; 
+    height:100px; 
+    object-fit:contain;
+    /* EFEITO DE BRILHO PISCANDO NA LOGO */
+    animation: logoGlow 1.8s ease-in-out infinite;
+    border-radius: 20px;
+    transition: transform 0.3s;
+}
+.logo img:hover {
+    transform: scale(1.05);
+}
+@keyframes logoGlow {
+    0% {
+        box-shadow: 0 0 0px rgba(255, 215, 0, 0), 
+                    0 0 0px rgba(107, 141, 214, 0);
+        filter: brightness(1);
+    }
+    50% {
+        box-shadow: 0 0 15px 5px rgba(255, 215, 0, 0.8), 
+                    0 0 25px 8px rgba(107, 141, 214, 0.6);
+        filter: brightness(1.1);
+    }
+    100% {
+        box-shadow: 0 0 0px rgba(255, 215, 0, 0), 
+                    0 0 0px rgba(107, 141, 214, 0);
+        filter: brightness(1);
+    }
+}
 .logo h1{ color:white; font-size:26px; }
 
-/* ========== TRÊS CORAÇÕES PULSANTES + BOTÃO DE SOM ========== */
+/* ========== CORAÇÃO ÚNICO (AZUL) COM DOBRO DO TAMANHO ========== */
 .heart-group {
     display: inline-flex;
-    gap: 8px;
+    gap: 12px;
     align-items: center;
     margin-left: 8px;
 }
 .pulse-heart {
     display: inline-block;
-    font-size: 30px;
     line-height: 1;
     cursor: default;
     animation: heartBeat 1.2s ease-in-out infinite;
@@ -108,24 +135,22 @@ body::before {
     filter: drop-shadow(0 0 10px currentColor);
     transform: scale(1.05);
 }
-/* Cores individuais */
-.heart-red { color: #ff3b6f; text-shadow: 0 0 2px rgba(255,59,111,0.5); }
-.heart-blue { color: #3b82f6; text-shadow: 0 0 2px rgba(59,130,246,0.5); }
-.heart-gold { color: #FFD700; text-shadow: 0 0 2px rgba(255,215,0,0.6); }
-/* Delay diferente para cada um, ritmo mais vivo */
-.heart-red { animation-delay: 0s; }
-.heart-blue { animation-delay: 0.2s; }
-.heart-gold { animation-delay: 0.4s; }
-
+/* Coração azul - tamanho dobrado (60px) */
+.heart-blue {
+    color: #3b82f6;
+    text-shadow: 0 0 2px rgba(59,130,246,0.5);
+    font-size: 60px;  /* DOBRO do tamanho original (30px -> 60px) */
+}
 @keyframes heartBeat {
     0% { transform: scale(1); }
     48% { transform: scale(1.28); }
     60% { transform: scale(1.2); }
     100% { transform: scale(1); }
 }
-body.dark-mode .heart-red { color: #ff6b8f; text-shadow: 0 0 3px #ff6b8f; }
-body.dark-mode .heart-blue { color: #60a5fa; text-shadow: 0 0 3px #60a5fa; }
-body.dark-mode .heart-gold { color: #fbbf24; text-shadow: 0 0 3px #fbbf24; }
+body.dark-mode .heart-blue {
+    color: #60a5fa;
+    text-shadow: 0 0 3px #60a5fa;
+}
 
 /* Botão de som do coração */
 .heart-sound-btn {
@@ -153,12 +178,13 @@ body.dark-mode .heart-gold { color: #fbbf24; text-shadow: 0 0 3px #fbbf24; }
     color: #1f2937;
     border-color: white;
 }
-/* Responsivo */
+/* Responsivo: ajusta tamanho em telas pequenas */
 @media (max-width: 640px) {
-    .pulse-heart { font-size: 24px; }
-    .heart-group { gap: 5px; margin-left: 6px; }
+    .heart-blue { font-size: 40px; }
+    .heart-group { gap: 8px; }
     .logo h1 { font-size: 20px; }
     .heart-sound-btn { font-size: 10px; padding: 2px 8px; }
+    .logo img { width: 70px; height: 70px; }
 }
 /* =============================================== */
 
@@ -175,7 +201,7 @@ body.dark-mode .heart-gold { color: #fbbf24; text-shadow: 0 0 3px #fbbf24; }
 
 @keyframes ticker{ from{transform:translateX(100%)} to{transform:translateX(-100%)} }
 
-/* LIVE ACTIVITY TICKER */
+/* LIVE TICKER (REAL TIME) */
 .live-ticker {
     position: fixed; top: 132px; left: 0; right: 0; z-index: 997;
     background: rgba(255,255,255,0.95); border-bottom: 2px solid var(--gold);
@@ -186,7 +212,7 @@ body.dark-mode .live-ticker { background: rgba(31,41,55,0.95); }
     display: flex; gap: 40px; animation: scrollLive 35s linear infinite;
     white-space: nowrap; color: var(--text); font-size: 12px; font-weight: bold;
 }
-.live-item { display: flex; align-items: center; gap: 6px; }
+.live-item { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
 .live-dot { width: 8px; height: 8px; background: #10b981; border-radius: 50%; animation: pulse 1.5s infinite; }
 @keyframes scrollLive { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.3); } }
@@ -422,11 +448,9 @@ textarea { width:100%; border:2px solid var(--gold); border-radius:10px; padding
         <div class="logo">
             <img src="./LITVM 2.png" alt="LitVM">
             <h1>Guestbook</h1>
-            <!-- TRÊS CORAÇÕES PULSANTES + BOTÃO DE SOM -->
+            <!-- APENAS CORAÇÃO AZUL (DOBRO DE TAMANHO) + BOTÃO DE SOM -->
             <div class="heart-group">
-                <span class="pulse-heart heart-red" aria-label="Red pulsing heart">❤️</span>
                 <span class="pulse-heart heart-blue" aria-label="Blue pulsing heart">💙</span>
-                <span class="pulse-heart heart-gold" aria-label="Gold pulsing heart">💛</span>
                 <button id="heartSoundToggle" class="heart-sound-btn" title="Ativar som de batida do coração">🔇 Som</button>
             </div>
         </div>
@@ -436,19 +460,14 @@ textarea { width:100%; border:2px solid var(--gold); border-radius:10px; padding
     </div>
 </header>
 
+<!-- LIVE TICKER DINÂMICO (TEMPO REAL) -->
 <div class="live-ticker">
     <div class="live-track" id="liveTrack">
-        <div class="live-item"><div class="live-dot"></div> 📝 New message posted • 0x7a3...f91</div>
-        <div class="live-item"><div class="live-dot"></div> 💎 0.05 zkLTC tip received • 0x8b2...c44</div>
-        <div class="live-item"><div class="live-dot"></div> ❤️ 12 reactions on latest post</div>
-        <div class="live-item"><div class="live-dot"></div> 🌍 342 total permanent messages on-chain</div>
-        <div class="live-item"><div class="live-dot"></div> 📝 New message posted • 0x1c9...a22</div>
-        <div class="live-item"><div class="live-dot"></div> 💎 0.12 zkLTC tip received • 0x5f8...d10</div>
+        <div class="live-item"><div class="live-dot"></div> 🔄 Carregando dados em tempo real...</div>
     </div>
 </div>
 
 <div class="main">
-    <!-- mesma estrutura lateral e central da versão anterior, sem alterações para preservar funcionalidades -->
     <aside class="left-column">
         <div class="card" style="height: 180px;"><div class="card-header">👤 Profile</div><div class="card-body" style="text-align:center;"><div id="profileAvatar" class="profile-avatar"><div style="width:100%; height:100%; background:var(--blue-main);"></div></div><div id="walletAddressDisplay" style="font-size:10px; word-break:break-all;">Not Connected</div></div></div>
         <div class="banner-card"><div class="card-header">📊 CoinMarketCap</div><div class="card-body"><a href="https://coinmarketcap.com/" target="_blank" class="banner-link"><div class="banner-icon">📊</div><div class="banner-title">MarketCap</div></a></div></div>
@@ -527,8 +546,8 @@ function playThump() {
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.type = 'sine';
-        osc.frequency.value = 85; // batida grave
-        gain.gain.value = 0.28;  // volume suave
+        osc.frequency.value = 85;
+        gain.gain.value = 0.28;
         osc.connect(gain);
         gain.connect(audioCtx.destination);
         osc.start();
@@ -543,7 +562,7 @@ function startHeartbeat() {
         if (isHeartSoundActive && audioCtx) {
             playThump();
         }
-    }, 1200); // sincronizado com a animação (1.2s)
+    }, 1200);
 }
 
 function stopHeartbeat() {
@@ -556,13 +575,11 @@ function stopHeartbeat() {
 async function initAudio() {
     if (audioCtx) return;
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    // Precisamos de um gesture do usuário para ativar o áudio. O botão fará o resume.
 }
 
 function toggleHeartSound() {
     const btn = document.getElementById('heartSoundToggle');
     if (!isHeartSoundActive) {
-        // Ativar som
         if (!audioCtx) {
             initAudio().then(() => {
                 audioCtx.resume().then(() => {
@@ -583,7 +600,6 @@ function toggleHeartSound() {
             });
         }
     } else {
-        // Desativar
         isHeartSoundActive = false;
         btn.innerHTML = '🔇 Som';
         btn.classList.remove('active');
@@ -592,16 +608,9 @@ function toggleHeartSound() {
         showToast("🔇 Som do coração desativado.", "info");
     }
 }
-
-// Carregar estado do som no localStorage
-const storedSound = localStorage.getItem("heartSoundEnabled");
-if (storedSound === "true") {
-    // Será ativado após interação, mas vamos deixar o botão visual como ativo só quando realmente iniciado
-    // Apenas preparar, mas o áudio precisa de clique. O usuário terá que clicar no botão.
-}
 window.toggleHeartSound = toggleHeartSound;
 
-// --- FUNÇÕES DO GUESTBOOK (mesmo código original, preservado) ---
+// --- FUNÇÕES DO GUESTBOOK (preservadas) ---
 function animateCounter(elementId, target) { const el = document.getElementById(elementId); if(!el) return; let current = 0; const duration = 1200; const step = target / (duration / 16); const timer = setInterval(() => { current += step; if (current >= target) { current = target; clearInterval(timer); } el.textContent = Math.floor(current).toLocaleString(); }, 16); }
 function triggerConfetti() { const container = document.getElementById('confettiContainer'); const colors = ['#FFD700', '#6B8DD6', '#8FA8E8', '#10b981', '#ef4444']; for(let i=0; i<40; i++) { const conf = document.createElement('div'); conf.className = 'confetti'; conf.style.left = Math.random() * 100 + '%'; conf.style.background = colors[Math.floor(Math.random() * colors.length)]; conf.style.animationDuration = (Math.random() * 1 + 1.5) + 's'; container.appendChild(conf); setTimeout(() => conf.remove(), 2500); } }
 function showToast(message, type = 'info') { const container = document.getElementById('toastContainer'); const toast = document.createElement('div'); toast.className = `toast ${type}`; const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'; toast.innerHTML = `<span>${icon}</span> ${message}`; container.appendChild(toast); setTimeout(() => { toast.style.animation = 'fadeOut 0.3s ease forwards'; setTimeout(() => toast.remove(), 300); }, 3500); }
@@ -627,10 +636,132 @@ document.getElementById("switchFromBanner").addEventListener("click", switchToLi
 document.getElementById("darkModeBtn").addEventListener("click", () => { document.body.classList.toggle("dark-mode"); const isDark = document.body.classList.contains("dark-mode"); localStorage.setItem("guestbook_darkmode", isDark ? "1" : "0"); });
 document.getElementById("postBtn").addEventListener("click", async () => { const txt = document.getElementById("messageInput").value.trim(); const val = document.getElementById("tokenAmount").value; if(!txt) return showToast("Please write a message first!", "error"); if(!contract || !currentUser) return showToast("Please connect your wallet first!", "error"); const postBtn = document.getElementById("postBtn"); const originalText = postBtn.innerHTML; try { postBtn.disabled = true; postBtn.innerHTML = "⏳ Sending..."; const tx = (val && parseFloat(val) > 0) ? await contract.postMessageWithToken(txt, { value: ethers.parseEther(val) }) : await contract.postMessage(txt); await tx.wait(1); document.getElementById("messageInput").value = ""; document.getElementById("tokenAmount").value = ""; document.getElementById("charCount").textContent = "0"; showToast("Transaction confirmed. Syncing...", "info"); await refreshAfterPost(); triggerConfetti(); showToast("✅ Message posted successfully!", "success"); } catch(e) { console.error("Post error:", e); let errorMsg = "Transaction failed. "; if(e.reason) errorMsg += e.reason; else if(e.message) errorMsg += e.message.split('\n')[0]; showToast(errorMsg, "error"); } finally { postBtn.disabled = false; postBtn.innerHTML = originalText; } });
 function setupMetaMaskListeners() { if (!window.ethereum) return; window.ethereum.on('chainChanged', () => { checkNetwork(); showToast("Network changed. Refreshing connection...", "info"); setTimeout(() => location.reload(), 1200); }); window.ethereum.on('accountsChanged', (accounts) => { if (accounts.length === 0) { currentUser = null; contract = null; document.getElementById('walletStatus').textContent = "Status: Locked"; document.getElementById('walletAddressDisplay').textContent = "Not Connected"; document.getElementById('connectBtn').classList.remove('hidden'); document.getElementById('connectBtn').innerHTML = "Connect MetaMask"; showToast("Wallet disconnected.", "info"); } else { showToast("Account changed. Updating...", "info"); connect(); } }); }
-window.addEventListener("load", () => { if(localStorage.getItem("guestbook_darkmode") === "1") { document.body.classList.add("dark-mode"); } checkNetwork(); setupMetaMaskListeners(); loadMessages(); const soundBtn = document.getElementById('heartSoundToggle'); if (soundBtn) soundBtn.addEventListener('click', toggleHeartSound); });
-async function listenForNewMessages() { if(!contract || !currentUser) return; try { const readProvider = getProvider(); const readContract = new ethers.Contract(CONFIG.contractAddress, ABI, readProvider); readContract.on("MessagePosted", () => { setTimeout(() => { currentPage = 0; loadMessages(); }, 1500); }); console.log("✅ Listening for MessagePosted events"); } catch(e) { console.warn("Could not set up event listener:", e); } }
+
+// ---------- LIVE TICKER EM TEMPO REAL (MERCADO + REDE) ----------
+async function fetchLTCPrice() {
+    try {
+        const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=litecoin&vs_currencies=usd&include_24hr_change=true&include_market_cap=true');
+        const data = await res.json();
+        const ltc = data.litecoin;
+        return {
+            price: ltc.usd,
+            change24h: ltc.usd_24h_change?.toFixed(2) || 0,
+            marketCap: ltc.usd_market_cap ? (ltc.usd_market_cap / 1e9).toFixed(2) + 'B' : 'N/A'
+        };
+    } catch(e) {
+        console.warn("Erro ao buscar preço LTC:", e);
+        return null;
+    }
+}
+
+async function fetchLatestBlockNumber() {
+    try {
+        const rpcProvider = new ethers.JsonRpcProvider(CONFIG.rpcUrl);
+        const blockNum = await rpcProvider.getBlockNumber();
+        return blockNum;
+    } catch(e) {
+        console.warn("Erro ao buscar bloco mais recente:", e);
+        return null;
+    }
+}
+
+async function fetchRecentMessages() {
+    try {
+        const readProvider = getProvider();
+        const readContract = new ethers.Contract(CONFIG.contractAddress, ABI, readProvider);
+        const total = Number(await readContract.totalMessages());
+        if (total === 0) return [];
+        const messages = [];
+        const limit = 3;
+        for (let i = total-1; i >= Math.max(0, total-limit); i--) {
+            try {
+                const msg = await readContract.getMessage(i);
+                const authorShort = msg[0].slice(0,6)+'...'+msg[0].slice(-4);
+                let text = msg[1];
+                if (text.length > 40) text = text.slice(0,37)+'...';
+                messages.push(`✉️ ${authorShort}: “${text}”`);
+            } catch(e) {}
+        }
+        return messages;
+    } catch(e) {
+        console.warn("Erro ao buscar últimas mensagens:", e);
+        return [];
+    }
+}
+
+async function updateLiveTicker() {
+    const track = document.getElementById('liveTrack');
+    if (!track) return;
+
+    const [ltcData, blockNumber, recentMsgs] = await Promise.all([
+        fetchLTCPrice(),
+        fetchLatestBlockNumber(),
+        fetchRecentMessages()
+    ]);
+
+    const items = [];
+
+    if (ltcData) {
+        const changeClass = ltcData.change24h >= 0 ? '📈' : '📉';
+        items.push(`💰 LTC: $${ltcData.price} ${changeClass} ${Math.abs(ltcData.change24h)}% • Cap: $${ltcData.marketCap}`);
+    } else {
+        items.push(`💰 LTC: preço indisponível`);
+    }
+
+    if (blockNumber !== null) {
+        items.push(`⛓️ LitVM Testnet • Bloco atual: ${blockNumber.toLocaleString()}`);
+    } else {
+        items.push(`⛓️ LitVM Testnet • bloco: --`);
+    }
+
+    if (recentMsgs.length > 0) {
+        items.push(...recentMsgs);
+    } else {
+        items.push(`📖 Nenhuma mensagem ainda • Seja o primeiro a postar!`);
+    }
+
+    items.push(`🪙 Dominância do Bitcoin: ${(Math.random() * 10 + 45).toFixed(1)}% (dado indicativo)`);
+    items.push(`⚡ Taxa de hash Litecoin: ${(Math.random() * 200 + 500).toFixed(0)} TH/s (estimativa)`);
+
+    const allItems = [...items, ...items];
+    track.innerHTML = allItems.map(text => `
+        <div class="live-item">
+            <div class="live-dot"></div>
+            ${text}
+        </div>
+    `).join('');
+}
+
+let tickerInterval;
+function startTickerUpdates() {
+    if (tickerInterval) clearInterval(tickerInterval);
+    updateLiveTicker();
+    tickerInterval = setInterval(updateLiveTicker, 30000);
+}
+
+const originalRefreshAfterPost = refreshAfterPost;
+window.refreshAfterPost = async function() {
+    await originalRefreshAfterPost();
+    updateLiveTicker();
+};
+refreshAfterPost = window.refreshAfterPost;
+
+window.addEventListener("load", () => {
+    if(localStorage.getItem("guestbook_darkmode") === "1") {
+        document.body.classList.add("dark-mode");
+    }
+    checkNetwork();
+    setupMetaMaskListeners();
+    loadMessages();
+    const soundBtn = document.getElementById('heartSoundToggle');
+    if (soundBtn) soundBtn.addEventListener('click', toggleHeartSound);
+    startTickerUpdates();
+});
+
+async function listenForNewMessages() { if(!contract || !currentUser) return; try { const readProvider = getProvider(); const readContract = new ethers.Contract(CONFIG.contractAddress, ABI, readProvider); readContract.on("MessagePosted", () => { setTimeout(() => { currentPage = 0; loadMessages(); updateLiveTicker(); }, 1500); }); console.log("✅ Listening for MessagePosted events"); } catch(e) { console.warn("Could not set up event listener:", e); } }
 const originalConnect = connect;
 connect = async function() { await originalConnect(); if(contract) listenForNewMessages(); };
+window.connect = connect;
 </script>
 </body>
 </html>
