@@ -4,47 +4,88 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Guestbook LitVM • Social Web3 Guestbook</title>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-/* =========================================================
-   🌐 ORKUT STYLE WEB3 SOCIAL UI — LITVM EDITION
-========================================================= */
-
-:root{
-    --blue-main:#6B8DD6;
-    --blue-soft:#8FA8E8;
-    --blue-light:#dfe9ff;
-    --bg:#F3F4F6;
-    --card:#ffffff;
-    --border:#c9d8f5;
-    --text:#374151;
-    --muted:#6b7280;
-    --hover:#5f7ec7;
-    --shadow:0 2px 8px rgba(0,0,0,0.08);
-    --gold:#FFD700;
+/* ========== ESTILOS GLOBAIS (BASE) ========== */
+:root {
+    --blue-main: #6B8DD6;
+    --blue-soft: #8FA8E8;
+    --blue-light: #dfe9ff;
+    --bg: #F3F4F6;
+    --card: #ffffff;
+    --border: #c9d8f5;
+    --text: #374151;
+    --muted: #6b7280;
+    --hover: #5f7ec7;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    --gold: #FFD700;
+    --header-grad-start: #8FA8E8;
+    --header-grad-end: #6B8DD6;
+    --banner-icon-bg: var(--blue-light);
 }
-
-body.dark-mode {
+body.theme-dark {
     --bg: #111827;
     --card: #1f2937;
     --text: #f3f4f6;
     --muted: #9ca3af;
     --blue-main: #4b6cb7;
     --border: #374151;
+    --header-grad-start: #1e293b;
+    --header-grad-end: #0f172a;
+    --banner-icon-bg: #334155;
 }
-
-*{ margin:0; padding:0; box-sizing:border-box; }
-
+body.theme-cyberpunk {
+    --bg: #0a0a1a;
+    --card: #1a1a2e;
+    --text: #00ffff;
+    --muted: #a0a0ff;
+    --blue-main: #ff00ff;
+    --blue-soft: #ff66ff;
+    --blue-light: #330033;
+    --border: #ff00ff;
+    --gold: #00ffff;
+    --header-grad-start: #ff00ff;
+    --header-grad-end: #00ffff;
+    --banner-icon-bg: #2d004d;
+    --shadow: 0 0 15px rgba(0,255,255,0.3);
+}
+body.theme-nature {
+    --bg: #e8f5e9;
+    --card: #f1f8e9;
+    --text: #2e7d32;
+    --muted: #558b2f;
+    --blue-main: #388e3c;
+    --blue-soft: #66bb6a;
+    --blue-light: #c8e6c9;
+    --border: #2e7d32;
+    --gold: #ffb300;
+    --header-grad-start: #43a047;
+    --header-grad-end: #2e7d32;
+    --banner-icon-bg: #dcedc8;
+}
+body.theme-retro {
+    --bg: #f4e4c1;
+    --card: #fff8e7;
+    --text: #8b5a2b;
+    --muted: #b97f44;
+    --blue-main: #d2691e;
+    --blue-soft: #e6a17a;
+    --blue-light: #ffdeb3;
+    --border: #cd853f;
+    --gold: #daa520;
+    --header-grad-start: #cd853f;
+    --header-grad-end: #b8860b;
+    --banner-icon-bg: #ffe4b5;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
 body{
-    background:var(--bg);
-    font-family:Arial, Verdana, sans-serif;
-    color:var(--text);
-    transition: background 0.3s;
+    background: var(--bg);
+    font-family: Arial, Verdana, sans-serif;
+    color: var(--text);
+    transition: background 0.3s, color 0.2s;
     overflow-x: hidden;
     position: relative;
 }
-
-/* ANIMATED BACKGROUND MESH */
 body::before {
     content: '';
     position: fixed;
@@ -56,8 +97,6 @@ body::before {
     pointer-events: none;
 }
 @keyframes bgShift { 0% { transform: scale(1) rotate(0deg); } 100% { transform: scale(1.05) rotate(2deg); } }
-
-/* FLOATING ORBS */
 .orb {
     position: fixed;
     border-radius: 50%;
@@ -70,434 +109,200 @@ body::before {
 .orb-1 { width: 300px; height: 300px; background: var(--blue-main); top: 10%; left: 5%; animation-duration: 25s; }
 .orb-2 { width: 200px; height: 200px; background: var(--gold); top: 60%; right: 8%; animation-duration: 18s; animation-direction: reverse; }
 @keyframes floatOrb { 0% { transform: translateY(0) translateX(0); } 50% { transform: translateY(-30px) translateX(20px); } 100% { transform: translateY(0) translateX(0); } }
-
-/* HEADER */
 .top-header{
-    position:fixed; top:0; left:0; right:0; z-index:999;
-    background:linear-gradient(to bottom,#8FA8E8,#6B8DD6);
-    border-bottom:1px solid #5e7fcb;
+    position: fixed; top:0; left:0; right:0; z-index:999;
+    background: linear-gradient(to bottom, var(--header-grad-start), var(--header-grad-end));
+    border-bottom: 1px solid var(--gold);
 }
-
 .header-inner{
-    max-width:1400px; margin:auto;
-    display:flex; align-items:center; gap:16px; padding:14px 20px;
+    max-width: 1400px; margin: auto;
+    display: flex; align-items: center; gap: 16px; padding: 14px 20px;
+    flex-wrap: wrap;
 }
-
-.logo{ display:flex; align-items:center; gap:14px; min-width:280px; }
-
-/* ---- LOGO IMAGEM COM CONTORNO PULSANTE ---- */
-.logo img{ 
-    width:100px; 
-    height:100px; 
-    object-fit:contain;
-    border-radius: 20px;
-    transition: transform 0.3s;
-    /* Contorno sólido inicial */
-    box-shadow: 0 0 0 3px var(--gold);
-    animation: pulseOutline 1.8s ease-in-out infinite;
-}
-.logo img:hover {
-    transform: scale(1.05);
-}
-
-/* ---- TÍTULO "GUESTBOOK" COM CONTORNO PULSANTE ---- */
-.logo h1{ 
-    color:white; 
-    font-size:26px;
-    display: inline-block;
-    /* Contorno sólido via text-shadow (simula stroke) */
-    text-shadow: 
-        -2px -2px 0 var(--gold),
-         2px -2px 0 var(--gold),
-        -2px  2px 0 var(--gold),
-         2px  2px 0 var(--gold);
-    animation: pulseOutlineText 1.8s ease-in-out infinite;
-    transition: text-shadow 0.3s;
-}
-.logo h1:hover {
-    text-shadow: 
-        -2px -2px 0 #ffaa00,
-         2px -2px 0 #ffaa00,
-        -2px  2px 0 #ffaa00,
-         2px  2px 0 #ffaa00;
-}
-
-/* Animação do contorno da imagem (alterna cores) */
-@keyframes pulseOutline {
-    0% {
-        box-shadow: 0 0 0 3px rgba(255, 215, 0, 1);
-    }
-    50% {
-        box-shadow: 0 0 0 5px rgba(107, 141, 214, 1);
-    }
-    100% {
-        box-shadow: 0 0 0 3px rgba(255, 215, 0, 1);
-    }
-}
-
-/* Animação do contorno do texto (alterna cores do stroke) */
-@keyframes pulseOutlineText {
-    0% {
-        text-shadow: 
-            -2px -2px 0 rgba(255, 215, 0, 1),
-             2px -2px 0 rgba(255, 215, 0, 1),
-            -2px  2px 0 rgba(255, 215, 0, 1),
-             2px  2px 0 rgba(255, 215, 0, 1);
-    }
-    50% {
-        text-shadow: 
-            -2px -2px 0 rgba(107, 141, 214, 1),
-             2px -2px 0 rgba(107, 141, 214, 1),
-            -2px  2px 0 rgba(107, 141, 214, 1),
-             2px  2px 0 rgba(107, 141, 214, 1);
-    }
-    100% {
-        text-shadow: 
-            -2px -2px 0 rgba(255, 215, 0, 1),
-             2px -2px 0 rgba(255, 215, 0, 1),
-            -2px  2px 0 rgba(255, 215, 0, 1),
-             2px  2px 0 rgba(255, 215, 0, 1);
-    }
-}
-
-/* ========== CORAÇÃO AZUL (DOBRO DE TAMANHO) COM CONTORNO PULSANTE ========== */
-.heart-group {
-    display: inline-flex;
-    gap: 12px;
-    align-items: center;
-    margin-left: 8px;
-}
-.pulse-heart {
-    display: inline-block;
-    line-height: 1;
-    cursor: default;
-    animation: heartBeat 1.2s ease-in-out infinite;
-    transform-origin: center;
-    transition: filter 0.2s;
-    /* Contorno sólido via text-shadow para o coração também */
-    text-shadow: 
-        -2px -2px 0 var(--gold),
-         2px -2px 0 var(--gold),
-        -2px  2px 0 var(--gold),
-         2px  2px 0 var(--gold);
-    animation: pulseOutlineText 1.8s ease-in-out infinite, heartBeat 1.2s ease-in-out infinite;
-}
-.pulse-heart:hover {
-    filter: drop-shadow(0 0 4px currentColor);
-    transform: scale(1.05);
-}
-/* Coração azul - tamanho dobrado (60px) */
-.heart-blue {
-    color: #3b82f6;
-    font-size: 60px;  /* DOBRO do tamanho original */
-}
-@keyframes heartBeat {
-    0% { transform: scale(1); }
-    48% { transform: scale(1.28); }
-    60% { transform: scale(1.2); }
-    100% { transform: scale(1); }
-}
-body.dark-mode .heart-blue {
-    color: #60a5fa;
-}
-
-/* Botão de som do coração */
-.heart-sound-btn {
-    background: rgba(255,255,255,0.25);
-    border: 2px solid var(--gold);
-    border-radius: 40px;
-    padding: 4px 12px;
-    margin-left: 8px;
-    font-size: 13px;
-    font-weight: bold;
-    color: white;
-    cursor: pointer;
-    transition: 0.2s;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    backdrop-filter: blur(4px);
-}
-.heart-sound-btn:hover {
-    background: rgba(255,255,255,0.5);
-    transform: scale(1.02);
-}
-.heart-sound-btn.active {
-    background: var(--gold);
-    color: #1f2937;
-    border-color: white;
-}
-/* Responsivo */
-@media (max-width: 640px) {
-    .heart-blue { font-size: 40px; }
-    .heart-group { gap: 8px; }
-    .logo h1 { font-size: 20px; }
-    .heart-sound-btn { font-size: 10px; padding: 2px 8px; }
-    .logo img { width: 70px; height: 70px; }
-    /* Ajuste do contorno para telas pequenas */
-    .logo h1 {
-        text-shadow: 
-            -1px -1px 0 var(--gold),
-             1px -1px 0 var(--gold),
-            -1px  1px 0 var(--gold),
-             1px  1px 0 var(--gold);
-    }
-    @keyframes pulseOutlineText {
-        0% { text-shadow: -1px -1px 0 gold, 1px -1px 0 gold, -1px 1px 0 gold, 1px 1px 0 gold; }
-        50% { text-shadow: -1px -1px 0 #6B8DD6, 1px -1px 0 #6B8DD6, -1px 1px 0 #6B8DD6, 1px 1px 0 #6B8DD6; }
-        100% { text-shadow: -1px -1px 0 gold, 1px -1px 0 gold, -1px 1px 0 gold, 1px 1px 0 gold; }
-    }
-}
-/* =============================================== */
-
-.ticker-wrap{
-    flex:1; overflow:hidden; background:rgba(255,255,255,.18);
-    border:4px solid var(--gold); border-radius:12px; height:50px;
-    display:flex; align-items:center;
-}
-
-.ticker{
-    white-space:nowrap; animation:ticker 40s linear infinite;
-    color:white; font-weight:bold;
-}
-
-@keyframes ticker{ from{transform:translateX(100%)} to{transform:translateX(-100%)} }
-
-/* LIVE TICKER (REAL TIME) */
-.live-ticker {
-    position: fixed; top: 132px; left: 0; right: 0; z-index: 997;
-    background: rgba(255,255,255,0.95); border-bottom: 2px solid var(--gold);
-    padding: 8px 0; overflow: hidden; backdrop-filter: blur(8px);
-}
-body.dark-mode .live-ticker { background: rgba(31,41,55,0.95); }
-.live-track {
-    display: flex; gap: 40px; animation: scrollLive 35s linear infinite;
-    white-space: nowrap; color: var(--text); font-size: 12px; font-weight: bold;
-}
+.logo{ display: flex; align-items: center; gap: 14px; min-width: 280px; }
+.logo img{ width: 100px; height: 100px; object-fit: contain; border-radius: 20px; transition: transform 0.3s; box-shadow: 0 0 0 3px var(--gold); animation: pulseOutline 1.8s ease-in-out infinite; }
+.logo img:hover { transform: scale(1.05); }
+.logo h1{ color: white; font-size: 26px; display: inline-block; text-shadow: -2px -2px 0 var(--gold), 2px -2px 0 var(--gold), -2px 2px 0 var(--gold), 2px 2px 0 var(--gold); animation: pulseOutlineText 1.8s ease-in-out infinite; }
+@keyframes pulseOutline { 0% { box-shadow: 0 0 0 3px rgba(255,215,0,1); } 50% { box-shadow: 0 0 0 5px var(--blue-main); } 100% { box-shadow: 0 0 0 3px rgba(255,215,0,1); } }
+@keyframes pulseOutlineText { 0% { text-shadow: -2px -2px 0 gold, 2px -2px 0 gold, -2px 2px 0 gold, 2px 2px 0 gold; } 50% { text-shadow: -2px -2px 0 var(--blue-main), 2px -2px 0 var(--blue-main), -2px 2px 0 var(--blue-main), 2px 2px 0 var(--blue-main); } 100% { text-shadow: -2px -2px 0 gold, 2px -2px 0 gold, -2px 2px 0 gold, 2px 2px 0 gold; } }
+.heart-group { display: inline-flex; gap: 12px; align-items: center; margin-left: 8px; }
+.pulse-heart { display: inline-block; line-height: 1; cursor: default; animation: heartBeat 1.2s ease-in-out infinite; transform-origin: center; text-shadow: -2px -2px 0 var(--gold), 2px -2px 0 var(--gold), -2px 2px 0 var(--gold), 2px 2px 0 var(--gold); animation: pulseOutlineText 1.8s ease-in-out infinite, heartBeat 1.2s ease-in-out infinite; }
+.heart-blue { color: #3b82f6; font-size: 60px; }
+@keyframes heartBeat { 0% { transform: scale(1); } 48% { transform: scale(1.28); } 60% { transform: scale(1.2); } 100% { transform: scale(1); } }
+.heart-sound-btn { background: rgba(255,255,255,0.25); border: 2px solid var(--gold); border-radius: 40px; padding: 4px 12px; margin-left: 8px; font-size: 13px; font-weight: bold; color: white; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; backdrop-filter: blur(4px); }
+.heart-sound-btn:hover { background: rgba(255,255,255,0.5); transform: scale(1.02); }
+.heart-sound-btn.active { background: var(--gold); color: #1f2937; border-color: white; }
+.ticker-wrap{ flex:1; overflow: hidden; background: rgba(255,255,255,0.18); border: 4px solid var(--gold); border-radius: 12px; height: 50px; display: flex; align-items: center; }
+.ticker{ white-space: nowrap; animation: ticker 40s linear infinite; color: white; font-weight: bold; }
+@keyframes ticker{ from{ transform: translateX(100%); } to{ transform: translateX(-100%); } }
+.live-ticker { position: fixed; top: 132px; left: 0; right: 0; z-index: 997; background: rgba(255,255,255,0.95); border-bottom: 2px solid var(--gold); padding: 8px 0; overflow: hidden; backdrop-filter: blur(8px); }
+.live-track { display: flex; gap: 40px; animation: scrollLive 35s linear infinite; white-space: nowrap; color: var(--text); font-size: 12px; font-weight: bold; }
 .live-item { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
 .live-dot { width: 8px; height: 8px; background: #10b981; border-radius: 50%; animation: pulse 1.5s infinite; }
-@keyframes scrollLive { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-@keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.3); } }
+@keyframes scrollLive { from{ transform: translateX(0); } to{ transform: translateX(-50%); } }
+@keyframes pulse { 0%,100%{ opacity:1; transform: scale(1); } 50%{ opacity:0.5; transform: scale(1.3); } }
+#networkBanner{ position: fixed; top: 166px; left: 0; right: 0; z-index: 998; background: #fef3c7; color: #92400e; text-align: center; padding: 10px; font-weight: bold; font-size: 13px; border-bottom: 2px solid var(--gold); display: none; align-items: center; justify-content: center; gap: 10px; }
+.toast-container { position: fixed; top: 185px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+.toast { background: var(--card); border: 2px solid var(--gold); border-radius: 10px; padding: 12px 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-size: 13px; font-weight: bold; pointer-events: auto; animation: slideIn 0.3s ease; min-width: 250px; max-width: 320px; display: flex; align-items: center; gap: 8px; }
+.toast.success { border-color: #10b981; color: #065f46; }
+.toast.error { border-color: #ef4444; color: #7f1d1d; }
+.toast.info { border-color: #3b82f6; color: #1e3a8a; }
+@keyframes slideIn { from{ transform: translateX(100%); opacity:0; } to{ transform: translateX(0); opacity:1; } }
+@keyframes fadeOut { to{ opacity:0; transform: translateX(50%); } }
+.skeleton { background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%); background-size: 200% 100%; animation: 1.5s shine linear infinite; border-radius: 16px; border: 3px solid var(--gold); height: 150px; margin-bottom: 15px; }
+@keyframes shine { to{ background-position-x: -200%; } }
+.messages-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; padding: 0 4px; }
+.messages-header h3 { font-size: 1.3rem; font-weight: bold; color: var(--blue-main); display: flex; align-items: center; gap: 8px; }
+.refresh-btn { background: transparent; border: 2px solid var(--gold); border-radius: 40px; padding: 6px 12px; cursor: pointer; font-size: 1rem; font-weight: bold; color: var(--text); transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+.refresh-btn:hover { background: var(--gold); color: #1f2937; transform: scale(1.02); }
+.sort-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 10px; padding: 8px 12px; background: var(--card); border: 2px solid var(--gold); border-radius: 10px; flex-wrap: wrap; }
+.sort-group { display: flex; gap: 10px; align-items: center; }
+.sort-btn { background: transparent; border: 1px solid var(--gold); color: var(--text); padding: 5px 10px; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: bold; }
+.sort-btn.active { background: var(--blue-main); color: white; border-color: var(--blue-main); }
+.filter-btn { background: transparent; border: 1px solid var(--gold); color: var(--text); padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: bold; display: inline-flex; align-items: center; gap: 4px; }
+.filter-btn.active { background: #10b981; color: white; border-color: #10b981; }
+.faucet-btn { background: linear-gradient(135deg, #f5b042, #e67e22); border: 2px solid var(--gold); color: white; padding: 5px 12px; border-radius: 40px; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; margin-left: 5px; }
+@keyframes fadeInUp { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: translateY(0); } }
+.feed-card { animation: fadeInUp 0.3s ease forwards; background: var(--card); border: 3px solid var(--gold); border-radius: 16px; padding: 18px; margin-bottom: 15px; position: relative; overflow: hidden; transition: all 0.3s ease; }
+.feed-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--blue-main), var(--gold), var(--blue-soft)); background-size: 200% 100%; animation: gradientMove 3s linear infinite; opacity: 0; transition: opacity 0.3s; }
+.feed-card:hover::before { opacity: 1; }
+@keyframes gradientMove { 0%{ background-position: 0% 50%; } 100%{ background-position: 100% 50%; } }
+.feed-address { font-weight: bold; color: var(--blue-main); font-size: 14px; display: flex; align-items: center; }
+.address-link { color: var(--blue-main); text-decoration: none; margin-left: 4px; cursor: pointer; font-weight: bold; }
+.copy-btn { background: none; border: none; cursor: pointer; font-size: 14px; padding: 0 4px; margin-left: 6px; opacity: 0.6; transition: 0.2s; vertical-align: middle; }
+.feed-text { margin: 12px 0; line-height: 1.4; font-size: 15px; word-break: break-word; }
+.feed-time { font-size: 11px; color: var(--muted); }
+.amount { display: inline-block; background: #eef4ff; color: #35528e; padding: 5px 12px; border-radius: 20px; border: 2px solid var(--gold); font-weight: bold; font-size: 11px; margin-bottom: 10px; }
+.share-x { display: inline-flex; align-items: center; gap: 6px; color: #1d9bf0; text-decoration: none; font-weight: bold; font-size: 13px; margin-top: 10px; }
+.reactions { display: flex; gap: 8px; margin-top: 15px; }
+.react-btn { background: #f8fbff; border: 2px solid var(--gold); padding: 5px 10px; border-radius: 20px; cursor: pointer; font-size: 12px; transition: 0.2s; }
+.stats-grid{ display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; }
+.stat{ border: 2px solid var(--gold); border-radius: 10px; padding: 10px; text-align: center; background: var(--card); }
+.char-counter { font-size: 11px; text-align: right; color: var(--muted); margin-top: 4px; }
+.dark-mode-toggle { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: var(--gold); cursor: pointer; font-size: 24px; border: 2px solid #fff; z-index: 1001; transition: 0.3s; }
+.hidden { display: none !important; }
+textarea { width: 100%; border: 2px solid var(--gold); border-radius: 10px; padding: 12px; min-height: 80px; resize: none; background: var(--card); color: var(--text); }
+.glow-pulse { animation: glowPulse 2s infinite alternate; }
+@keyframes glowPulse { 0%{ box-shadow: 0 0 8px rgba(107,141,214,0.4); } 100%{ box-shadow: 0 0 16px rgba(107,141,214,0.8), 0 0 4px var(--gold); } }
+.confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; }
+.confetti { position: absolute; width: 8px; height: 8px; border-radius: 2px; animation: fall linear forwards; }
+@keyframes fall { to{ transform: translateY(100vh) rotate(720deg); opacity:0; } }
+.chart-container { padding: 10px; max-height: 200px; }
+.chart-canvas { max-height: 160px; width: 100%; }
 
-/* NETWORK BANNER */
-#networkBanner{
-    position:fixed; top:166px; left:0; right:0; z-index:998;
-    background:#fef3c7; color:#92400e; text-align:center; padding:10px;
-    font-weight:bold; font-size:13px; border-bottom:2px solid var(--gold);
-    display:none; align-items:center; justify-content:center; gap:10px;
-}
-body.dark-mode #networkBanner { background:#451a03; color:#fde68a; }
-#networkBanner button {
-    background:var(--blue-main); color:white; border:2px solid var(--gold);
-    padding:5px 12px; border-radius:6px; cursor:pointer; font-weight:bold; font-size:12px;
-}
-
-/* TOAST NOTIFICATIONS */
-.toast-container {
-    position:fixed; top:185px; right:20px; z-index:10000;
-    display:flex; flex-direction:column; gap:10px; pointer-events:none;
-}
-.toast {
-    background:var(--card); border:2px solid var(--gold); border-radius:10px;
-    padding:12px 16px; box-shadow:0 4px 12px rgba(0,0,0,0.15);
-    font-size:13px; font-weight:bold; pointer-events:auto;
-    animation: slideIn 0.3s ease; min-width:250px; max-width:320px;
-    display:flex; align-items:center; gap:8px;
-}
-.toast.success { border-color:#10b981; color:#065f46; }
-.toast.error { border-color:#ef4444; color:#7f1d1d; }
-.toast.info { border-color:#3b82f6; color:#1e3a8a; }
-body.dark-mode .toast { color:#f3f4f6; }
-@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-@keyframes fadeOut { to { opacity: 0; transform: translateX(50%); } }
-
-/* LOADING SKELETONS */
-.skeleton {
-    background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
-    background-size: 200% 100%;
-    animation: 1.5s shine linear infinite;
-    border-radius: 16px;
-    border: 3px solid var(--gold);
-    height: 150px;
-    margin-bottom: 15px;
-}
-@keyframes shine { to { background-position-x: -200%; } }
-
-/* SORT SELECTOR */
-.sort-bar {
-    display: flex; justify-content: flex-end; align-items: center;
-    margin-bottom: 10px; gap: 10px; padding: 8px 12px;
-    background: var(--card); border: 2px solid var(--gold); border-radius: 10px;
-}
-.sort-btn {
-    background: transparent; border: 1px solid var(--gold); color: var(--text);
-    padding: 5px 10px; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: bold;
-}
-.sort-btn.active {
-    background: var(--blue-main); color: white; border-color: var(--blue-main);
-}
-
-/* COPY & EXPLORER LINKS */
-.address-link {
-    color: var(--blue-main); text-decoration: none; margin-left: 4px; cursor: pointer; font-weight: bold;
-}
-.address-link:hover { text-decoration: underline; }
-.copy-btn {
-    background: none; border: none; cursor: pointer; font-size: 14px;
-    padding: 0 4px; margin-left: 6px; opacity: 0.6; transition: 0.2s;
-    vertical-align: middle;
-}
-.copy-btn:hover { opacity: 1; transform: scale(1.1); }
-
-/* LAYOUT */
+/* ========== LAYOUT PRINCIPAL - BANNERS COM ALTURA FIXA E UNIFORME ========== */
 .main{
-    max-width:1600px; margin:200px auto 40px auto;
-    display:grid; grid-template-columns:280px 1fr 280px; gap:20px;
-    padding:0 20px; min-height: 100vh;
+    max-width: 1600px;
+    margin: 200px auto 40px auto;
+    display: grid;
+    grid-template-columns: 280px 1fr 280px;
+    gap: 20px;
+    padding: 0 20px;
+    min-height: 100vh;
 }
-
-.left-column, .right-column{ display:flex; flex-direction:column; gap:10px; }
-
-.card, .banner-card{
-    background:var(--card); border:3px solid var(--gold);
-    border-radius:12px; overflow:hidden; box-shadow: var(--shadow);
+.left-column, .right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+/* Todos os cards laterais (incluindo perfil, saldo e banners) terão a MESMA ALTURA FIXA */
+.left-column .card,
+.left-column .banner-card,
+.right-column .card,
+.right-column .banner-card {
+    height: 95px;
+    background: var(--card);
+    border: 3px solid var(--gold);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
     transition: transform 0.3s, box-shadow 0.3s;
 }
-.card:hover, .banner-card:hover {
+.left-column .banner-card:hover,
+.right-column .banner-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(255,215,0,0.25);
 }
-
-.banner-card { flex: 1; min-height: 90px; display: flex; flex-direction: column; }
-
-.card-header{
-    background:linear-gradient(to bottom,#8FA8E8,#6B8DD6);
-    color:white; font-weight:bold; padding:8px 12px; font-size:12px;
+.card-header {
+    background: linear-gradient(to bottom, var(--blue-soft), var(--blue-main));
+    color: white;
+    font-weight: bold;
+    padding: 6px 10px;
+    font-size: 11px;
 }
-
-.card-body{ padding:10px; flex: 1; display: flex; flex-direction: column; justify-content: center; }
-
-.banner-link { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; cursor: pointer; }
-.banner-icon { 
-    font-size: 24px; min-width: 40px; height: 40px; 
-    background: var(--blue-light); border-radius: 8px;
-    display: flex; align-items: center; justify-content: center; border: 2px solid var(--gold);
+.card-body {
+    padding: 6px 10px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.banner-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: inherit;
+}
+.banner-icon {
+    font-size: 20px;
+    min-width: 32px;
+    height: 32px;
+    background: var(--banner-icon-bg);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--gold);
     transition: 0.2s;
 }
-.banner-link:hover .banner-icon { transform: scale(1.1); background: #eef4ff; }
-
-.banner-title { font-weight: bold; color: var(--blue-main); font-size: 13px; }
-
-/* AVATARS */
-.avatar-container {
-    width: 35px; height: 35px; border-radius: 50%; overflow: hidden;
-    border: 2px solid var(--gold); margin-right: 10px; display: inline-block;
-    vertical-align: middle; background: #eee;
+.banner-title {
+    font-weight: bold;
+    color: var(--blue-main);
+    font-size: 11px;
 }
-
-.avatar-container img, .profile-avatar img {
-    width: 100%; height: 100%; object-fit: cover;
-}
-
 .profile-avatar {
-    width: 60px; height: 60px; border-radius: 50%; overflow: hidden;
-    border: 3px solid var(--gold); margin: 0 auto 10px auto;
-    background: var(--blue-main); display: flex; align-items: center; justify-content: center;
-    animation: floatOrb 6s ease-in-out infinite alternate;
-}
-
-/* FEED */
-.feed-card{
-    background:var(--card); border:3px solid var(--gold);
-    border-radius:16px; padding:18px; margin-bottom:15px;
-    transition: all 0.3s ease;
-    position: relative;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
     overflow: hidden;
+    border: 2px solid var(--gold);
+    margin: 0 auto 5px auto;
+    background: var(--blue-main);
 }
-.feed-card::before {
-    content: '';
-    position: absolute; top: 0; left: 0; width: 100%; height: 4px;
-    background: linear-gradient(90deg, var(--blue-main), var(--gold), var(--blue-soft));
-    background-size: 200% 100%;
-    animation: gradientMove 3s linear infinite;
-    opacity: 0;
-    transition: opacity 0.3s;
+#walletAddressDisplay {
+    font-size: 9px;
+    word-break: break-all;
 }
-.feed-card:hover::before { opacity: 1; }
-@keyframes gradientMove { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
-
-.feed-address { font-weight: bold; color: var(--blue-main); font-size: 14px; display: flex; align-items: center; }
-.feed-text { margin: 12px 0; line-height: 1.4; font-size: 15px; word-break: break-word; }
-.feed-time { font-size: 11px; color: var(--muted); }
-
-.amount {
-    display: inline-block; background: #eef4ff; color: #35528e;
-    padding: 5px 12px; border-radius: 20px; border: 2px solid var(--gold);
-    font-weight: bold; font-size: 11px; margin-bottom: 10px;
+#balanceDisplay {
+    font-size: 18px;
 }
-
-.share-x {
-    display: inline-flex; align-items: center; gap: 6px;
-    color: #1d9bf0; text-decoration: none; font-weight: bold; font-size: 13px; margin-top: 10px;
-}
-
-.reactions { display: flex; gap: 8px; margin-top: 15px; }
-.react-btn {
-    background: #f8fbff; border: 2px solid var(--gold);
-    padding: 5px 10px; border-radius: 20px; cursor: pointer; font-size: 12px;
-    transition: 0.2s;
-}
-.react-btn:hover { transform: scale(1.1); background: #fffbe6; }
-
-/* PAGINATION */
-.pagination { display: flex; justify-content: center; gap: 15px; margin-top: 20px; align-items: center; padding-bottom: 40px; }
-.page-btn {
-    background: var(--blue-main); color: white; border: 2px solid var(--gold);
-    padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: bold;
-    transition: 0.2s;
-}
-.page-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(107,141,214,0.4); }
-.page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-/* UI */
-.stats-grid{ display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; }
-.stat{ border:2px solid var(--gold); border-radius:10px; padding:10px; text-align:center; background: #fff; }
-body.dark-mode .stat { background: #374151; }
-
-.char-counter { font-size: 11px; text-align: right; color: var(--muted); margin-top: 4px; }
-
-.dark-mode-toggle { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: var(--gold); cursor: pointer; font-size: 24px; border: 2px solid #fff; z-index: 1001; transition: 0.3s; }
-.dark-mode-toggle:hover { transform: rotate(180deg) scale(1.1); }
-.hidden { display: none !important; }
-
-textarea { width:100%; border:2px solid var(--gold); border-radius:10px; padding:12px; min-height: 80px; resize: none; }
-
-/* GLOW BUTTONS */
-.glow-pulse { animation: glowPulse 2s infinite alternate; }
-@keyframes glowPulse { 0% { box-shadow: 0 0 8px rgba(107,141,214,0.4); } 100% { box-shadow: 0 0 16px rgba(107,141,214,0.8), 0 0 4px var(--gold); } }
-
-/* CONFETTI */
-.confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; }
-.confetti { position: absolute; width: 8px; height: 8px; border-radius: 2px; animation: fall linear forwards; }
-@keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
-
-/* RESPONSIVE MOBILE */
 @media (max-width: 1024px) {
-    .main { grid-template-columns: 1fr; max-width: 800px; margin-top: 240px; }
-    .center-column { order: -1; margin-bottom: 20px; }
-    .left-column { order: 0; flex-direction: row; flex-wrap: wrap; gap: 15px; }
-    .right-column { order: 1; flex-direction: row; flex-wrap: wrap; gap: 15px; }
-    .card, .banner-card { flex: 1 1 140px; min-height: 100px; }
-    .logo { min-width: 180px; }
-    .logo img { width: 70px; height: 70px; }
-    .logo h1 { font-size: 20px; }
-    .ticker-wrap { display: none; }
-    .live-ticker { top: 105px; }
+    .main {
+        grid-template-columns: 1fr;
+        margin-top: 240px;
+    }
+    .center-column {
+        order: -1;
+    }
+    .left-column, .right-column {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 15px;
+        justify-content: center;
+    }
+    .left-column .card,
+    .left-column .banner-card,
+    .right-column .card,
+    .right-column .banner-card {
+        flex: 1 1 140px;
+        height: auto;
+        min-height: 100px;
+    }
 }
 </style>
 </head>
-<body>
-
+<body class="theme-dark">
 <button class="dark-mode-toggle" id="darkModeBtn">🌓</button>
 <div id="networkBanner">⚠️ Please switch to LitVM Network to interact with the guestbook. <button id="switchFromBanner">Switch Now</button></div>
 <div id="toastContainer" class="toast-container"></div>
@@ -507,34 +312,27 @@ textarea { width:100%; border:2px solid var(--gold); border-radius:10px; padding
 
 <header class="top-header">
     <div class="header-inner">
-        <div class="logo">
-            <img src="./LITVM 2.png" alt="LitVM">
-            <h1>Guestbook</h1>
-            <!-- APENAS CORAÇÃO AZUL (DOBRO DE TAMANHO) + BOTÃO DE SOM -->
-            <div class="heart-group">
-                <span class="pulse-heart heart-blue" aria-label="Blue pulsing heart">💙</span>
-                <button id="heartSoundToggle" class="heart-sound-btn" title="Ativar som de batida do coração">🔇 Som</button>
-            </div>
-        </div>
-        <div class="ticker-wrap">
-            <div class="ticker">🚀 Welcome to LitVM Guestbook • Every message is a block of history @LitecoinVM 🚀</div>
-        </div>
+        <div class="logo"><img src="./LITVM 2.png" alt="LitVM"><h1>Guestbook</h1><div class="heart-group"><span class="pulse-heart heart-blue">💙</span><button id="heartSoundToggle" class="heart-sound-btn">🔇 Som</button></div></div>
+        <div class="ticker-wrap"><div class="ticker">🚀 Welcome to LitVM Guestbook • Every message is a block of history @LitecoinVM 🚀</div></div>
+        <select id="themeSelect" class="theme-selector">
+            <option value="light">☀️ Light</option>
+            <option value="dark" selected>🌙 Dark</option>
+            <option value="cyberpunk">💠 Cyberpunk</option>
+            <option value="nature">🌿 Nature</option>
+            <option value="retro">📻 Retro</option>
+        </select>
     </div>
 </header>
 
-<!-- LIVE TICKER DINÂMICO (TEMPO REAL) -->
-<div class="live-ticker">
-    <div class="live-track" id="liveTrack">
-        <div class="live-item"><div class="live-dot"></div> 🔄 Carregando dados em tempo real...</div>
-    </div>
-</div>
+<div class="live-ticker"><div class="live-track" id="liveTrack"><div class="live-item"><div class="live-dot"></div> 🔄 Carregando dados...</div></div></div>
 
 <div class="main">
+    <!-- COLUNA ESQUERDA (sem o banner do CoinGecko) -->
     <aside class="left-column">
-        <div class="card" style="height: 180px;"><div class="card-header">👤 Profile</div><div class="card-body" style="text-align:center;"><div id="profileAvatar" class="profile-avatar"><div style="width:100%; height:100%; background:var(--blue-main);"></div></div><div id="walletAddressDisplay" style="font-size:10px; word-break:break-all;">Not Connected</div></div></div>
+        <div class="card"><div class="card-header">👤 Profile</div><div class="card-body" style="text-align:center"><div id="profileAvatar" class="profile-avatar"><div style="width:100%;height:100%;background:var(--blue-main)"></div></div><div id="walletAddressDisplay" style="font-size:9px;word-break:break-all;">Not Connected</div></div></div>
         <div class="banner-card"><div class="card-header">📊 CoinMarketCap</div><div class="card-body"><a href="https://coinmarketcap.com/" target="_blank" class="banner-link"><div class="banner-icon">📊</div><div class="banner-title">MarketCap</div></a></div></div>
         <div class="banner-card"><div class="card-header">🫧 CryptoBubbles</div><div class="card-body"><a href="https://cryptobubbles.net/" target="_blank" class="banner-link"><div class="banner-icon">🫧</div><div class="banner-title">Bubbles</div></a></div></div>
-        <div class="banner-card"><div class="card-header">🦎 CoinGecko</div><div class="card-body"><a href="https://www.coingecko.com/" target="_blank" class="banner-link"><div class="banner-icon">🦎</div><div class="banner-title">Gecko</div></a></div></div>
+        <!-- BANNER REMOVIDO: CoinGecko -->
         <div class="banner-card"><div class="card-header">📰 CoinDesk</div><div class="card-body"><a href="https://www.coindesk.com/" target="_blank" class="banner-link"><div class="banner-icon">📰</div><div class="banner-title">News</div></a></div></div>
         <div class="banner-card"><div class="card-header">🔶 Binance</div><div class="card-body"><a href="https://www.binance.com/" target="_blank" class="banner-link"><div class="banner-icon">🔶</div><div class="banner-title">Binance</div></a></div></div>
         <div class="banner-card"><div class="card-header">🔵 Coinbase</div><div class="card-body"><a href="https://www.coinbase.com/" target="_blank" class="banner-link"><div class="banner-icon">🔵</div><div class="banner-title">Coinbase</div></a></div></div>
@@ -544,17 +342,23 @@ textarea { width:100%; border:2px solid var(--gold); border-radius:10px; padding
         <div class="banner-card"><div class="card-header">🏹 Robinhood</div><div class="card-body"><a href="https://robinhood.com/us/en/" target="_blank" class="banner-link"><div class="banner-icon">🏹</div><div class="banner-title">Robinhood</div></a></div></div>
     </aside>
 
+    <!-- COLUNA CENTRAL (sem alterações) -->
     <main class="center-column">
-        <div class="card"><div class="card-header">🔗 Wallet Connection</div><div class="card-body"><div style="display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 10px;"><div id="walletStatus" style="font-weight:bold; font-size:13px;">Status: Locked</div><div style="display:flex; gap:10px; flex-wrap: wrap;"><button id="switchChainBtn" class="glow-pulse" style="background:var(--blue-soft); color:white; border:2px solid var(--gold); padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold;">🔗 Switch to LitVM</button><button id="connectBtn" class="glow-pulse" style="background:var(--blue-main); color:white; border:2px solid var(--gold); padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold;">Connect MetaMask</button></div></div></div></div>
-        <div class="card" style="margin-top:20px;"><div class="card-header">💬 Write Message (Max 270 chars)</div><div class="card-body"><textarea id="messageInput" maxlength="270" placeholder="Type your permanent message..."></textarea><div class="char-counter"><span id="charCount">0</span>/270</div><div style="margin-top:10px; display:flex; gap:10px;"><input type="number" id="tokenAmount" placeholder="Tip zkLTC" style="flex:1; border:2px solid var(--gold); border-radius:8px; padding:8px;"/><button id="postBtn" class="glow-pulse" style="background:var(--blue-main); color:white; border:2px solid var(--gold); width:120px; font-weight:bold; border-radius:8px; cursor:pointer;">🚀 Post</button></div></div></div>
-        <div class="card" style="margin-top:20px;"><div class="card-header">📊 Statistics</div><div class="card-body stats-grid"><div class="stat"><div>Global Total</div><b id="totalMsgCount" class="animated-counter">0</b></div><div class="stat"><div>Your Posts (Visible)</div><b id="userPostsCount" class="animated-counter">0</b></div></div></div>
-        <div class="sort-bar"><span style="font-size:11px; font-weight:bold;">Sort by:</span><button class="sort-btn active" onclick="window.setSort('newest')" id="btn-newest">📅 Newest</button><button class="sort-btn" onclick="window.setSort('tips')" id="btn-tips">💎 Most Tipped</button><button class="sort-btn" onclick="window.setSort('reacted')" id="btn-reacted">❤️ Top Reacted</button></div>
-        <div id="messagesList" style="margin-top:10px;"></div>
-        <div class="pagination"><button id="prevBtn" class="page-btn">← Previous</button><span id="pageInfo" style="font-weight:bold;">Page 1</span><button id="nextBtn" class="page-btn">Next →</button></div>
+        <div class="card"><div class="card-header">🔗 Wallet Connection</div><div class="card-body"><div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px"><div id="walletStatus" style="font-weight:bold; font-size:13px">Status: Locked</div><div style="display:flex; gap:10px; flex-wrap:wrap"><button id="switchChainBtn" class="glow-pulse" style="background:var(--blue-soft);color:white;border:2px solid var(--gold);padding:8px 15px;border-radius:8px;cursor:pointer;font-weight:bold">🔗 Switch to LitVM</button><button id="connectBtn" class="glow-pulse" style="background:var(--blue-main);color:white;border:2px solid var(--gold);padding:8px 15px;border-radius:8px;cursor:pointer;font-weight:bold">Connect MetaMask</button><button id="faucetBtn" class="faucet-btn">💧 Faucet</button></div></div></div></div>
+        <div class="card" style="margin-top:20px"><div class="card-header">💬 Write Message (Max 270 chars)</div><div class="card-body"><textarea id="messageInput" maxlength="270" placeholder="Type your permanent message..."></textarea><div class="char-counter"><span id="charCount">0</span>/270</div><div style="margin-top:10px; display:flex; gap:10px"><input type="number" id="tokenAmount" placeholder="Tip zkLTC" style="flex:1; border:2px solid var(--gold); border-radius:8px; padding:8px; background:var(--card); color:var(--text);"/><button id="postBtn" class="glow-pulse" style="background:var(--blue-main);color:white;border:2px solid var(--gold);width:120px;font-weight:bold;border-radius:8px;cursor:pointer">🚀 Post</button></div></div></div>
+        <div class="card" style="margin-top:20px"><div class="card-header">📊 Statistics</div><div class="card-body stats-grid"><div class="stat"><div>Global Total</div><b id="totalMsgCount" class="animated-counter">0</b></div><div class="stat"><div>Your Posts</div><b id="userPostsCount" class="animated-counter">0</b></div></div></div>
+        <div class="card" style="margin-top:20px"><div class="card-header">📈 Weekly Activity</div><div class="card-body chart-container"><canvas id="activityChart" class="chart-canvas" width="400" height="160"></canvas></div></div>
+        <div class="messages-header"><h3>📬 Messages</h3><button id="manualRefreshBtn" class="refresh-btn" title="Recarregar mensagens">🔄 Refresh</button></div>
+        <div class="sort-bar"><div class="sort-group"><span style="font-size:11px;font-weight:bold">Sort by:</span><button class="sort-btn active" id="btn-newest">📅 Newest</button><button class="sort-btn" id="btn-tips">💎 Most Tipped</button><button class="sort-btn" id="btn-reacted">❤️ Top Reacted</button></div><button id="filterMyMessagesBtn" class="filter-btn" title="Show only my messages">🔍 My Messages</button></div>
+        <div id="messagesList" style="margin-top:10px"></div>
+        <div id="loadMoreTrigger" class="load-more-trigger" style="display: none;">
+            <button id="loadMoreBtn" class="load-more-btn">📥 Carregar mais mensagens</button>
+        </div>
     </main>
 
+    <!-- COLUNA DIREITA (inalterada) -->
     <aside class="right-column">
-        <div class="card" style="height: 180px;"><div class="card-header">💰 Wallet Balance</div><div class="card-body" style="text-align:center;"><div style="font-size:24px; font-weight:bold; color:var(--blue-main);" id="balanceDisplay">0.00</div><div style="font-size:12px; color:var(--muted);">zkLTC Available</div></div></div>
+        <div class="card"><div class="card-header">💰 Wallet Balance</div><div class="card-body" style="text-align:center"><div style="font-size:20px;font-weight:bold;color:var(--blue-main)" id="balanceDisplay">0.00</div><div style="font-size:10px;color:var(--muted)">zkLTC</div></div></div>
         <div class="banner-card"><div class="card-header">🌐 Official Site</div><div class="card-body"><a href="https://www.litvm.com/" target="_blank" class="banner-link"><div class="banner-icon">🌐</div><div class="banner-title">LitVM.com</div></a></div></div>
         <div class="banner-card"><div class="card-header">📚 Documentation</div><div class="card-body"><a href="https://docs.litvm.com/" target="_blank" class="banner-link"><div class="banner-icon">📚</div><div class="banner-title">Docs</div></a></div></div>
         <div class="banner-card"><div class="card-header">🔍 Block Explorer</div><div class="card-body"><a href="https://liteforge.explorer.caldera.xyz/" target="_blank" class="banner-link"><div class="banner-icon">🔍</div><div class="banner-title">Explorer</div></a></div></div>
@@ -570,11 +374,12 @@ textarea { width:100%; border:2px solid var(--gold); border-radius:10px; padding
 <script type="module">
 import { ethers } from "https://esm.run/ethers@6.13.0";
 
+// ========== CONFIGURAÇÕES ==========
 const CONFIG = { 
     contractAddress: "0x472e230DfFA8c896b05A9a46c84BFb391756918e",
-    rpcUrl: "https://liteforge.rpc.caldera.xyz/"
+    rpcUrl: "https://liteforge.rpc.caldera.xyz/",
+    fallbackRpc: "https://rpc.litvm.org/"
 };
-
 const LITVM_NETWORK = {
     chainId: "0x1159",
     chainName: "LitVM Network",
@@ -582,7 +387,6 @@ const LITVM_NETWORK = {
     rpcUrls: ["https://liteforge.rpc.caldera.xyz/"],
     blockExplorerUrls: ["https://liteforge.explorer.caldera.xyz/"]
 };
-
 const ABI = [
     "function postMessage(string) external payable",
     "function postMessageWithToken(string) external payable",
@@ -591,16 +395,458 @@ const ABI = [
     "event MessagePosted(address indexed author, string message, uint256 timestamp, uint256 amount)"
 ];
 
+// ========== VARIÁVEIS GLOBAIS ==========
 let provider, signer, contract, currentUser = null;
-let currentPage = 0;
 let currentSort = 'newest';
-const LIMIT = 5;
+let filterMyMessages = false;
+let allMessagesCache = [];
+let filteredMessages = [];
+let visibleCount = 5;
+let isLoadingMore = false;
+let chart = null;
+const SCROLL_THRESHOLD = 200;
+let activeRpc = CONFIG.rpcUrl;
 
-// --- HEART SOUND SYSTEM (Web Audio) ---
-let audioCtx = null;
-let heartbeatInterval = null;
-let isHeartSoundActive = false;
+// ========== FUNÇÕES AUXILIARES ==========
+function showToast(message, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+    toast.innerHTML = `<span>${icon}</span> ${message}`;
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.style.animation = 'fadeOut 0.3s ease forwards';
+        setTimeout(() => toast.remove(), 300);
+    }, 3500);
+}
+function sanitizeHTML(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+function animateCounter(elementId, target) {
+    const el = document.getElementById(elementId);
+    if (!el) return;
+    let current = 0;
+    const duration = 1200;
+    const step = target / (duration / 16);
+    const timer = setInterval(() => {
+        current += step;
+        if (current >= target) {
+            current = target;
+            clearInterval(timer);
+        }
+        el.textContent = Math.floor(current).toLocaleString();
+    }, 16);
+}
+function triggerConfetti() {
+    const container = document.getElementById('confettiContainer');
+    const colors = ['#FFD700', '#6B8DD6', '#8FA8E8', '#10b981', '#ef4444'];
+    for (let i = 0; i < 40; i++) {
+        const conf = document.createElement('div');
+        conf.className = 'confetti';
+        conf.style.left = Math.random() * 100 + '%';
+        conf.style.background = colors[Math.floor(Math.random() * colors.length)];
+        conf.style.animationDuration = (Math.random() * 1 + 1.5) + 's';
+        container.appendChild(conf);
+        setTimeout(() => conf.remove(), 2500);
+    }
+}
+function smoothScrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+async function checkNetwork() {
+    if (!window.ethereum) return false;
+    try {
+        const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
+        const isCorrect = currentChainId.toLowerCase() === LITVM_NETWORK.chainId.toLowerCase();
+        document.getElementById('networkBanner').style.display = isCorrect ? 'none' : 'flex';
+        return isCorrect;
+    } catch (e) { return false; }
+}
+async function switchToLitVM() {
+    if (!window.ethereum) return showToast("Install MetaMask!", "error");
+    try {
+        await window.ethereum.request({ method: "wallet_switchEthereumChain", params: [{ chainId: LITVM_NETWORK.chainId }] });
+        showToast("Switched to LitVM!", "success");
+        checkNetwork();
+    } catch (switchError) {
+        if (switchError.code === 4902) {
+            try {
+                await window.ethereum.request({ method: "wallet_addEthereumChain", params: [LITVM_NETWORK] });
+                showToast("LitVM Network added!", "success");
+                checkNetwork();
+            } catch (addError) { showToast("Failed to add LitVM network.", "error"); }
+        } else { showToast("Network switch failed.", "error"); }
+    }
+}
+function getProvider() {
+    if (window.ethereum) return new ethers.BrowserProvider(window.ethereum);
+    return new ethers.JsonRpcProvider(activeRpc);
+}
+async function testRpc(url, timeout = 8000) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
+    try {
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ jsonrpc: "2.0", method: "eth_blockNumber", params: [], id: 1 }),
+            signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        if (!res.ok) return false;
+        const data = await res.json();
+        return data.result !== undefined;
+    } catch (e) {
+        clearTimeout(timeoutId);
+        return false;
+    }
+}
+async function getWorkingProvider() {
+    let primaryOk = await testRpc(CONFIG.rpcUrl);
+    if (primaryOk) {
+        activeRpc = CONFIG.rpcUrl;
+        return new ethers.JsonRpcProvider(CONFIG.rpcUrl);
+    }
+    if (CONFIG.fallbackRpc) {
+        let fallbackOk = await testRpc(CONFIG.fallbackRpc);
+        if (fallbackOk) {
+            activeRpc = CONFIG.fallbackRpc;
+            showToast("⚠️ Usando RPC alternativo (fallback)", "info");
+            return new ethers.JsonRpcProvider(CONFIG.fallbackRpc);
+        }
+    }
+    throw new Error("Nenhum RPC disponível.");
+}
 
+// ========== AVATAR PERSONALIZADO ==========
+function getAvatarUrl(address) {
+    if (!address) return "";
+    return `https://unavatar.io/ethereum/${address}?fallback=false`;
+}
+function applyAvatars() {
+    document.querySelectorAll('.avatar-container[data-address]').forEach(container => {
+        const addr = container.getAttribute('data-address');
+        if (addr && container.children.length === 0) {
+            const img = document.createElement('img');
+            img.src = getAvatarUrl(addr);
+            img.onerror = () => {
+                img.src = `https://api.dicebear.com/7.x/bottts/svg?seed=${addr.toLowerCase()}`;
+            };
+            container.appendChild(img);
+        }
+    });
+}
+function updateProfileAvatar(address) {
+    const container = document.getElementById('profileAvatar');
+    if (container && address) {
+        const img = document.createElement('img');
+        img.src = getAvatarUrl(address);
+        img.onerror = () => {
+            img.src = `https://api.dicebear.com/7.x/bottts/svg?seed=${address.toLowerCase()}`;
+        };
+        container.innerHTML = '';
+        container.appendChild(img);
+    }
+}
+
+// ========== GRÁFICO ==========
+function updateActivityChart(messages) {
+    const days = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+    const counts = [0,0,0,0,0,0,0];
+    messages.forEach(msg => { const dow = new Date(msg.timestamp * 1000).getDay(); counts[dow]++; });
+    const ctx = document.getElementById('activityChart').getContext('2d');
+    if (chart) {
+        chart.data.datasets[0].data = counts;
+        chart.update();
+    } else {
+        chart = new Chart(ctx, {
+            type: 'bar',
+            data: { labels: days, datasets: [{ label: 'Posts', data: counts, backgroundColor: 'rgba(107,141,214,0.7)', borderColor: 'var(--gold)', borderWidth: 2, borderRadius: 8 }] },
+            options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'top', labels: { color: 'var(--text)' } } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, color: 'var(--text)' } }, x: { ticks: { color: 'var(--text)' } } } }
+        });
+    }
+}
+
+// ========== CARREGAR MENSAGENS ==========
+async function loadAllMessagesForCache() {
+    const listContainer = document.getElementById("messagesList");
+    listContainer.innerHTML = `<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>`;
+    try {
+        const readProvider = await getWorkingProvider();
+        const readContract = new ethers.Contract(CONFIG.contractAddress, ABI, readProvider);
+        const total = Number(await readContract.totalMessages());
+        animateCounter("totalMsgCount", total);
+        if (total === 0) {
+            allMessagesCache = [];
+            filteredMessages = [];
+            updateActivityChart([]);
+            renderMessagesInfinite();
+            showToast("📭 Nenhuma mensagem encontrada. Seja o primeiro a postar!", "info");
+            return;
+        }
+        const maxToLoad = Math.min(total, 500);
+        const indices = [];
+        for (let i = total - 1; i >= total - maxToLoad; i--) indices.push(i);
+        const promises = indices.map(idx => 
+            Promise.race([
+                readContract.getMessage(idx),
+                new Promise((_, reject) => setTimeout(() => reject(new Error(`Timeout na mensagem ${idx}`)), 10000))
+            ])
+        );
+        const results = await Promise.all(promises);
+        const batch = [];
+        for (let i = 0; i < indices.length; i++) {
+            const idx = indices[i];
+            const m = results[i];
+            if (!m) continue;
+            batch.push({
+                index: idx,
+                author: m[0].toLowerCase(),
+                message: sanitizeHTML(m[1]),
+                rawMessage: m[1],
+                timestamp: Number(m[2]),
+                amount: m[3],
+                reactions: 0
+            });
+        }
+        batch.sort((a,b) => b.timestamp - a.timestamp);
+        allMessagesCache = batch;
+        allMessagesCache.forEach(msg => {
+            msg.reactions = (parseInt(localStorage.getItem(`react_${msg.index}_❤️`) || 0) +
+                             parseInt(localStorage.getItem(`react_${msg.index}_🔥`) || 0) +
+                             parseInt(localStorage.getItem(`react_${msg.index}_👍`) || 0));
+        });
+        updateActivityChart(allMessagesCache);
+        applyFiltersAndSort();
+        showToast(`✅ ${allMessagesCache.length} mensagens carregadas.`, "success");
+    } catch (error) {
+        console.error(error);
+        let errorMsg = "Erro ao conectar à blockchain. ";
+        if (error.message.includes("Timeout")) errorMsg += "Timeout na leitura do RPC.";
+        else if (error.message.includes("fetch")) errorMsg += "Sem conexão com a internet ou RPC offline.";
+        else errorMsg += "Verifique o RPC e tente novamente.";
+        showToast(errorMsg, "error");
+        document.getElementById("messagesList").innerHTML = `<p style="text-align:center; padding:20px; color:var(--muted)">❌ ${errorMsg}</p>`;
+        allMessagesCache = [];
+        filteredMessages = [];
+        updateActivityChart([]);
+    }
+}
+
+function applyFiltersAndSort() {
+    let filtered = [...allMessagesCache];
+    if (filterMyMessages && currentUser) {
+        filtered = filtered.filter(msg => msg.author === currentUser.toLowerCase());
+    } else if (filterMyMessages && !currentUser) {
+        showToast("Connect wallet to see your messages", "info");
+        filterMyMessages = false;
+        const btn = document.getElementById('filterMyMessagesBtn');
+        if (btn) { btn.classList.remove('active'); btn.innerHTML = "🔍 My Messages"; }
+        filtered = [...allMessagesCache];
+    }
+    if (currentSort === 'tips') {
+        filtered.sort((a,b) => Number(b.amount) - Number(a.amount));
+    } else if (currentSort === 'reacted') {
+        filtered.sort((a,b) => b.reactions - a.reactions);
+    } else {
+        filtered.sort((a,b) => b.timestamp - a.timestamp);
+    }
+    filteredMessages = filtered;
+    visibleCount = 5;
+    renderMessagesInfinite();
+}
+
+function renderMessagesInfinite() {
+    const list = document.getElementById("messagesList");
+    const loadMoreDiv = document.getElementById("loadMoreTrigger");
+    if (filteredMessages.length === 0) {
+        list.innerHTML = "<p style='text-align:center; padding:20px;'>No messages found.</p>";
+        if (loadMoreDiv) loadMoreDiv.style.display = 'none';
+        if (currentUser) {
+            const userPosts = allMessagesCache.filter(m => m.author === currentUser.toLowerCase()).length;
+            animateCounter("userPostsCount", userPosts);
+        } else {
+            document.getElementById("userPostsCount").textContent = "0";
+        }
+        return;
+    }
+    const itemsToShow = filteredMessages.slice(0, visibleCount);
+    list.innerHTML = "";
+    itemsToShow.forEach((item) => {
+        const explorerUrl = `https://liteforge.explorer.caldera.xyz/address/${item.author}`;
+        const shareText = encodeURIComponent(`@LitecoinVM "${item.rawMessage}"`);
+        const twitterUrl = `https://twitter.com/intent/tweet?text=${shareText}`;
+        const div = document.createElement("div");
+        div.className = "feed-card";
+        div.innerHTML = `
+            <div class="feed-address">
+                <div class="avatar-container" data-address="${item.author}"></div>
+                <a href="${explorerUrl}" target="_blank" class="address-link">${item.author.slice(0,6)}...${item.author.slice(-4)}</a>
+                <button class="copy-btn" onclick="window.copyAddress('${item.author}')">📋</button>
+            </div>
+            <div class="feed-text">${item.message}</div>
+            ${item.amount > 0n ? `<div class="amount">💎 ${ethers.formatEther(item.amount)} zkLTC</div>` : ''}
+            <div class="feed-time">${new Date(item.timestamp * 1000).toLocaleString()}</div>
+            <a href="${twitterUrl}" target="_blank" class="share-x">🐦 Share @LitecoinVM</a>
+            <div class="reactions">
+                <button class="react-btn" onclick="window.react(${item.index}, '❤️')">❤️ ${localStorage.getItem(`react_${item.index}_❤️`) || 0}</button>
+                <button class="react-btn" onclick="window.react(${item.index}, '🔥')">🔥 ${localStorage.getItem(`react_${item.index}_🔥`) || 0}</button>
+                <button class="react-btn" onclick="window.react(${item.index}, '👍')">👍 ${localStorage.getItem(`react_${item.index}_👍`) || 0}</button>
+            </div>
+        `;
+        list.appendChild(div);
+    });
+    applyAvatars();
+    if (currentUser) {
+        const userPosts = allMessagesCache.filter(m => m.author === currentUser.toLowerCase()).length;
+        animateCounter("userPostsCount", userPosts);
+    } else {
+        document.getElementById("userPostsCount").textContent = "0";
+    }
+    if (visibleCount < filteredMessages.length) {
+        if (loadMoreDiv) loadMoreDiv.style.display = 'block';
+    } else {
+        if (loadMoreDiv) loadMoreDiv.style.display = 'none';
+    }
+}
+
+function loadMoreMessages() {
+    if (isLoadingMore) return;
+    if (visibleCount >= filteredMessages.length) return;
+    isLoadingMore = true;
+    visibleCount += 5;
+    renderMessagesInfinite();
+    isLoadingMore = false;
+}
+
+function setupInfiniteScroll() {
+    window.addEventListener('scroll', () => {
+        const scrollHeight = document.documentElement.scrollHeight;
+        const scrollTop = window.scrollY;
+        const clientHeight = window.innerHeight;
+        if (scrollTop + clientHeight >= scrollHeight - SCROLL_THRESHOLD) {
+            if (visibleCount < filteredMessages.length && !isLoadingMore) {
+                loadMoreMessages();
+            }
+        }
+    });
+}
+
+// ========== CONEXÃO DA CARTEIRA ==========
+async function connect() {
+    if (!window.ethereum) return showToast("Install MetaMask first!", "error");
+    try {
+        await window.ethereum.request({ method: "eth_requestAccounts" });
+        provider = getProvider();
+        signer = await provider.getSigner();
+        contract = new ethers.Contract(CONFIG.contractAddress, ABI, signer);
+        currentUser = await signer.getAddress();
+        document.getElementById("walletStatus").textContent = "Status: Online";
+        document.getElementById("walletAddressDisplay").textContent = currentUser;
+        document.getElementById("connectBtn").classList.add("hidden");
+        updateProfileAvatar(currentUser);
+        const bal = await provider.getBalance(currentUser);
+        document.getElementById("balanceDisplay").textContent = parseFloat(ethers.formatEther(bal)).toFixed(4);
+        await loadAllMessagesForCache();
+        showToast("Wallet connected!", "success");
+        const filterBtn = document.getElementById('filterMyMessagesBtn');
+        if (filterBtn) filterBtn.classList.remove('disabled');
+    } catch(e) {
+        console.error(e);
+        showToast("Failed to connect wallet.", "error");
+    }
+}
+
+// ========== POSTAGEM ==========
+document.getElementById("postBtn").addEventListener("click", async () => {
+    const txt = document.getElementById("messageInput").value.trim();
+    const val = document.getElementById("tokenAmount").value;
+    if (!txt) return showToast("Write a message first!", "error");
+    if (!contract || !currentUser) return showToast("Connect wallet first!", "error");
+    const postBtn = document.getElementById("postBtn");
+    const originalText = postBtn.innerHTML;
+    try {
+        postBtn.disabled = true;
+        postBtn.innerHTML = "⏳ Sending...";
+        const tx = (val && parseFloat(val) > 0) ? await contract.postMessageWithToken(txt, { value: ethers.parseEther(val) }) : await contract.postMessage(txt);
+        await tx.wait(1);
+        document.getElementById("messageInput").value = "";
+        document.getElementById("tokenAmount").value = "";
+        document.getElementById("charCount").textContent = "0";
+        showToast("Transaction confirmed. Syncing...", "info");
+        await loadAllMessagesForCache();
+        triggerConfetti();
+        showToast("✅ Message posted!", "success");
+        smoothScrollToTop();
+    } catch(e) {
+        console.error(e);
+        showToast("Transaction failed: " + (e.reason || e.message?.split('\n')[0] || "Unknown error"), "error");
+    } finally {
+        postBtn.disabled = false;
+        postBtn.innerHTML = originalText;
+    }
+});
+
+// ========== EVENTOS UI ==========
+document.getElementById("manualRefreshBtn").addEventListener("click", () => { loadAllMessagesForCache(); visibleCount = 5; });
+document.getElementById("loadMoreBtn").addEventListener("click", loadMoreMessages);
+document.getElementById("connectBtn").addEventListener("click", connect);
+document.getElementById("switchChainBtn").addEventListener("click", switchToLitVM);
+document.getElementById("switchFromBanner").addEventListener("click", switchToLitVM);
+document.getElementById("faucetBtn").addEventListener("click", () => { window.open("https://liteforge.hub.caldera.xyz/", "_blank"); showToast("Faucet opened in new tab.", "info"); });
+document.getElementById("filterMyMessagesBtn").addEventListener("click", () => {
+    if (!currentUser) { showToast("Connect wallet first.", "error"); return; }
+    filterMyMessages = !filterMyMessages;
+    const btn = document.getElementById("filterMyMessagesBtn");
+    if (filterMyMessages) { btn.classList.add("active"); btn.innerHTML = "🔍 All Messages"; } 
+    else { btn.classList.remove("active"); btn.innerHTML = "🔍 My Messages"; }
+    applyFiltersAndSort();
+});
+document.getElementById("btn-newest").addEventListener("click", () => { currentSort = 'newest'; document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active')); document.getElementById("btn-newest").classList.add('active'); applyFiltersAndSort(); });
+document.getElementById("btn-tips").addEventListener("click", () => { currentSort = 'tips'; document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active')); document.getElementById("btn-tips").classList.add('active'); applyFiltersAndSort(); });
+document.getElementById("btn-reacted").addEventListener("click", () => { currentSort = 'reacted'; document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active')); document.getElementById("btn-reacted").classList.add('active'); applyFiltersAndSort(); });
+window.copyAddress = (addr) => { navigator.clipboard.writeText(addr); showToast("Address copied!", "success"); };
+window.react = (index, emoji) => {
+    const key = `react_${index}_${emoji}`;
+    let val = parseInt(localStorage.getItem(key) || 0);
+    localStorage.setItem(key, val + 1);
+    const msg = allMessagesCache.find(m => m.index === index);
+    if (msg) {
+        msg.reactions = (parseInt(localStorage.getItem(`react_${index}_❤️`) || 0) +
+                         parseInt(localStorage.getItem(`react_${index}_🔥`) || 0) +
+                         parseInt(localStorage.getItem(`react_${index}_👍`) || 0));
+    }
+    applyFiltersAndSort();
+};
+
+// ========== TEMAS ==========
+function applyTheme(theme) {
+    document.body.classList.remove('theme-light', 'theme-dark', 'theme-cyberpunk', 'theme-nature', 'theme-retro');
+    if (theme === 'light') document.body.classList.add('theme-light');
+    else if (theme === 'dark') document.body.classList.add('theme-dark');
+    else if (theme === 'cyberpunk') document.body.classList.add('theme-cyberpunk');
+    else if (theme === 'nature') document.body.classList.add('theme-nature');
+    else if (theme === 'retro') document.body.classList.add('theme-retro');
+    localStorage.setItem('guestbook_theme', theme);
+    if (chart) chart.update();
+}
+document.getElementById('themeSelect').addEventListener('change', (e) => applyTheme(e.target.value));
+const savedTheme = localStorage.getItem('guestbook_theme') || 'dark';
+applyTheme(savedTheme);
+document.getElementById('themeSelect').value = savedTheme;
+document.getElementById("darkModeBtn").addEventListener("click", () => {
+    const current = document.getElementById('themeSelect').value;
+    const newTheme = current === 'dark' ? 'light' : 'dark';
+    applyTheme(newTheme);
+    document.getElementById('themeSelect').value = newTheme;
+});
+
+// ========== SOM ==========
+let audioCtx = null, heartbeatInterval = null, isHeartSoundActive = false;
 function playThump() {
     if (!audioCtx || !isHeartSoundActive) return;
     try {
@@ -615,30 +861,19 @@ function playThump() {
         osc.start();
         gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.35);
         osc.stop(now + 0.35);
-    } catch(e) { console.warn("Audio error:", e); }
+    } catch(e) {}
 }
-
 function startHeartbeat() {
     if (heartbeatInterval) clearInterval(heartbeatInterval);
-    heartbeatInterval = setInterval(() => {
-        if (isHeartSoundActive && audioCtx) {
-            playThump();
-        }
-    }, 1200);
+    heartbeatInterval = setInterval(() => { if (isHeartSoundActive && audioCtx) playThump(); }, 1200);
 }
-
 function stopHeartbeat() {
-    if (heartbeatInterval) {
-        clearInterval(heartbeatInterval);
-        heartbeatInterval = null;
-    }
+    if (heartbeatInterval) { clearInterval(heartbeatInterval); heartbeatInterval = null; }
 }
-
 async function initAudio() {
     if (audioCtx) return;
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 }
-
 function toggleHeartSound() {
     const btn = document.getElementById('heartSoundToggle');
     if (!isHeartSoundActive) {
@@ -649,16 +884,16 @@ function toggleHeartSound() {
                     btn.innerHTML = '🔊 Som';
                     btn.classList.add('active');
                     startHeartbeat();
-                    showToast("❤️ Som de batida cardíaca ativado!", "success");
+                    showToast("❤️ Som ativado!", "success");
                 });
-            }).catch(e => console.warn(e));
+            });
         } else {
             audioCtx.resume().then(() => {
                 isHeartSoundActive = true;
                 btn.innerHTML = '🔊 Som';
                 btn.classList.add('active');
                 startHeartbeat();
-                showToast("❤️ Som de batida cardíaca ativado!", "success");
+                showToast("❤️ Som ativado!", "success");
             });
         }
     } else {
@@ -667,163 +902,49 @@ function toggleHeartSound() {
         btn.classList.remove('active');
         stopHeartbeat();
         if (audioCtx) audioCtx.suspend();
-        showToast("🔇 Som do coração desativado.", "info");
+        showToast("🔇 Som desativado.", "info");
     }
 }
-window.toggleHeartSound = toggleHeartSound;
+document.getElementById("heartSoundToggle").addEventListener("click", toggleHeartSound);
 
-// --- FUNÇÕES DO GUESTBOOK (preservadas) ---
-function animateCounter(elementId, target) { const el = document.getElementById(elementId); if(!el) return; let current = 0; const duration = 1200; const step = target / (duration / 16); const timer = setInterval(() => { current += step; if (current >= target) { current = target; clearInterval(timer); } el.textContent = Math.floor(current).toLocaleString(); }, 16); }
-function triggerConfetti() { const container = document.getElementById('confettiContainer'); const colors = ['#FFD700', '#6B8DD6', '#8FA8E8', '#10b981', '#ef4444']; for(let i=0; i<40; i++) { const conf = document.createElement('div'); conf.className = 'confetti'; conf.style.left = Math.random() * 100 + '%'; conf.style.background = colors[Math.floor(Math.random() * colors.length)]; conf.style.animationDuration = (Math.random() * 1 + 1.5) + 's'; container.appendChild(conf); setTimeout(() => conf.remove(), 2500); } }
-function showToast(message, type = 'info') { const container = document.getElementById('toastContainer'); const toast = document.createElement('div'); toast.className = `toast ${type}`; const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'; toast.innerHTML = `<span>${icon}</span> ${message}`; container.appendChild(toast); setTimeout(() => { toast.style.animation = 'fadeOut 0.3s ease forwards'; setTimeout(() => toast.remove(), 300); }, 3500); }
-function sanitizeHTML(str) { if (!str) return ''; const div = document.createElement('div'); div.textContent = str; return div.innerHTML; }
-window.copyAddress = (addr) => { navigator.clipboard.writeText(addr).then(() => showToast("Address copied to clipboard!", "success")); };
-window.setSort = (type) => { currentSort = type; document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active')); document.getElementById(`btn-${type}`).classList.add('active'); loadMessages(); };
-function getBotttAvatar(address) { if(!address) return ""; return `https://api.dicebear.com/7.x/bottts/svg?seed=${address.toLowerCase()}`; }
-function updateAvatarElement(address, elementId) { const el = document.getElementById(elementId); if(el) { el.innerHTML = `<img src="${getBotttAvatar(address)}" alt="Avatar">`; } }
-window.react = (i, emoji) => { let key = `react_${i}_${emoji}`; let val = parseInt(localStorage.getItem(key) || 0); localStorage.setItem(key, val + 1); loadMessages(); };
-document.getElementById("messageInput").addEventListener("input", function() { document.getElementById("charCount").textContent = this.value.length; });
-function getProvider() { if (window.ethereum) { return new ethers.BrowserProvider(window.ethereum); } return new ethers.JsonRpcProvider(CONFIG.rpcUrl); }
-async function checkNetwork() { if (!window.ethereum) return false; try { const currentChainId = await window.ethereum.request({ method: 'eth_chainId' }); const isCorrect = currentChainId.toLowerCase() === LITVM_NETWORK.chainId.toLowerCase(); const banner = document.getElementById('networkBanner'); banner.style.display = isCorrect ? 'none' : 'flex'; return isCorrect; } catch (e) { console.warn('Network check error:', e); return false; } }
-async function switchToLitVM() { if (!window.ethereum) return showToast("Install MetaMask first!", "error"); try { await window.ethereum.request({ method: "wallet_switchEthereumChain", params: [{ chainId: LITVM_NETWORK.chainId }] }); showToast("Switched to LitVM Network!", "success"); checkNetwork(); } catch (switchError) { if (switchError.code === 4902) { try { await window.ethereum.request({ method: "wallet_addEthereumChain", params: [LITVM_NETWORK] }); showToast("LitVM Network added successfully!", "success"); checkNetwork(); } catch (addError) { console.error("Add chain error:", addError); showToast("Failed to add LitVM network.", "error"); } } else { console.error("Switch chain error:", switchError); showToast("Network switch failed.", "error"); } } }
-async function connect() { if(!window.ethereum) return showToast("Install MetaMask first!", "error"); try { await window.ethereum.request({ method: "eth_requestAccounts" }); provider = getProvider(); signer = await provider.getSigner(); contract = new ethers.Contract(CONFIG.contractAddress, ABI, signer); currentUser = await signer.getAddress(); document.getElementById("walletStatus").textContent = "Status: Online"; document.getElementById("walletAddressDisplay").textContent = currentUser; document.getElementById("connectBtn").classList.add("hidden"); updateAvatarElement(currentUser, "profileAvatar"); const bal = await provider.getBalance(currentUser); document.getElementById("balanceDisplay").textContent = parseFloat(ethers.formatEther(bal)).toFixed(4); currentPage = 0; await loadMessages(); showToast("Wallet connected successfully!", "success"); } catch(e) { console.error("Connection error:", e); showToast("Failed to connect wallet.", "error"); } }
-async function loadMessages() { const list = document.getElementById("messagesList"); list.innerHTML = `<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>`; try { const readProvider = getProvider(); const readContract = new ethers.Contract(CONFIG.contractAddress, ABI, readProvider); const total = Number(await readContract.totalMessages()); animateCounter("totalMsgCount", total); let userPosts = 0; if(total === 0) { list.innerHTML = "<p style='text-align:center; padding: 20px;'>No messages found. Be the first to post! 🚀</p>"; document.getElementById("userPostsCount").textContent = 0; updatePagination(0, 0); return; } const start = total - 1 - (currentPage * LIMIT); const end = Math.max(0, start - LIMIT + 1); const batch = []; for(let i = start; i >= end; i--) { try { const m = await readContract.getMessage(i); const author = m[0].toLowerCase(); const safeMessage = sanitizeHTML(m[1]); if(currentUser && author === currentUser.toLowerCase()) userPosts++; const reactions = (parseInt(localStorage.getItem(`react_${i}_❤️`) || 0) + parseInt(localStorage.getItem(`react_${i}_🔥`) || 0) + parseInt(localStorage.getItem(`react_${i}_👍`) || 0)); batch.push({ index: i, author: author, message: safeMessage, rawMessage: m[1], timestamp: Number(m[2]), amount: m[3], reactions: reactions }); } catch(err) { console.warn(`Failed to load message #${i}:`, err); } } let sortedBatch = [...batch]; if (currentSort === 'tips') { sortedBatch.sort((a, b) => Number(b.amount) - Number(a.amount)); } else if (currentSort === 'reacted') { sortedBatch.sort((a, b) => b.reactions - a.reactions); } list.innerHTML = ""; sortedBatch.forEach((item, idx) => { const explorerUrl = `https://liteforge.explorer.caldera.xyz/address/${item.author}`; const shareText = encodeURIComponent(`@LitecoinVM "${item.rawMessage}"`); const twitterUrl = `https://twitter.com/intent/tweet?text=${shareText}`; const div = document.createElement("div"); div.className = "feed-card"; if(idx === 0) div.style.borderTop = "4px solid var(--blue-main)"; div.innerHTML = `<div class="feed-address"><div class="avatar-container"><img src="${getBotttAvatar(item.author)}" alt="Avatar"></div><a href="${explorerUrl}" target="_blank" class="address-link">${item.author.slice(0,6)}...${item.author.slice(-4)}</a><button class="copy-btn" onclick="window.copyAddress('${item.author}')">📋</button></div><div class="feed-text">${item.message}</div>${item.amount > 0n ? `<div class="amount">💎 ${ethers.formatEther(item.amount)} zkLTC</div>` : ''}<div class="feed-time">${new Date(item.timestamp * 1000).toLocaleString()}</div><a href="${twitterUrl}" target="_blank" class="share-x">🐦 Share @LitecoinVM</a><div class="reactions"><button class="react-btn" onclick="react(${item.index}, '❤️')">❤️ ${localStorage.getItem(`react_${item.index}_❤️`) || 0}</button><button class="react-btn" onclick="react(${item.index}, '🔥')">🔥 ${localStorage.getItem(`react_${item.index}_🔥`) || 0}</button><button class="react-btn" onclick="react(${item.index}, '👍')">👍 ${localStorage.getItem(`react_${item.index}_👍`) || 0}</button></div>`; list.appendChild(div); }); animateCounter("userPostsCount", userPosts); updatePagination(total, start); } catch(e) { console.error("Error loading messages:", e); list.innerHTML = "<p style='text-align:center; color: var(--muted);'>Failed to load messages. Refresh or check connection.</p>"; } }
-function updatePagination(total, currentIndex) { const totalPages = Math.max(1, Math.ceil(total / LIMIT)); const currentPageNum = currentPage + 1; document.getElementById("pageInfo").textContent = `Page ${currentPageNum} of ${totalPages}`; const prevBtn = document.getElementById("prevBtn"); const nextBtn = document.getElementById("nextBtn"); prevBtn.disabled = (currentPage === 0); nextBtn.disabled = (currentPage >= totalPages - 1); }
-async function refreshAfterPost() { await new Promise(resolve => setTimeout(resolve, 2000)); for(let attempt = 0; attempt < 5; attempt++) { try { const readProvider = getProvider(); const readContract = new ethers.Contract(CONFIG.contractAddress, ABI, readProvider); const total = Number(await readContract.totalMessages()); if(total > 0) { currentPage = 0; await loadMessages(); return; } } catch(e) { console.warn(`Refresh attempt ${attempt + 1} failed:`, e); } await new Promise(resolve => setTimeout(resolve, 2000)); } location.reload(); }
-document.getElementById("nextBtn").addEventListener("click", () => { const totalPages = Math.ceil(Number(document.getElementById("totalMsgCount").textContent) / LIMIT); if(currentPage < totalPages - 1) { currentPage++; loadMessages(); } });
-document.getElementById("prevBtn").addEventListener("click", () => { if(currentPage > 0) { currentPage--; loadMessages(); } });
-document.getElementById("connectBtn").addEventListener("click", connect);
-document.getElementById("switchChainBtn").addEventListener("click", switchToLitVM);
-document.getElementById("switchFromBanner").addEventListener("click", switchToLitVM);
-document.getElementById("darkModeBtn").addEventListener("click", () => { document.body.classList.toggle("dark-mode"); const isDark = document.body.classList.contains("dark-mode"); localStorage.setItem("guestbook_darkmode", isDark ? "1" : "0"); });
-document.getElementById("postBtn").addEventListener("click", async () => { const txt = document.getElementById("messageInput").value.trim(); const val = document.getElementById("tokenAmount").value; if(!txt) return showToast("Please write a message first!", "error"); if(!contract || !currentUser) return showToast("Please connect your wallet first!", "error"); const postBtn = document.getElementById("postBtn"); const originalText = postBtn.innerHTML; try { postBtn.disabled = true; postBtn.innerHTML = "⏳ Sending..."; const tx = (val && parseFloat(val) > 0) ? await contract.postMessageWithToken(txt, { value: ethers.parseEther(val) }) : await contract.postMessage(txt); await tx.wait(1); document.getElementById("messageInput").value = ""; document.getElementById("tokenAmount").value = ""; document.getElementById("charCount").textContent = "0"; showToast("Transaction confirmed. Syncing...", "info"); await refreshAfterPost(); triggerConfetti(); showToast("✅ Message posted successfully!", "success"); } catch(e) { console.error("Post error:", e); let errorMsg = "Transaction failed. "; if(e.reason) errorMsg += e.reason; else if(e.message) errorMsg += e.message.split('\n')[0]; showToast(errorMsg, "error"); } finally { postBtn.disabled = false; postBtn.innerHTML = originalText; } });
-function setupMetaMaskListeners() { if (!window.ethereum) return; window.ethereum.on('chainChanged', () => { checkNetwork(); showToast("Network changed. Refreshing connection...", "info"); setTimeout(() => location.reload(), 1200); }); window.ethereum.on('accountsChanged', (accounts) => { if (accounts.length === 0) { currentUser = null; contract = null; document.getElementById('walletStatus').textContent = "Status: Locked"; document.getElementById('walletAddressDisplay').textContent = "Not Connected"; document.getElementById('connectBtn').classList.remove('hidden'); document.getElementById('connectBtn').innerHTML = "Connect MetaMask"; showToast("Wallet disconnected.", "info"); } else { showToast("Account changed. Updating...", "info"); connect(); } }); }
-
-// ---------- LIVE TICKER EM TEMPO REAL (MERCADO + REDE) ----------
+// ========== LIVE TICKER ==========
 async function fetchLTCPrice() {
     try {
-        const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=litecoin&vs_currencies=usd&include_24hr_change=true&include_market_cap=true');
+        const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=litecoin&vs_currencies=usd&include_24hr_change=true');
         const data = await res.json();
-        const ltc = data.litecoin;
-        return {
-            price: ltc.usd,
-            change24h: ltc.usd_24h_change?.toFixed(2) || 0,
-            marketCap: ltc.usd_market_cap ? (ltc.usd_market_cap / 1e9).toFixed(2) + 'B' : 'N/A'
-        };
-    } catch(e) {
-        console.warn("Erro ao buscar preço LTC:", e);
-        return null;
-    }
+        return data.litecoin;
+    } catch(e) { return null; }
 }
-
 async function fetchLatestBlockNumber() {
     try {
-        const rpcProvider = new ethers.JsonRpcProvider(CONFIG.rpcUrl);
-        const blockNum = await rpcProvider.getBlockNumber();
-        return blockNum;
-    } catch(e) {
-        console.warn("Erro ao buscar bloco mais recente:", e);
-        return null;
-    }
+        const prov = new ethers.JsonRpcProvider(activeRpc);
+        return await prov.getBlockNumber();
+    } catch(e) { return null; }
 }
-
-async function fetchRecentMessages() {
-    try {
-        const readProvider = getProvider();
-        const readContract = new ethers.Contract(CONFIG.contractAddress, ABI, readProvider);
-        const total = Number(await readContract.totalMessages());
-        if (total === 0) return [];
-        const messages = [];
-        const limit = 3;
-        for (let i = total-1; i >= Math.max(0, total-limit); i--) {
-            try {
-                const msg = await readContract.getMessage(i);
-                const authorShort = msg[0].slice(0,6)+'...'+msg[0].slice(-4);
-                let text = msg[1];
-                if (text.length > 40) text = text.slice(0,37)+'...';
-                messages.push(`✉️ ${authorShort}: “${text}”`);
-            } catch(e) {}
-        }
-        return messages;
-    } catch(e) {
-        console.warn("Erro ao buscar últimas mensagens:", e);
-        return [];
-    }
-}
-
 async function updateLiveTicker() {
     const track = document.getElementById('liveTrack');
     if (!track) return;
-
-    const [ltcData, blockNumber, recentMsgs] = await Promise.all([
-        fetchLTCPrice(),
-        fetchLatestBlockNumber(),
-        fetchRecentMessages()
-    ]);
-
-    const items = [];
-
-    if (ltcData) {
-        const changeClass = ltcData.change24h >= 0 ? '📈' : '📉';
-        items.push(`💰 LTC: $${ltcData.price} ${changeClass} ${Math.abs(ltcData.change24h)}% • Cap: $${ltcData.marketCap}`);
-    } else {
-        items.push(`💰 LTC: preço indisponível`);
-    }
-
-    if (blockNumber !== null) {
-        items.push(`⛓️ LitVM Testnet • Bloco atual: ${blockNumber.toLocaleString()}`);
-    } else {
-        items.push(`⛓️ LitVM Testnet • bloco: --`);
-    }
-
-    if (recentMsgs.length > 0) {
-        items.push(...recentMsgs);
-    } else {
-        items.push(`📖 Nenhuma mensagem ainda • Seja o primeiro a postar!`);
-    }
-
-    items.push(`🪙 Dominância do Bitcoin: ${(Math.random() * 10 + 45).toFixed(1)}% (dado indicativo)`);
-    items.push(`⚡ Taxa de hash Litecoin: ${(Math.random() * 200 + 500).toFixed(0)} TH/s (estimativa)`);
-
-    const allItems = [...items, ...items];
-    track.innerHTML = allItems.map(text => `
-        <div class="live-item">
-            <div class="live-dot"></div>
-            ${text}
-        </div>
-    `).join('');
+    const ltcData = await fetchLTCPrice();
+    const block = await fetchLatestBlockNumber();
+    let html = '';
+    if (ltcData) html += `<div class="live-item"><div class="live-dot"></div>💰 LTC: $${ltcData.usd} ${ltcData.usd_24h_change?.toFixed(2)}%</div>`;
+    if (block) html += `<div class="live-item"><div class="live-dot"></div>⛓️ Bloco: ${block.toLocaleString()}</div>`;
+    html += `<div class="live-item"><div class="live-dot"></div>📖 Guestbook LitVM</div>`;
+    track.innerHTML = html + html;
 }
+setInterval(updateLiveTicker, 30000);
+updateLiveTicker();
 
-let tickerInterval;
-function startTickerUpdates() {
-    if (tickerInterval) clearInterval(tickerInterval);
-    updateLiveTicker();
-    tickerInterval = setInterval(updateLiveTicker, 30000);
-}
-
-const originalRefreshAfterPost = refreshAfterPost;
-window.refreshAfterPost = async function() {
-    await originalRefreshAfterPost();
-    updateLiveTicker();
-};
-refreshAfterPost = window.refreshAfterPost;
-
-window.addEventListener("load", () => {
-    if(localStorage.getItem("guestbook_darkmode") === "1") {
-        document.body.classList.add("dark-mode");
-    }
+// ========== INICIALIZAÇÃO ==========
+window.addEventListener("load", async () => {
     checkNetwork();
-    setupMetaMaskListeners();
-    loadMessages();
-    const soundBtn = document.getElementById('heartSoundToggle');
-    if (soundBtn) soundBtn.addEventListener('click', toggleHeartSound);
-    startTickerUpdates();
+    await loadAllMessagesForCache();
+    setupInfiniteScroll();
+    if (window.ethereum) {
+        window.ethereum.on('chainChanged', () => { setTimeout(() => location.reload(), 500); });
+        window.ethereum.on('accountsChanged', (accounts) => { if (accounts.length === 0) location.reload(); else connect(); });
+    }
 });
-
-async function listenForNewMessages() { if(!contract || !currentUser) return; try { const readProvider = getProvider(); const readContract = new ethers.Contract(CONFIG.contractAddress, ABI, readProvider); readContract.on("MessagePosted", () => { setTimeout(() => { currentPage = 0; loadMessages(); updateLiveTicker(); }, 1500); }); console.log("✅ Listening for MessagePosted events"); } catch(e) { console.warn("Could not set up event listener:", e); } }
-const originalConnect = connect;
-connect = async function() { await originalConnect(); if(contract) listenForNewMessages(); };
-window.connect = connect;
 </script>
 </body>
 </html>
