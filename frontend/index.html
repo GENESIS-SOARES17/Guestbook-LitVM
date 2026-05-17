@@ -84,38 +84,83 @@ body::before {
 }
 
 .logo{ display:flex; align-items:center; gap:14px; min-width:280px; }
+
+/* ---- LOGO IMAGEM COM CONTORNO PULSANTE ---- */
 .logo img{ 
     width:100px; 
     height:100px; 
     object-fit:contain;
-    /* EFEITO DE BRILHO PISCANDO NA LOGO */
-    animation: logoGlow 1.8s ease-in-out infinite;
     border-radius: 20px;
     transition: transform 0.3s;
+    /* Contorno sólido inicial */
+    box-shadow: 0 0 0 3px var(--gold);
+    animation: pulseOutline 1.8s ease-in-out infinite;
 }
 .logo img:hover {
     transform: scale(1.05);
 }
-@keyframes logoGlow {
+
+/* ---- TÍTULO "GUESTBOOK" COM CONTORNO PULSANTE ---- */
+.logo h1{ 
+    color:white; 
+    font-size:26px;
+    display: inline-block;
+    /* Contorno sólido via text-shadow (simula stroke) */
+    text-shadow: 
+        -2px -2px 0 var(--gold),
+         2px -2px 0 var(--gold),
+        -2px  2px 0 var(--gold),
+         2px  2px 0 var(--gold);
+    animation: pulseOutlineText 1.8s ease-in-out infinite;
+    transition: text-shadow 0.3s;
+}
+.logo h1:hover {
+    text-shadow: 
+        -2px -2px 0 #ffaa00,
+         2px -2px 0 #ffaa00,
+        -2px  2px 0 #ffaa00,
+         2px  2px 0 #ffaa00;
+}
+
+/* Animação do contorno da imagem (alterna cores) */
+@keyframes pulseOutline {
     0% {
-        box-shadow: 0 0 0px rgba(255, 215, 0, 0), 
-                    0 0 0px rgba(107, 141, 214, 0);
-        filter: brightness(1);
+        box-shadow: 0 0 0 3px rgba(255, 215, 0, 1);
     }
     50% {
-        box-shadow: 0 0 15px 5px rgba(255, 215, 0, 0.8), 
-                    0 0 25px 8px rgba(107, 141, 214, 0.6);
-        filter: brightness(1.1);
+        box-shadow: 0 0 0 5px rgba(107, 141, 214, 1);
     }
     100% {
-        box-shadow: 0 0 0px rgba(255, 215, 0, 0), 
-                    0 0 0px rgba(107, 141, 214, 0);
-        filter: brightness(1);
+        box-shadow: 0 0 0 3px rgba(255, 215, 0, 1);
     }
 }
-.logo h1{ color:white; font-size:26px; }
 
-/* ========== CORAÇÃO ÚNICO (AZUL) COM DOBRO DO TAMANHO ========== */
+/* Animação do contorno do texto (alterna cores do stroke) */
+@keyframes pulseOutlineText {
+    0% {
+        text-shadow: 
+            -2px -2px 0 rgba(255, 215, 0, 1),
+             2px -2px 0 rgba(255, 215, 0, 1),
+            -2px  2px 0 rgba(255, 215, 0, 1),
+             2px  2px 0 rgba(255, 215, 0, 1);
+    }
+    50% {
+        text-shadow: 
+            -2px -2px 0 rgba(107, 141, 214, 1),
+             2px -2px 0 rgba(107, 141, 214, 1),
+            -2px  2px 0 rgba(107, 141, 214, 1),
+             2px  2px 0 rgba(107, 141, 214, 1);
+    }
+    100% {
+        text-shadow: 
+            -2px -2px 0 rgba(255, 215, 0, 1),
+             2px -2px 0 rgba(255, 215, 0, 1),
+            -2px  2px 0 rgba(255, 215, 0, 1),
+             2px  2px 0 rgba(255, 215, 0, 1);
+    }
+}
+
+/* ========== CORAÇÃO AZUL (DOBRO DE TAMANHO) COM CONTORNO PULSANTE ========== */
 .heart-group {
     display: inline-flex;
     gap: 12px;
@@ -129,17 +174,22 @@ body::before {
     animation: heartBeat 1.2s ease-in-out infinite;
     transform-origin: center;
     transition: filter 0.2s;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    /* Contorno sólido via text-shadow para o coração também */
+    text-shadow: 
+        -2px -2px 0 var(--gold),
+         2px -2px 0 var(--gold),
+        -2px  2px 0 var(--gold),
+         2px  2px 0 var(--gold);
+    animation: pulseOutlineText 1.8s ease-in-out infinite, heartBeat 1.2s ease-in-out infinite;
 }
 .pulse-heart:hover {
-    filter: drop-shadow(0 0 10px currentColor);
+    filter: drop-shadow(0 0 4px currentColor);
     transform: scale(1.05);
 }
 /* Coração azul - tamanho dobrado (60px) */
 .heart-blue {
     color: #3b82f6;
-    text-shadow: 0 0 2px rgba(59,130,246,0.5);
-    font-size: 60px;  /* DOBRO do tamanho original (30px -> 60px) */
+    font-size: 60px;  /* DOBRO do tamanho original */
 }
 @keyframes heartBeat {
     0% { transform: scale(1); }
@@ -149,7 +199,6 @@ body::before {
 }
 body.dark-mode .heart-blue {
     color: #60a5fa;
-    text-shadow: 0 0 3px #60a5fa;
 }
 
 /* Botão de som do coração */
@@ -178,13 +227,26 @@ body.dark-mode .heart-blue {
     color: #1f2937;
     border-color: white;
 }
-/* Responsivo: ajusta tamanho em telas pequenas */
+/* Responsivo */
 @media (max-width: 640px) {
     .heart-blue { font-size: 40px; }
     .heart-group { gap: 8px; }
     .logo h1 { font-size: 20px; }
     .heart-sound-btn { font-size: 10px; padding: 2px 8px; }
     .logo img { width: 70px; height: 70px; }
+    /* Ajuste do contorno para telas pequenas */
+    .logo h1 {
+        text-shadow: 
+            -1px -1px 0 var(--gold),
+             1px -1px 0 var(--gold),
+            -1px  1px 0 var(--gold),
+             1px  1px 0 var(--gold);
+    }
+    @keyframes pulseOutlineText {
+        0% { text-shadow: -1px -1px 0 gold, 1px -1px 0 gold, -1px 1px 0 gold, 1px 1px 0 gold; }
+        50% { text-shadow: -1px -1px 0 #6B8DD6, 1px -1px 0 #6B8DD6, -1px 1px 0 #6B8DD6, 1px 1px 0 #6B8DD6; }
+        100% { text-shadow: -1px -1px 0 gold, 1px -1px 0 gold, -1px 1px 0 gold, 1px 1px 0 gold; }
+    }
 }
 /* =============================================== */
 
