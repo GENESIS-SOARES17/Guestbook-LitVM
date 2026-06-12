@@ -333,7 +333,8 @@ textarea { width: 100%; border: 2px solid var(--gold); border-radius: 10px; padd
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        padding: 2px;
+        padding: 0;
+        margin: 0;
         transition: all 0.3s ease;
         opacity: 1;
         filter: none;
@@ -343,7 +344,7 @@ textarea { width: 100%; border: 2px solid var(--gold); border-radius: 10px; padd
         flex: 1;
         min-width: 60px;
         max-width: 110px;
-        overflow: visible;
+        overflow: hidden;
         box-sizing: border-box;
         animation: pulseRedBorder 2s ease-in-out infinite;
     }
@@ -358,10 +359,12 @@ textarea { width: 100%; border: 2px solid var(--gold); border-radius: 10px; padd
     }
 
 .ticker-icon img {
-        height: 52px;
-        width: 52px;
-        object-fit: contain;
-        border-radius: 8px;
+        width: 100%;
+        height: 100%;
+        max-width: 106px;
+        max-height: 68px;
+        object-fit: cover;
+        border-radius: 10px;
         display: block;
         filter: brightness(1.1) contrast(1.1);
     }
@@ -415,8 +418,8 @@ textarea { width: 100%; border: 2px solid var(--gold); border-radius: 10px; padd
 
 <div class="live-ticker">
     <div class="live-track" id="liveTrack">
-        <a href="https://litvm.cash/" target="_blank" class="ticker-icon" title="LitVM Cash">
-            <img src="./litvm.cash.png" alt="LitVM Cash">
+        <a href="https://litiumdex.org/" target="_blank" class="ticker-icon" title="LitVM Cash">
+            <img src="./litiumdex.jpg" alt="LitVM Cash">
         </a>
         <a href="https://wolfdex.lovable.app/" target="_blank" class="ticker-icon" title="WolfDex">
             <img src="./wolfdex.lovable.app.jpg" alt="WolfDex">
@@ -434,7 +437,7 @@ textarea { width: 100%; border: 2px solid var(--gold); border-radius: 10px; padd
             <img src="./ai-deathmatch.jpg" alt="AI Deathmatch">
         </a>
         <a href="https://lit-stablevault.vercel.app/" target="_blank" class="ticker-icon" title="LTUSDC StableVault">
-            <img src="./lit-stablevault.vercel.app.jpg" alt="StableVault">
+            <img src="./qzlaf.jpg" alt="StableVault">
         </a>
         <a href="https://www.fenus.xyz/app" target="_blank" class="ticker-icon" title="Fenus">
             <img src="./fenus.jpg" alt="Fenus">
