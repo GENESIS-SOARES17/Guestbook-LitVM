@@ -6,7 +6,6 @@
 <title>Guestbook LitVM • Social Web3 Guestbook</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-/* ========== ESTILOS GLOBAIS (BASE) ========== */
 :root {
     --blue-main: #6B8DD6;
     --blue-soft: #8FA8E8;
@@ -124,50 +123,43 @@ body::before {
 .logo img:hover { transform: scale(1.05); }
 .logo h1{ color: white; font-size: 26px; display: inline-block; text-shadow: -2px -2px 0 var(--gold), 2px -2px 0 var(--gold), -2px 2px 0 var(--gold), 2px 2px 0 var(--gold); animation: pulseOutlineText 1.8s ease-in-out infinite; }
 @keyframes pulseOutline { 0% { box-shadow: 0 0 0 3px rgba(255,215,0,1); } 50% { box-shadow: 0 0 0 5px var(--blue-main); } 100% { box-shadow: 0 0 0 3px rgba(255,215,0,1); } }
-@keyframes pulseOutlineText { 0% { text-shadow: -2px -2px 0 gold, 2px -2px 0 gold, -2px 2px 0 gold, 2px 2px 0 gold; } 50% { text-shadow: -2px -2px 0 var(--blue-main), 2px -2px 0 var(--blue-main), -2px 2px 0 var(--blue-main), 2px 2px 0 var(--blue-main); } 100% { text-shadow: -2px -2px 0 gold, 2px -2px 0 gold, -2px 2px 0 gold, 2px 2px 0 gold; } }
-.heart-group { display: inline-flex; gap: 12px; align-items: center; margin-left: 8px; }
-.pulse-heart { display: inline-block; line-height: 1; cursor: default; animation: heartBeat 1.2s ease-in-out infinite; transform-origin: center; text-shadow: -2px -2px 0 var(--gold), 2px -2px 0 var(--gold), -2px 2px 0 var(--gold), 2px 2px 0 var(--gold); animation: pulseOutlineText 1.8s ease-in-out infinite, heartBeat 1.2s ease-in-out infinite; }
-.heart-blue { color: #3b82f6; font-size: 60px; }
-@keyframes heartBeat { 0% { transform: scale(1); } 48% { transform: scale(1.28); } 60% { transform: scale(1.2); } 100% { transform: scale(1); } }
-.heart-sound-btn { background: rgba(255,255,255,0.25); border: 2px solid var(--gold); border-radius: 40px; padding: 4px 12px; margin-left: 8px; font-size: 13px; font-weight: bold; color: white; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; backdrop-filter: blur(4px); }
-.heart-sound-btn:hover { background: rgba(255,255,255,0.5); transform: scale(1.02); }
-.heart-sound-btn.active { background: var(--gold); color: #1f2937; border-color: white; }
+@keyframes pulseOutlineText { 0% { text-shadow: -2px -2px 0 gold, 2px -2px 0 gold, -2px 2px 0 gold, 2px 2px 0 gold; } 50% { text-shadow: -2px -2px 0 var(--blue-main), 2px -2px 0 var(--blue-main), -2px 2px 0 var(--blue-main), -2px 2px 0 var(--blue-main); } 100% { text-shadow: -2px -2px 0 gold, 2px -2px 0 gold, -2px 2px 0 gold, 2px 2px 0 gold; } }
 .ticker-wrap{ flex:1; overflow: hidden; background: rgba(255,255,255,0.18); border: 4px solid var(--gold); border-radius: 12px; height: 50px; display: flex; align-items: center; }
 .ticker{ white-space: nowrap; animation: ticker 40s linear infinite; color: white; font-weight: bold; }
 @keyframes ticker{ from{ transform: translateX(100%); } to{ transform: translateX(-100%); } }
 .live-ticker { 
-        position: fixed; 
-        top: 132px; 
-        left: 0; 
-        right: 0; 
-        z-index: 997; 
-        background: rgba(40,40,50,0.7); 
-        border-bottom: 2px solid var(--gold); 
-        padding: 8px 10px; 
-        overflow: visible;
-        backdrop-filter: blur(8px); 
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 2px 10px rgba(255,215,0,0.1);
-    }
+    position: fixed; 
+    top: 132px; 
+    left: 0; 
+    right: 0; 
+    z-index: 997; 
+    background: rgba(40,40,50,0.7); 
+    border-bottom: 2px solid var(--gold); 
+    padding: 8px 10px; 
+    overflow: visible;
+    backdrop-filter: blur(8px); 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 10px rgba(255,215,0,0.1);
+}
 .live-track { 
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 4px;
-        white-space: nowrap;
-        color: var(--text);
-        font-size: 12px;
-        font-weight: bold;
-        padding: 0;
-        width: 100%;
-        max-width: 1600px;
-        margin: 0 auto;
-    }
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+    color: var(--text);
+    font-size: 12px;
+    font-weight: bold;
+    padding: 0;
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+}
 .live-item { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
 .live-dot { width: 8px; height: 8px; background: #10b981; border-radius: 50%; animation: pulse 1.5s infinite; }
- to{ transform: translateX(-50%); } }
+@keyframes scrollLive { from{ transform: translateX(0); } to{ transform: translateX(-50%); } }
 @keyframes pulse { 0%,100%{ opacity:1; transform: scale(1); } 50%{ opacity:0.5; transform: scale(1.3); } }
 #networkBanner{ position: fixed; top: 166px; left: 0; right: 0; z-index: 998; background: #fef3c7; color: #92400e; text-align: center; padding: 10px; font-weight: bold; font-size: 13px; border-bottom: 2px solid var(--gold); display: none; align-items: center; justify-content: center; gap: 10px; }
 .toast-container { position: fixed; top: 185px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
@@ -217,23 +209,56 @@ textarea { width: 100%; border: 2px solid var(--gold); border-radius: 10px; padd
 @keyframes fall { to{ transform: translateY(100vh) rotate(720deg); opacity:0; } }
 .chart-container { padding: 10px; max-height: 200px; }
 .chart-canvas { max-height: 160px; width: 100%; }
-
-/* ========== LAYOUT PRINCIPAL - BANNERS COM ALTURA FIXA E UNIFORME ========== */
 .main{
     max-width: 1600px;
-    margin: 200px auto 40px auto;
+    margin: 260px auto 40px auto;
     display: grid;
     grid-template-columns: 280px 1fr 280px;
     gap: 20px;
     padding: 0 20px;
     min-height: 100vh;
+    position: relative;
 }
 .left-column, .right-column {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    position: sticky;
+    top: 140px;
+    height: fit-content;
+    max-height: calc(100vh - 160px);
+    overflow-y: auto;
+    padding-bottom: 20px;
+    align-self: start;
 }
-/* Todos os cards laterais (incluindo perfil, saldo e banners) terão a MESMA ALTURA FIXA */
+.left-column::-webkit-scrollbar,
+.right-column::-webkit-scrollbar {
+    width: 6px;
+}
+.left-column::-webkit-scrollbar-thumb,
+.right-column::-webkit-scrollbar-thumb {
+    background: var(--gold);
+    border-radius: 3px;
+}
+.center-column {
+    overflow-y: visible;
+    min-height: auto;
+    padding-right: 10px;
+}
+.center-column::-webkit-scrollbar {
+    width: 8px;
+}
+.center-column::-webkit-scrollbar-track {
+    background: rgba(255,215,0,0.1);
+    border-radius: 4px;
+}
+.center-column::-webkit-scrollbar-thumb {
+    background: var(--gold);
+    border-radius: 4px;
+}
+.center-column::-webkit-scrollbar-thumb:hover {
+    background: var(--blue-main);
+}
 .left-column .card,
 .left-column .banner-card,
 .right-column .card,
@@ -328,62 +353,43 @@ textarea { width: 100%; border: 2px solid var(--gold); border-radius: 10px; padd
         min-height: 100px;
     }
 }
-
 .ticker-icon {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0;
-        margin: 0;
-        transition: all 0.3s ease;
-        opacity: 1;
-        filter: none;
-        border: 2px solid var(--gold);
-        border-radius: 12px;
-        background: rgba(0,0,0,0.4);
-        flex: 1;
-        min-width: 60px;
-        max-width: 110px;
-        overflow: hidden;
-        box-sizing: border-box;
-        animation: pulseRedBorder 2s ease-in-out infinite;
-    }
-
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    transition: all 0.3s ease;
+    opacity: 1;
+    filter: none;
+    border: 2px solid var(--gold);
+    border-radius: 12px;
+    background: rgba(0,0,0,0.4);
+    flex: 1;
+    min-width: 60px;
+    max-width: 110px;
+    overflow: hidden;
+    box-sizing: border-box;
+    animation: pulseRedBorder 2s ease-in-out infinite;
+}
 .ticker-icon:hover {
-        opacity: 1;
-        filter: drop-shadow(0 0 12px var(--gold));
-        transform: scale(1.12);
-        border-color: #fff;
-        box-shadow: 0 0 20px rgba(255,215,0,0.8);
-        background: rgba(255,215,0,0.1);
-    }
-
+    opacity: 1;
+    filter: drop-shadow(0 0 12px var(--gold));
+    transform: scale(1.12);
+    border-color: #fff;
+    box-shadow: 0 0 20px rgba(255,215,0,0.8);
+    background: rgba(255,215,0,0.1);
+}
 .ticker-icon img {
-        width: 100%;
-        height: 100%;
-        max-width: 106px;
-        max-height: 68px;
-        object-fit: cover;
-        border-radius: 10px;
-        display: block;
-        filter: brightness(1.1) contrast(1.1);
-    }
-
-.live-track { 
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 4px;
-        white-space: nowrap;
-        color: var(--text);
-        font-size: 12px;
-        font-weight: bold;
-        padding: 0;
-        width: 100%;
-        max-width: 1600px;
-        margin: 0 auto;
-    }
-
+    width: 100%;
+    height: 100%;
+    max-width: 106px;
+    max-height: 68px;
+    object-fit: cover;
+    border-radius: 10px;
+    display: block;
+    filter: brightness(1.1) contrast(1.1);
+}
 @keyframes pulseRedBorder {
     0%, 100% {
         box-shadow: 0 0 8px rgba(255,215,0,0.3), 0 0 0 0 rgba(255,0,0,0);
@@ -392,6 +398,75 @@ textarea { width: 100%; border: 2px solid var(--gold); border-radius: 10px; padd
         box-shadow: 0 0 8px rgba(255,215,0,0.3), 0 0 12px 2px rgba(255,0,0,0.6);
     }
 }
+
+/* Esconder scrollbar mas manter scroll */
+.left-column, .right-column, .center-column {
+    scrollbar-width: thin;
+    scrollbar-color: var(--gold) rgba(255,215,0,0.1);
+}
+@media (max-width: 1024px) {
+    .main {
+        height: auto;
+        grid-template-columns: 1fr;
+    }
+    .left-column, .right-column, .center-column {
+        position: static;
+        height: auto;
+        max-height: none;
+        overflow-y: visible;
+    }
+}
+
+
+/* Ajuste para banners laterais ficarem sempre visíveis */
+@media (min-width: 1025px) {
+    .left-column, .right-column {
+        position: -webkit-sticky;
+        position: sticky;
+        align-self: start;
+        top: 140px;
+    }
+    body {
+        overflow-x: hidden;
+    }
+    /* Garantir que o primeiro banner não seja cortado */
+    .left-column .card:first-child,
+    .left-column .banner-card:first-child,
+    .right-column .card:first-child,
+    .right-column .banner-card:first-child {
+        margin-top: 0;
+    }
+}
+
+/* Em telas menores, volta ao normal */
+@media (max-width: 1024px) {
+    .main {
+        grid-template-columns: 1fr;
+        margin-top: 240px;
+    }
+    .center-column {
+        order: -1;
+    }
+    .left-column, .right-column {
+        position: static;
+        height: auto;
+        max-height: none;
+        overflow-y: visible;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 15px;
+        justify-content: center;
+    }
+    .left-column .card,
+    .left-column .banner-card,
+    .right-column .card,
+    .right-column .banner-card {
+        flex: 1 1 140px;
+        height: auto;
+        min-height: 100px;
+    }
+}
+
 </style>
 </head>
 <body class="theme-dark">
@@ -418,8 +493,8 @@ textarea { width: 100%; border: 2px solid var(--gold); border-radius: 10px; padd
 
 <div class="live-ticker">
     <div class="live-track" id="liveTrack">
-        <a href="https://litiumdex.org/" target="_blank" class="ticker-icon" title="LitVM Cash">
-            <img src="./litiumdex.jpg" alt="LitVM Cash">
+        <a href="https://litiumdex.org/" target="_blank" class="ticker-icon" title="LitiumDex">
+            <img src="./litiumdex.jpg" alt="LitiumDex">
         </a>
         <a href="https://wolfdex.lovable.app/" target="_blank" class="ticker-icon" title="WolfDex">
             <img src="./wolfdex.lovable.app.jpg" alt="WolfDex">
@@ -456,20 +531,12 @@ textarea { width: 100%; border: 2px solid var(--gold); border-radius: 10px; padd
         </a>
     </div>
 </div>
-</div>
-</div> 
-                 Espaço reservado para notícias e informações
-            </div>
-        </div>
-    </div></div>
 
 <div class="main">
-    <!-- COLUNA ESQUERDA (sem o banner do CoinGecko) -->
     <aside class="left-column">
         <div class="card"><div class="card-header">👤 Profile</div><div class="card-body" style="text-align:center"><div id="profileAvatar" class="profile-avatar"><div style="width:100%;height:100%;background:var(--blue-main)"></div></div><div id="walletAddressDisplay" style="font-size:9px;word-break:break-all;">Not Connected</div></div></div>
         <div class="banner-card"><div class="card-header">📊 CoinMarketCap</div><div class="card-body"><a href="https://coinmarketcap.com/" target="_blank" class="banner-link"><div class="banner-icon">📊</div><div class="banner-title">MarketCap</div></a></div></div>
         <div class="banner-card"><div class="card-header">🫧 CryptoBubbles</div><div class="card-body"><a href="https://cryptobubbles.net/" target="_blank" class="banner-link"><div class="banner-icon">🫧</div><div class="banner-title">Bubbles</div></a></div></div>
-        <!-- BANNER REMOVIDO: CoinGecko -->
         <div class="banner-card"><div class="card-header">📰 CoinDesk</div><div class="card-body"><a href="https://www.coindesk.com/" target="_blank" class="banner-link"><div class="banner-icon">📰</div><div class="banner-title">News</div></a></div></div>
         <div class="banner-card"><div class="card-header">🔶 Binance</div><div class="card-body"><a href="https://www.binance.com/" target="_blank" class="banner-link"><div class="banner-icon">🔶</div><div class="banner-title">Binance</div></a></div></div>
         <div class="banner-card"><div class="card-header">🔵 Coinbase</div><div class="card-body"><a href="https://www.coinbase.com/" target="_blank" class="banner-link"><div class="banner-icon">🔵</div><div class="banner-title">Coinbase</div></a></div></div>
@@ -479,12 +546,10 @@ textarea { width: 100%; border: 2px solid var(--gold); border-radius: 10px; padd
         <div class="banner-card"><div class="card-header">🏹 Robinhood</div><div class="card-body"><a href="https://robinhood.com/us/en/" target="_blank" class="banner-link"><div class="banner-icon">🏹</div><div class="banner-title">Robinhood</div></a></div></div>
     </aside>
 
-    <!-- COLUNA CENTRAL (sem alterações) -->
     <main class="center-column">
         <div class="card"><div class="card-header">🔗 Wallet Connection</div><div class="card-body"><div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px"><div id="walletStatus" style="font-weight:bold; font-size:13px">Status: Locked</div><div style="display:flex; gap:10px; flex-wrap:wrap"><button id="switchChainBtn" class="glow-pulse" style="background:var(--blue-soft);color:white;border:2px solid var(--gold);padding:8px 15px;border-radius:8px;cursor:pointer;font-weight:bold">🔗 Switch to LitVM</button><button id="connectBtn" class="glow-pulse" style="background:var(--blue-main);color:white;border:2px solid var(--gold);padding:8px 15px;border-radius:8px;cursor:pointer;font-weight:bold">Connect MetaMask</button><button id="faucetBtn" class="faucet-btn">💧 Faucet</button></div></div></div></div>
         <div class="card" style="margin-top:20px"><div class="card-header">💬 Write Message (Max 270 chars)</div><div class="card-body"><textarea id="messageInput" maxlength="270" placeholder="Type your permanent message..."></textarea><div class="char-counter"><span id="charCount">0</span>/270</div><div style="margin-top:10px; display:flex; gap:10px"><input type="number" id="tokenAmount" placeholder="Tip zkLTC" style="flex:1; border:2px solid var(--gold); border-radius:8px; padding:8px; background:var(--card); color:var(--text);"/><button id="postBtn" class="glow-pulse" style="background:var(--blue-main);color:white;border:2px solid var(--gold);width:120px;font-weight:bold;border-radius:8px;cursor:pointer">🚀 Post</button></div></div></div>
         <div class="card" style="margin-top:20px"><div class="card-header">📊 Statistics</div><div class="card-body stats-grid"><div class="stat"><div>Global Total</div><b id="totalMsgCount" class="animated-counter">0</b></div><div class="stat"><div>Your Posts</div><b id="userPostsCount" class="animated-counter">0</b></div></div></div>
-        <div class="card" style="margin-top:20px"><div class="card-header">📈 Weekly Activity</div><div class="card-body chart-container"><canvas id="activityChart" class="chart-canvas" width="400" height="160"></canvas></div></div>
         <div class="messages-header"><h3>📬 Messages</h3><button id="manualRefreshBtn" class="refresh-btn" title="Recarregar mensagens">🔄 Refresh</button></div>
         <div class="sort-bar"><div class="sort-group"><span style="font-size:11px;font-weight:bold">Sort by:</span><button class="sort-btn active" id="btn-newest">📅 Newest</button><button class="sort-btn" id="btn-tips">💎 Most Tipped</button><button class="sort-btn" id="btn-reacted">❤️ Top Reacted</button></div><button id="filterMyMessagesBtn" class="filter-btn" title="Show only my messages">🔍 My Messages</button></div>
         <div id="messagesList" style="margin-top:10px"></div>
@@ -493,7 +558,6 @@ textarea { width: 100%; border: 2px solid var(--gold); border-radius: 10px; padd
         </div>
     </main>
 
-    <!-- COLUNA DIREITA (inalterada) -->
     <aside class="right-column">
         <div class="card"><div class="card-header">💰 Wallet Balance</div><div class="card-body" style="text-align:center"><div style="font-size:20px;font-weight:bold;color:var(--blue-main)" id="balanceDisplay">0.00</div><div style="font-size:10px;color:var(--muted)">zkLTC</div></div></div>
         <div class="banner-card"><div class="card-header">🌐 Official Site</div><div class="card-body"><a href="https://www.litvm.com/" target="_blank" class="banner-link"><div class="banner-icon">🌐</div><div class="banner-title">LitVM.com</div></a></div></div>
@@ -511,17 +575,16 @@ textarea { width: 100%; border: 2px solid var(--gold); border-radius: 10px; padd
 <script type="module">
 import { ethers } from "https://esm.run/ethers@6.13.0";
 
-// ========== CONFIGURAÇÕES ==========
 const CONFIG = { 
     contractAddress: "0x472e230DfFA8c896b05A9a46c84BFb391756918e",
-    rpcUrl: "https://liteforge.rpc.caldera.xyz/",
+    rpcUrl: "https://liteforge.rpc.caldera.xyz/http",
     fallbackRpc: "https://rpc.litvm.org/"
 };
 const LITVM_NETWORK = {
     chainId: "0x1159",
     chainName: "LitVM Network",
     nativeCurrency: { name: "zkLTC", symbol: "zkLTC", decimals: 18 },
-    rpcUrls: ["https://liteforge.rpc.caldera.xyz/"],
+    rpcUrls: ["https://liteforge.rpc.caldera.xyz/http"],
     blockExplorerUrls: ["https://liteforge.explorer.caldera.xyz/"]
 };
 const ABI = [
@@ -532,7 +595,6 @@ const ABI = [
     "event MessagePosted(address indexed author, string message, uint256 timestamp, uint256 amount)"
 ];
 
-// ========== VARIÁVEIS GLOBAIS ==========
 let provider, signer, contract, currentUser = null;
 let currentSort = 'newest';
 let filterMyMessages = false;
@@ -540,11 +602,9 @@ let allMessagesCache = [];
 let filteredMessages = [];
 let visibleCount = 5;
 let isLoadingMore = false;
-let chart = null;
 const SCROLL_THRESHOLD = 200;
 let activeRpc = CONFIG.rpcUrl;
 
-// ========== FUNÇÕES AUXILIARES ==========
 function showToast(message, type = 'info') {
     const container = document.getElementById('toastContainer');
     const toast = document.createElement('div');
@@ -659,7 +719,6 @@ async function getWorkingProvider() {
     throw new Error("Nenhum RPC disponível.");
 }
 
-// ========== AVATAR PERSONALIZADO ==========
 function getAvatarUrl(address) {
     if (!address) return "";
     return `https://unavatar.io/ethereum/${address}?fallback=false`;
@@ -690,25 +749,6 @@ function updateProfileAvatar(address) {
     }
 }
 
-// ========== GRÁFICO ==========
-function updateActivityChart(messages) {
-    const days = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-    const counts = [0,0,0,0,0,0,0];
-    messages.forEach(msg => { const dow = new Date(msg.timestamp * 1000).getDay(); counts[dow]++; });
-    const ctx = document.getElementById('activityChart').getContext('2d');
-    if (chart) {
-        chart.data.datasets[0].data = counts;
-        chart.update();
-    } else {
-        chart = new Chart(ctx, {
-            type: 'bar',
-            data: { labels: days, datasets: [{ label: 'Posts', data: counts, backgroundColor: 'rgba(107,141,214,0.7)', borderColor: 'var(--gold)', borderWidth: 2, borderRadius: 8 }] },
-            options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'top', labels: { color: 'var(--text)' } } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, color: 'var(--text)' } }, x: { ticks: { color: 'var(--text)' } } } }
-        });
-    }
-}
-
-// ========== CARREGAR MENSAGENS ==========
 async function loadAllMessagesForCache() {
     const listContainer = document.getElementById("messagesList");
     listContainer.innerHTML = `<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>`;
@@ -720,7 +760,6 @@ async function loadAllMessagesForCache() {
         if (total === 0) {
             allMessagesCache = [];
             filteredMessages = [];
-            updateActivityChart([]);
             renderMessagesInfinite();
             showToast("📭 Nenhuma mensagem encontrada. Seja o primeiro a postar!", "info");
             return;
@@ -757,7 +796,6 @@ async function loadAllMessagesForCache() {
                              parseInt(localStorage.getItem(`react_${msg.index}_🔥`) || 0) +
                              parseInt(localStorage.getItem(`react_${msg.index}_👍`) || 0));
         });
-        updateActivityChart(allMessagesCache);
         applyFiltersAndSort();
         showToast(`✅ ${allMessagesCache.length} mensagens carregadas.`, "success");
     } catch (error) {
@@ -770,7 +808,6 @@ async function loadAllMessagesForCache() {
         document.getElementById("messagesList").innerHTML = `<p style="text-align:center; padding:20px; color:var(--muted)">❌ ${errorMsg}</p>`;
         allMessagesCache = [];
         filteredMessages = [];
-        updateActivityChart([]);
     }
 }
 
@@ -831,8 +868,8 @@ function renderMessagesInfinite() {
             <a href="${twitterUrl}" target="_blank" class="share-x">🐦 Share @LitecoinVM</a>
             <div class="reactions">
                 <button class="react-btn" onclick="window.react(${item.index}, '❤️')">❤️ ${localStorage.getItem(`react_${item.index}_❤️`) || 0}</button>
-                <button class="react-btn" onclick="window.react(${item.index}, '🔥')">🔥 ${localStorage.getItem(`react_${item.index}_🔥`) || 0}</button>
-                <button class="react-btn" onclick="window.react(${item.index}, '👍')">👍 ${localStorage.getItem(`react_${item.index}_👍`) || 0}</button>
+                <button class="react-btn" onclick="window.react(${item.index}, '🔥')"> ${localStorage.getItem(`react_${item.index}_🔥`) || 0}</button>
+                <button class="react-btn" onclick="window.react(${item.index}, '👍')"> 👍 ${localStorage.getItem(`react_${item.index}_👍`) || 0}</button>
             </div>
         `;
         list.appendChild(div);
@@ -873,7 +910,6 @@ function setupInfiniteScroll() {
     });
 }
 
-// ========== CONEXÃO DA CARTEIRA ==========
 async function connect() {
     if (!window.ethereum) return showToast("Install MetaMask first!", "error");
     try {
@@ -898,7 +934,6 @@ async function connect() {
     }
 }
 
-// ========== POSTAGEM ==========
 document.getElementById("postBtn").addEventListener("click", async () => {
     const txt = document.getElementById("messageInput").value.trim();
     const val = document.getElementById("tokenAmount").value;
@@ -928,7 +963,6 @@ document.getElementById("postBtn").addEventListener("click", async () => {
     }
 });
 
-// ========== EVENTOS UI ==========
 document.getElementById("manualRefreshBtn").addEventListener("click", () => { loadAllMessagesForCache(); visibleCount = 5; });
 document.getElementById("loadMoreBtn").addEventListener("click", loadMoreMessages);
 document.getElementById("connectBtn").addEventListener("click", connect);
@@ -960,7 +994,6 @@ window.react = (index, emoji) => {
     applyFiltersAndSort();
 };
 
-// ========== TEMAS ==========
 function applyTheme(theme) {
     document.body.classList.remove('theme-light', 'theme-dark', 'theme-cyberpunk', 'theme-nature', 'theme-retro');
     if (theme === 'light') document.body.classList.add('theme-light');
@@ -969,7 +1002,6 @@ function applyTheme(theme) {
     else if (theme === 'nature') document.body.classList.add('theme-nature');
     else if (theme === 'retro') document.body.classList.add('theme-retro');
     localStorage.setItem('guestbook_theme', theme);
-    if (chart) chart.update();
 }
 document.getElementById('themeSelect').addEventListener('change', (e) => applyTheme(e.target.value));
 const savedTheme = localStorage.getItem('guestbook_theme') || 'dark';
@@ -982,11 +1014,6 @@ document.getElementById("darkModeBtn").addEventListener("click", () => {
     document.getElementById('themeSelect').value = newTheme;
 });
 
-
-// ========== LIVE TICKER ==========
-// Funções do ticker removidas - faixa estática
-
-// ========== INICIALIZAÇÃO ==========
 window.addEventListener("load", async () => {
     checkNetwork();
     await loadAllMessagesForCache();
